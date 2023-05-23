@@ -56,14 +56,22 @@ class ModListView extends HookConsumerWidget {
         ),
         body: TabBarView(
           children: [
-            mods.when(
-              loading: () => const CircularProgressIndicator(),
-              error: (err, stack) => Text(err.toString()),
-              data: (mods) {
-                return buildListView(mods);
-              },
+            Container(
+              child: mods.when(
+                loading: () => const SizedBox(
+                  width: 100.0,
+                  height: 100.0,
+                  child: Center(
+                    child: CircularProgressIndicator(),
+                  ),
+                ),
+                error: (err, stack) => Text(err.toString()),
+                data: (mods) {
+                  return buildListView(mods);
+                },
+              ),
             ),
-            const Text('No data'),
+            const Text('no data.')
           ],
         ),
       ),
