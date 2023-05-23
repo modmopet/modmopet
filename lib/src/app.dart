@@ -17,6 +17,19 @@ class App extends ConsumerWidget {
 
   final SettingsController settingsController;
 
+  Widget getScreenByRoute(RouteSettings routeSettings) {
+    switch (routeSettings.name) {
+      case SettingsView.routeName:
+        return SettingsView(controller: settingsController);
+      case GameListView.routeName:
+        return const GameListView();
+      case ModListView.routeName:
+        return const ModListView();
+      default:
+        return const GameListView();
+    }
+  }
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Start app routines
@@ -71,16 +84,43 @@ class App extends ConsumerWidget {
               return MaterialPageRoute<void>(
                 settings: routeSettings,
                 builder: (BuildContext context) {
-                  switch (routeSettings.name) {
-                    case SettingsView.routeName:
-                      return SettingsView(controller: settingsController);
-                    case GameListView.routeName:
-                      return const GameListView();
-                    case ModListView.routeName:
-                      return const ModListView();
-                    default:
-                      return const GameListView();
-                  }
+                  return Scaffold(
+                    appBar: AppBar(
+                      title: const Text('ModMopet'),
+                      titleSpacing: 10.0,
+                      titleTextStyle: const TextStyle(fontSize: 15.0),
+                      toolbarHeight: 38.0,
+                      centerTitle: true,
+                      actions: [
+                        IconButton(
+                          icon: const Icon(Icons.settings),
+                          onPressed: () {
+                            Navigator.restorablePushNamed(context, SettingsView.routeName);
+                          },
+                        ),
+                      ],
+                    ),
+                    body: Column(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          child: Material(child: getScreenByRoute(routeSettings)),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                              color: Theme.of(context).scaffoldBackgroundColor,
+                              border: Border(top: BorderSide(width: 1.0, color: Theme.of(context).shadowColor))),
+                          width: double.infinity,
+                          height: 28.0,
+                          child: const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8.0),
+                            child: Text('Placeholder'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
                 },
               );
             },

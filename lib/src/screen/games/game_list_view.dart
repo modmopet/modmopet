@@ -4,7 +4,6 @@ import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/screen/games/game_list_provider.dart';
 import 'package:modmopet/src/screen/mods/mod_list_provider.dart';
 import 'package:modmopet/src/screen/mods/mod_list_view.dart';
-import '../settings/settings_view.dart';
 
 /// Displays a list of the games installed at the emulator
 class GameListView extends HookConsumerWidget {
@@ -14,19 +13,8 @@ class GameListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final games = ref.watch(gameListProvider);
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Which game you want to manage?'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings),
-            onPressed: () {
-              Navigator.restorablePushNamed(context, SettingsView.routeName);
-            },
-          ),
-        ],
-      ),
-      body: games.when(
+    return Container(
+      child: games.when(
         loading: () => const CircularProgressIndicator(),
         error: (err, stack) => Text(err.toString()),
         data: (games) {

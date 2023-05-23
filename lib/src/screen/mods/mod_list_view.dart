@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/screen/mods/mod_list_provider.dart';
 import 'package:modmopet/src/service/routine.dart';
+import 'package:modmopet/src/widgets/cached_banner_image.dart';
 
 import '../settings/settings_view.dart';
 import '../../entity/mod.dart';
@@ -22,17 +23,7 @@ class ModListView extends HookConsumerWidget {
       child: Scaffold(
         appBar: AppBar(
           title: Text(game.title),
-          flexibleSpace: game.bannerUrl != null
-              ? Container(
-                  decoration: BoxDecoration(
-                    image: DecorationImage(
-                      opacity: 0.5,
-                      image: Image.network(game.bannerUrl!).image,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                )
-              : Container(),
+          flexibleSpace: game.bannerUrl != null ? CachedBannerImage(game.bannerUrl!) : Container(),
           bottom: const TabBar(
             tabs: [
               Tab(
@@ -45,14 +36,6 @@ class ModListView extends HookConsumerWidget {
               ),
             ],
           ),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.settings),
-              onPressed: () {
-                Navigator.restorablePushNamed(context, SettingsView.routeName);
-              },
-            ),
-          ],
         ),
         body: TabBarView(
           children: [
