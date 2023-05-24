@@ -4,7 +4,6 @@ import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/screen/mods/mod_list_provider.dart';
 import 'package:modmopet/src/service/routine.dart';
-import 'package:modmopet/src/widgets/cached_banner_image.dart';
 import '../../entity/mod.dart';
 
 /// Displays a list of available mods for the game
@@ -25,7 +24,6 @@ class ModListView extends HookConsumerWidget {
 
     TabController tabController = useTabController(initialLength: 2);
 
-    // flexibleSpace: game.bannerUrl != null ? CachedBannerImage(game.bannerUrl!) : Container(),
     return Column(
       children: [
         Container(
@@ -38,14 +36,23 @@ class ModListView extends HookConsumerWidget {
             ),
           ),
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              SizedBox(
-                height: 45,
-                child: Row(
-                  children: [
-                    Text(game.title, style: Theme.of(context).textTheme.bodyLarge),
-                  ],
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: SizedBox(
+                  height: 45,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        game.title,
+                        style: Theme.of(context).textTheme.bodyLarge,
+                      ),
+                      Text(game.version),
+                    ],
+                  ),
                 ),
               ),
               TabBar(
