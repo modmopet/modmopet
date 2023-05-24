@@ -1,30 +1,19 @@
-class Mod {
-  final String _id;
-  final String _title;
-  final int _category;
-  final dynamic _version;
-  final Map<dynamic, dynamic> _game;
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'mod.freezed.dart';
 
-  final String? subtitle;
-  final String? description;
-  final Map<dynamic, dynamic>? author;
-
-  const Mod(
-    this._id,
-    this._title,
-    this._category,
-    this._version,
-    this._game, {
-    this.subtitle,
-    this.description,
-    this.author,
-  });
-
-  String get id => _id;
-  String get title => _title;
-  int get category => _category;
-  String get version => _version != null ? _version.toString() : '0.0.0';
-  Map<dynamic, dynamic> get game => _game;
+@freezed
+class Mod with _$Mod {
+  const Mod._();
+  const factory Mod({
+    required final String id,
+    required final String title,
+    required final int category,
+    required final String version,
+    required final Map<dynamic, dynamic> game,
+    String? subtitle,
+    String? description,
+    Map<dynamic, dynamic>? author,
+  }) = _Mod;
 }
 
 enum ModType {

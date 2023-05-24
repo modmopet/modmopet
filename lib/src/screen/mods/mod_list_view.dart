@@ -1,10 +1,10 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/screen/mods/mod_list_provider.dart';
 import 'package:modmopet/src/service/routine.dart';
 import 'package:modmopet/src/widgets/cached_banner_image.dart';
-
-import '../settings/settings_view.dart';
 import '../../entity/mod.dart';
 
 /// Displays a list of available mods for the game
@@ -15,49 +15,78 @@ class ModListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mods = ref.watch(modsProvider);
-    final game = ref.watch(gameProvider);
-    AppRoutineService.instance.checkForUpdate(game, game.sources.first);
+    final game = ref.read(gameProvider);
+    final source = ref.read(sourceProvider);
 
-    return DefaultTabController(
-      length: 2,
-      child: Scaffold(
-        appBar: AppBar(
-          title: Text(game.title),
-          flexibleSpace: game.bannerUrl != null ? CachedBannerImage(game.bannerUrl!) : Container(),
-          bottom: const TabBar(
-            tabs: [
-              Tab(
-                text: 'Mods',
-                icon: Icon(Icons.extension),
+    // Use memoized function to call update routine only on first build
+    useMemoized(() async {
+      await AppRoutineService.instance.checkForUpdate(game, source);
+    });
+
+    TabController tabController = useTabController(initialLength: 2);
+
+    // flexibleSpace: game.bannerUrl != null ? CachedBannerImage(game.bannerUrl!) : Container(),
+    return Column(
+      children: [
+        Container(
+          height: 150.0,
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: FastCachedImageProvider(game.bannerUrl!),
+              fit: BoxFit.cover,
+              opacity: 0.6,
+            ),
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: [
+              SizedBox(
+                height: 45,
+                child: Row(
+                  children: [
+                    Text(game.title, style: Theme.of(context).textTheme.bodyLarge),
+                  ],
+                ),
               ),
-              Tab(
-                text: 'Cheats',
-                icon: Icon(Icons.games_rounded),
+              TabBar(
+                indicatorSize: TabBarIndicatorSize.tab,
+                controller: tabController,
+                tabs: const [
+                  Tab(
+                    child: Icon(Icons.games_sharp),
+                  ),
+                  Tab(
+                    child: Icon(Icons.gamepad),
+                  ),
+                ],
               ),
             ],
           ),
         ),
-        body: TabBarView(
-          children: [
-            Container(
-              child: mods.when(
-                loading: () => const SizedBox(
-                  width: 100.0,
-                  height: 100.0,
-                  child: Center(
-                    child: CircularProgressIndicator(),
+        Expanded(
+          child: TabBarView(
+            controller: tabController,
+            children: [
+              Container(
+                child: mods.when(
+                  loading: () => const SizedBox(
+                    width: 100.0,
+                    height: 100.0,
+                    child: Center(
+                      child: CircularProgressIndicator(),
+                    ),
                   ),
+                  error: (err, stack) => Text(err.toString()),
+                  data: (mods) {
+                    return buildListView(mods);
+                  },
                 ),
-                error: (err, stack) => Text(err.toString()),
-                data: (mods) {
-                  return buildListView(mods);
-                },
               ),
-            ),
-            const Text('no data.')
-          ],
+              const Text('no data.')
+            ],
+          ),
         ),
-      ),
+      ],
     );
   }
 
@@ -69,13 +98,10 @@ class ModListView extends HookConsumerWidget {
         final Mod mod = mods[index];
         return ListTile(
           title: Text(mod.title),
-          shape: const BorderDirectional(
-            bottom: BorderSide(width: 1.0),
-          ),
-          leading: Row(
+          leading: const Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
+            children: [
               Icon(
                 Icons.color_lens,
                 size: 25.0,
@@ -102,9 +128,17 @@ class ModListView extends HookConsumerWidget {
                 ],
               ),
               const SizedBox(width: 8.0),
-              const ElevatedButton(
+              OutlinedButton(
                 onPressed: null,
-                child: Text('Activate'),
+                style: OutlinedButton.styleFrom(
+                  foregroundColor: Colors.white,
+                  side: BorderSide.none,
+                  textStyle: Theme.of(context).textTheme.labelMedium,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(20.0),
+                  ),
+                ),
+                child: const Text('Activate'),
               ),
               const SizedBox(width: 8.0),
             ],

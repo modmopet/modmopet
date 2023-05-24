@@ -1,15 +1,15 @@
-class GitSource {
-  final String user;
-  final String repository;
-  final String root;
-  final String branch;
+import 'package:freezed_annotation/freezed_annotation.dart';
+part 'git_source.freezed.dart';
 
-  GitSource({
-    required this.user,
-    required this.repository,
-    this.root = 'Mods',
-    this.branch = 'main',
-  });
+@freezed
+class GitSource with _$GitSource {
+  const GitSource._();
+  const factory GitSource({
+    required String user,
+    required String repository,
+    required String root,
+    required String branch,
+  }) = _GitSource;
 
   String get uri => 'https://github.com/$user/$repository';
 }

@@ -3,10 +3,13 @@ import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
+import 'package:modmopet/src/service/logger.dart';
 import 'package:modmopet/src/service/routine.dart';
+import 'package:modmopet/src/widgets/mm_icon_button.dart';
 import 'screen/mods/mod_list_view.dart';
 import 'screen/settings/settings_controller.dart';
 import 'screen/settings/settings_view.dart';
+import 'themes/color_schemes.g.dart';
 
 /// The Widget that configures your application.
 class App extends ConsumerWidget {
@@ -74,8 +77,8 @@ class App extends ConsumerWidget {
             // Define a light and dark color theme. Then, read the user's
             // preferred ThemeMode (light, dark, or system default) from the
             // SettingsController to display the correct theme.
-            theme: ThemeData(),
-            darkTheme: ThemeData.dark(),
+            theme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+            darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
             themeMode: settingsController.themeMode,
 
             // Define a function to handle named routes in order to support
@@ -105,17 +108,57 @@ class App extends ConsumerWidget {
                       crossAxisAlignment: CrossAxisAlignment.stretch,
                       children: [
                         Expanded(
-                          child: Material(child: getScreenByRoute(routeSettings)),
-                        ),
-                        Container(
-                          decoration: BoxDecoration(
-                              color: Theme.of(context).scaffoldBackgroundColor,
-                              border: Border(top: BorderSide(width: 1.0, color: Theme.of(context).shadowColor))),
-                          width: double.infinity,
-                          height: 28.0,
-                          child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8.0),
-                            child: Text('Placeholder'),
+                          child: Row(
+                            children: [
+                              Container(
+                                width: 100.0,
+                                decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1))),
+                                child: const Column(
+                                  children: [
+                                    MMIconButton.active(width: double.infinity, height: 75, icon: Icons.view_list),
+                                    MMIconButton(width: double.infinity, height: 75, icon: Icons.gamepad),
+                                    MMIconButton(width: double.infinity, height: 75, icon: Icons.light_sharp),
+                                    MMIconButton(width: double.infinity, height: 75, icon: Icons.amp_stories),
+                                  ],
+                                ),
+                              ),
+                              Expanded(
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      child: getScreenByRoute(routeSettings),
+                                    ),
+                                    Container(
+                                      decoration: BoxDecoration(
+                                        color: Theme.of(context).scaffoldBackgroundColor,
+                                        border: Border(
+                                          top: BorderSide(width: 1.0, color: Theme.of(context).shadowColor),
+                                        ),
+                                      ),
+                                      width: double.infinity,
+                                      height: 28.0,
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                                        child: ListenableBuilder(
+                                          listenable: LoggerService.instance,
+                                          builder: (context, widget) {
+                                            return LoggerService.instance.messages.isNotEmpty
+                                                ? Text(
+                                                    LoggerService.instance.messages.last,
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodySmall!
+                                                        .copyWith(color: Colors.grey),
+                                                  )
+                                                : Container();
+                                          },
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],

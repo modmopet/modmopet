@@ -29,11 +29,11 @@ class ModsRepository {
 
             modList.add(
               Mod(
-                id,
-                title,
-                category,
-                version,
-                gameMap.value,
+                id: id,
+                title: title,
+                category: category,
+                version: version,
+                game: gameMap.value,
                 subtitle: subtitle,
                 author: authorMap?.value,
               ),

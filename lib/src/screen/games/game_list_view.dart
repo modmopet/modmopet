@@ -35,10 +35,10 @@ class GameListView extends HookConsumerWidget {
           shape: const BorderDirectional(
             bottom: BorderSide(width: 1.0),
           ),
-          leading: Row(
+          leading: const Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
-            children: const [
+            children: [
               Icon(
                 Icons.color_lens,
                 size: 25.0,
