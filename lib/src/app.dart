@@ -2,36 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/screen/games/game_list_view.dart';
-import 'package:modmopet/src/service/logger.dart';
+import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/service/routine.dart';
-import 'package:modmopet/src/widgets/mm_icon_button.dart';
-import 'screen/mods/mod_list_view.dart';
+import 'package:modmopet/src/widgets/mm_layout.dart';
 import 'screen/settings/settings_controller.dart';
 import 'screen/settings/settings_view.dart';
 import 'themes/color_schemes.g.dart';
 
 /// The Widget that configures your application.
-class App extends ConsumerWidget {
+class App extends HookConsumerWidget {
   const App({
     super.key,
     required this.settingsController,
   });
 
   final SettingsController settingsController;
-
-  Widget getScreenByRoute(RouteSettings routeSettings) {
-    switch (routeSettings.name) {
-      case SettingsView.routeName:
-        return SettingsView(controller: settingsController);
-      case GameListView.routeName:
-        return const GameListView();
-      case ModListView.routeName:
-        return const ModListView();
-      default:
-        return const GameListView();
-    }
-  }
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,7 +37,7 @@ class App extends ConsumerWidget {
             // MaterialApp to restore the navigation stack when a user leaves and
             // returns to the app after it has been killed while running in the
             // background.
-            restorationScopeId: 'app',
+            restorationScopeId: 'modmopet',
 
             // Provide the generated AppLocalizations to the MaterialApp. This
             // allows descendant Widgets to display the correct translations
@@ -89,7 +74,7 @@ class App extends ConsumerWidget {
                 builder: (BuildContext context) {
                   return Scaffold(
                     appBar: AppBar(
-                      title: const Text('ModMopet'),
+                      title: const Text(MMConfig.title),
                       titleSpacing: 10.0,
                       titleTextStyle: const TextStyle(fontSize: 15.0),
                       toolbarHeight: 38.0,
@@ -103,65 +88,9 @@ class App extends ConsumerWidget {
                         ),
                       ],
                     ),
-                    body: Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        Expanded(
-                          child: Row(
-                            children: [
-                              Container(
-                                width: 100.0,
-                                decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1))),
-                                child: const Column(
-                                  children: [
-                                    MMIconButton.active(width: double.infinity, height: 75, icon: Icons.view_list),
-                                    MMIconButton(width: double.infinity, height: 75, icon: Icons.gamepad),
-                                    MMIconButton(width: double.infinity, height: 75, icon: Icons.light_sharp),
-                                    MMIconButton(width: double.infinity, height: 75, icon: Icons.amp_stories),
-                                  ],
-                                ),
-                              ),
-                              Expanded(
-                                child: Column(
-                                  children: [
-                                    Expanded(
-                                      child: getScreenByRoute(routeSettings),
-                                    ),
-                                    Container(
-                                      decoration: BoxDecoration(
-                                        color: Theme.of(context).scaffoldBackgroundColor,
-                                        border: Border(
-                                          top: BorderSide(width: 1.0, color: Theme.of(context).shadowColor),
-                                        ),
-                                      ),
-                                      width: double.infinity,
-                                      height: 28.0,
-                                      child: Padding(
-                                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                                        child: ListenableBuilder(
-                                          listenable: LoggerService.instance,
-                                          builder: (context, widget) {
-                                            return LoggerService.instance.messages.isNotEmpty
-                                                ? Text(
-                                                    LoggerService.instance.messages.last,
-                                                    style: Theme.of(context)
-                                                        .textTheme
-                                                        .bodySmall!
-                                                        .copyWith(color: Colors.grey),
-                                                  )
-                                                : Container();
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+                    body: MMLayout(
+                      settingsController: settingsController,
+                      routeSettings: routeSettings,
                     ),
                   );
                 },

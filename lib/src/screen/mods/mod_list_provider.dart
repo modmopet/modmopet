@@ -6,9 +6,9 @@ import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/repository/mods.dart';
 
-final gameProvider = StateProvider<Game>((ref) => ModMopedConfig().games.first);
+final gameProvider = StateProvider<Game>((ref) => MMConfig().games.first);
 final sourceProvider = StateProvider<GitSource>((ref) {
-  return ModMopedConfig().games.first.sources.first;
+  return MMConfig().games.first.sources.first;
 });
 
 final modsProvider = FutureProvider<List<Mod>>((ref) async {

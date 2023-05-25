@@ -1,7 +1,9 @@
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 
-class ModMopedConfig {
+class MMConfig {
+  static const String title = 'ModMopet';
+  static const String version = 'dev-0.0.1';
   final List<Game> games = [
     const Game(
       id: '0100F2C011586000',
