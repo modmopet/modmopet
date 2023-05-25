@@ -18,4 +18,4 @@ We do not yet offer finished releases. But if you like, you can compile ModMopet
 #### Compile
     # Fetch flutter packages before build
     > flutter pub get
-    > flutter build
+    > flutter build (windows|macos|linux)
