@@ -7,12 +7,12 @@ publish_to: "none"
 version: 1.0.0+1
 
 environment:
-  sdk: ">=2.19.6 <3.0.0"
+  sdk: ">=3.0.0 <4.0.0"
 
 dependencies:
   archive: ^3.3.7
-  csslib: ^0.17.0
   dio: ^5.1.2
+  easy_localization: ^3.0.2
   fast_cached_network_image: ^1.2.0
   flutter:
     sdk: flutter
@@ -23,11 +23,13 @@ dependencies:
   freezed_annotation: ^2.2.0
   github: ^9.14.0
   hooks_riverpod: ^2.3.6
+  universal_html:
+    git:
+      url: https://github.com/89pleasure/universal_html.git
   json_annotation: ^4.8.1
   path_provider: ^2.0.15
   riverpod_annotation: ^2.1.1
   theme_tailor_annotation: ^2.0.0
-  universal_html: ^2.2.2
   window_manager: ^0.3.4
   yaml: ^3.1.2
 
@@ -52,3 +54,4 @@ flutter:
   assets:
     # Add assets from the images directory to the application.
     - assets/images/
+    - assets/translations/

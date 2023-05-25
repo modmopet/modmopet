@@ -4,13 +4,13 @@ import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/entity/mod.dart';
-import 'package:modmopet/src/service/filesystem.dart';
+import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
 import 'package:yaml/yaml.dart';
 
 class ModsRepository {
   Future<List<Mod>> getAvailableMods(Game game, GitSource source) async {
     final List<Mod> modList = List.empty(growable: true);
-    Directory gameModsDirectory = await FilesystemService.instance.gameModsDirectory(game, source);
+    Directory gameModsDirectory = await PlatformFilesystem.instance.gameModsDirectory(game, source);
     if (await gameModsDirectory.exists()) {
       final Stream<FileSystemEntity> modDirectories = gameModsDirectory.list(recursive: true);
       for (var modDirectory in await modDirectories.toList()) {

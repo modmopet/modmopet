@@ -5,10 +5,10 @@ import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:path_provider/path_provider.dart';
 
-class FilesystemService {
-  FilesystemService._();
+class PlatformFilesystem {
+  PlatformFilesystem._();
 
-  static final instance = FilesystemService._();
+  static final instance = PlatformFilesystem._();
 
   Future<Directory> get _applicationDocumentsDirectory async {
     return await getApplicationDocumentsDirectory();

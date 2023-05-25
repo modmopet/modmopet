@@ -6,7 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/service/github.dart';
-import 'package:modmopet/src/service/filesystem.dart';
+import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
 import 'package:path_provider/path_provider.dart';
 
@@ -21,7 +21,7 @@ class AppRoutineService {
 
   Future<void> checkForUpdate(Game game, GitSource source) async {
     String? latestGithubCommitHash = await GithubService.instance.getLatestCommitHash(source);
-    String? latestCommitHash = await FilesystemService.instance.readFromLocal('latestCommitHash');
+    String? latestCommitHash = await PlatformFilesystem.instance.readFromLocal('latestCommitHash');
 
     if (latestGithubCommitHash == null) {
       LoggerService.instance.log('CheckForUpdate: Error. Unable to get latest commit hash.');
@@ -40,16 +40,16 @@ class AppRoutineService {
   }
 
   Future<void> _doUpdateCommitHashFile(String latestGithubCommitHash) async {
-    FilesystemService.instance.writeForLocal('latestCommitHash', latestGithubCommitHash, replace: true);
+    PlatformFilesystem.instance.writeForLocal('latestCommitHash', latestGithubCommitHash, replace: true);
   }
 
   Future<void> _doDownloadAndSaveArchive(Game game, GitSource source) async {
-    final Directory gameRootDirectory = await FilesystemService.instance.gameRootDirectory(game.id);
-    final File zipballFile = await FilesystemService.instance
+    final Directory gameRootDirectory = await PlatformFilesystem.instance.gameRootDirectory(game.id);
+    final File zipballFile = await PlatformFilesystem.instance
         .getUserFile('${gameRootDirectory.path}${Platform.pathSeparator}${source.branch}.zip');
 
     if (!await gameRootDirectory.exists()) {
-      await FilesystemService.instance.createDirectory(gameRootDirectory, replace: true);
+      await PlatformFilesystem.instance.createDirectory(gameRootDirectory, replace: true);
     }
 
     // Download, extract, delete zipfile
