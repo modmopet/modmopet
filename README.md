@@ -11,7 +11,7 @@ Then just contact us in our [Discord](https://discord.gg/TthKPE3X).
 We do not yet offer finished releases. But if you like, you can compile ModMopet yourself and try it out. But note that ModMopet may not start or run properly on your system yet.
 
 #### Requirements
-- Flutter v3.7.0+ (comes with dart-lang v2.19.6)
+- Flutter v3.10.1+ (comes with dart-lang v3.0.1)
 	- Guide to install Flutter you can find [here](https://docs.flutter.dev/get-started/install)
 - Git (You can use [Github for Desktop](https://desktop.github.com) to checkout the repository)
 
