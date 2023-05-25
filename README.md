@@ -19,3 +19,9 @@ We do not yet offer finished releases. But if you like, you can compile ModMopet
     # Fetch flutter packages before build
     > flutter pub get
     > flutter build (windows|macos|linux)
+
+#### Run & Testing
+    # Fetch flutter packages before running
+    > flutter pub get
+    > flutter run lib/main.dart --debug
+    > Choose device to test on with 0-9
