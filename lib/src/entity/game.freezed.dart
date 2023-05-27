@@ -20,7 +20,8 @@ mixin _$Game {
   String get title => throw _privateConstructorUsedError;
   String get version => throw _privateConstructorUsedError;
   List<GitSource> get sources => throw _privateConstructorUsedError;
-  String? get bannerUrl => throw _privateConstructorUsedError;
+  String get bannerUrl => throw _privateConstructorUsedError;
+  String get iconUrl => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameCopyWith<Game> get copyWith => throw _privateConstructorUsedError;
@@ -36,7 +37,8 @@ abstract class $GameCopyWith<$Res> {
       String title,
       String version,
       List<GitSource> sources,
-      String? bannerUrl});
+      String bannerUrl,
+      String iconUrl});
 }
 
 /// @nodoc
@@ -56,7 +58,8 @@ class _$GameCopyWithImpl<$Res, $Val extends Game>
     Object? title = null,
     Object? version = null,
     Object? sources = null,
-    Object? bannerUrl = freezed,
+    Object? bannerUrl = null,
+    Object? iconUrl = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -75,10 +78,14 @@ class _$GameCopyWithImpl<$Res, $Val extends Game>
           ? _value.sources
           : sources // ignore: cast_nullable_to_non_nullable
               as List<GitSource>,
-      bannerUrl: freezed == bannerUrl
+      bannerUrl: null == bannerUrl
           ? _value.bannerUrl
           : bannerUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      iconUrl: null == iconUrl
+          ? _value.iconUrl
+          : iconUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 }
@@ -94,7 +101,8 @@ abstract class _$$_GameCopyWith<$Res> implements $GameCopyWith<$Res> {
       String title,
       String version,
       List<GitSource> sources,
-      String? bannerUrl});
+      String bannerUrl,
+      String iconUrl});
 }
 
 /// @nodoc
@@ -110,7 +118,8 @@ class __$$_GameCopyWithImpl<$Res> extends _$GameCopyWithImpl<$Res, _$_Game>
     Object? title = null,
     Object? version = null,
     Object? sources = null,
-    Object? bannerUrl = freezed,
+    Object? bannerUrl = null,
+    Object? iconUrl = null,
   }) {
     return _then(_$_Game(
       id: null == id
@@ -129,10 +138,14 @@ class __$$_GameCopyWithImpl<$Res> extends _$GameCopyWithImpl<$Res, _$_Game>
           ? _value._sources
           : sources // ignore: cast_nullable_to_non_nullable
               as List<GitSource>,
-      bannerUrl: freezed == bannerUrl
+      bannerUrl: null == bannerUrl
           ? _value.bannerUrl
           : bannerUrl // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
+      iconUrl: null == iconUrl
+          ? _value.iconUrl
+          : iconUrl // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -145,7 +158,8 @@ class _$_Game implements _Game {
       required this.title,
       required this.version,
       required final List<GitSource> sources,
-      this.bannerUrl})
+      required this.bannerUrl,
+      required this.iconUrl})
       : _sources = sources;
 
   @override
@@ -163,11 +177,13 @@ class _$_Game implements _Game {
   }
 
   @override
-  final String? bannerUrl;
+  final String bannerUrl;
+  @override
+  final String iconUrl;
 
   @override
   String toString() {
-    return 'Game(id: $id, title: $title, version: $version, sources: $sources, bannerUrl: $bannerUrl)';
+    return 'Game(id: $id, title: $title, version: $version, sources: $sources, bannerUrl: $bannerUrl, iconUrl: $iconUrl)';
   }
 
   @override
@@ -180,12 +196,13 @@ class _$_Game implements _Game {
             (identical(other.version, version) || other.version == version) &&
             const DeepCollectionEquality().equals(other._sources, _sources) &&
             (identical(other.bannerUrl, bannerUrl) ||
-                other.bannerUrl == bannerUrl));
+                other.bannerUrl == bannerUrl) &&
+            (identical(other.iconUrl, iconUrl) || other.iconUrl == iconUrl));
   }
 
   @override
   int get hashCode => Object.hash(runtimeType, id, title, version,
-      const DeepCollectionEquality().hash(_sources), bannerUrl);
+      const DeepCollectionEquality().hash(_sources), bannerUrl, iconUrl);
 
   @JsonKey(ignore: true)
   @override
@@ -200,7 +217,8 @@ abstract class _Game implements Game {
       required final String title,
       required final String version,
       required final List<GitSource> sources,
-      final String? bannerUrl}) = _$_Game;
+      required final String bannerUrl,
+      required final String iconUrl}) = _$_Game;
 
   @override
   String get id;
@@ -211,7 +229,9 @@ abstract class _Game implements Game {
   @override
   List<GitSource> get sources;
   @override
-  String? get bannerUrl;
+  String get bannerUrl;
+  @override
+  String get iconUrl;
   @override
   @JsonKey(ignore: true)
   _$$_GameCopyWith<_$_Game> get copyWith => throw _privateConstructorUsedError;

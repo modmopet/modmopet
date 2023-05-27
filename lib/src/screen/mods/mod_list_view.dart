@@ -2,7 +2,7 @@ import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/screen/mods/mod_list_provider.dart';
+import 'package:modmopet/src/provider/mod_list_provider.dart';
 import 'package:modmopet/src/service/routine.dart';
 import '../../entity/mod.dart';
 
@@ -14,12 +14,12 @@ class ModListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final mods = ref.watch(modsProvider);
-    final game = ref.read(gameProvider);
-    final source = ref.read(sourceProvider);
+    final game = ref.watch(gameProvider);
+    final source = ref.watch(sourceProvider);
 
     // Use memoized function to call update routine only on first build
     useMemoized(() async {
-      await AppRoutineService.instance.checkForUpdate(game, source);
+      await AppRoutineService.instance.checkForUpdate(game!, source!);
     });
 
     TabController tabController = useTabController(initialLength: 2);
@@ -30,7 +30,7 @@ class ModListView extends HookConsumerWidget {
           height: 150.0,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: FastCachedImageProvider(game.bannerUrl!),
+              image: FastCachedImageProvider(game!.bannerUrl!),
               fit: BoxFit.cover,
               opacity: 0.6,
             ),

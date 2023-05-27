@@ -4,6 +4,7 @@ import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:path/path.dart' as path;
 
 class PlatformFilesystem {
   PlatformFilesystem._();
@@ -54,8 +55,12 @@ class PlatformFilesystem {
     return await _localUserFile(path);
   }
 
+  Future<Directory> getDirectory(path) async {
+    return Directory(path);
+  }
+
   Future<Directory> gameRootDirectory(String gameId) async {
-    final localPath = await getApplicationDocumentsDirectory();
+    final localPath = await _applicationDocumentsDirectory;
     final gameRootDirectoryPath = '${localPath.path}${Platform.pathSeparator}games${Platform.pathSeparator}$gameId';
     return Directory(gameRootDirectoryPath);
   }
@@ -85,6 +90,21 @@ class PlatformFilesystem {
       directory.create(recursive: true);
     } catch (e) {
       debugPrint('Folder already exists.');
+    }
+  }
+
+  Future<void> copyDirectory(Directory from, Directory to, {bool replace = true, bool recursive = false}) async {
+    if (replace && await to.exists()) await to.delete(recursive: true);
+    if (await from.exists()) {
+      await for (final FileSystemEntity entity in from.list(recursive: recursive)) {
+        if (entity is Directory) {
+          var newDirectory = Directory(path.join(to.absolute.path, path.basename(entity.path)));
+          await newDirectory.create();
+          await copyDirectory(entity.absolute, newDirectory);
+        } else if (entity is File) {
+          await entity.copy(path.join(to.path, path.basename(entity.path)));
+        }
+      }
     }
   }
 

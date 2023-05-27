@@ -9,6 +9,7 @@ class Game with _$Game {
     required String title,
     required String version,
     required List<GitSource> sources,
-    String? bannerUrl,
+    required String bannerUrl,
+    required String iconUrl,
   }) = _Game;
 }

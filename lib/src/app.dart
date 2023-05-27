@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/service/routine.dart';
@@ -22,10 +23,12 @@ class App extends HookConsumerWidget {
     // Start app routines
     AppRoutineService.instance.checkAppHealth();
 
-    // Glue the SettingsController to the MaterialApp.
-    //
-    // The AnimatedBuilder Widget listens to the SettingsController for changes.
-    // Whenever the user updates their settings, the MaterialApp is rebuilt.
+    useMemoized(() async {
+      await AppRoutineService.instance.checkTitlesDatabase();
+    });
+
+    AppRoutineService.instance.checkTitlesDatabase();
+
     return AnimatedBuilder(
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {

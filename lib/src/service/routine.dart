@@ -19,6 +19,20 @@ class AppRoutineService {
     _doAppDirectoryRoutine();
   }
 
+  Future<void> checkTitlesDatabase() async {
+    File titlesJsonFile = await PlatformFilesystem.instance.getFile('titles.json');
+    if (!await titlesJsonFile.exists()) {
+      final response = await Dio().download(
+          'https://github.com/arch-box/titledb/releases/download/latest/titles.US.en.json', titlesJsonFile.path);
+
+      if (response.statusCode == 200) {
+        LoggerService.instance.log('Check title database: Download successfull...');
+      } else {
+        LoggerService.instance.log('Failed to download titles database with code: ${response.statusCode}');
+      }
+    }
+  }
+
   Future<void> checkForUpdate(Game game, GitSource source) async {
     String? latestGithubCommitHash = await GithubService.instance.getLatestCommitHash(source);
     String? latestCommitHash = await PlatformFilesystem.instance.readFromLocal('latestCommitHash');

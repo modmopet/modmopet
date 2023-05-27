@@ -1,8 +1,11 @@
+import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
-import 'package:modmopet/src/screen/games/game_list_provider.dart';
-import 'package:modmopet/src/screen/mods/mod_list_provider.dart';
+import 'package:modmopet/src/provider/emulator_provider.dart';
+import 'package:modmopet/src/provider/game_list_provider.dart';
+import 'package:modmopet/src/provider/mod_list_provider.dart';
 import 'package:modmopet/src/screen/mods/mod_list_view.dart';
 
 /// Displays a list of the games installed at the emulator
@@ -12,16 +15,20 @@ class GameListView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final emulator = ref.watch(emulatorProvider);
     final games = ref.watch(gameListProvider);
-    return Container(
-      child: games.when(
-        loading: () => const CircularProgressIndicator(),
-        error: (err, stack) => Text(err.toString()),
-        data: (games) {
-          return buildListView(games, ref);
-        },
-      ),
-    );
+
+    return emulator.value is Emulator
+        ? Container(
+            child: games.when(
+              loading: () => const CircularProgressIndicator(),
+              error: (err, stack) => Text(err.toString()),
+              data: (games) {
+                return games == null ? Container() : buildListView(games, ref);
+              },
+            ),
+          )
+        : const Text('Could not find emulator.');
   }
 
   Widget buildListView(List<Game> games, WidgetRef ref) {
@@ -35,19 +42,14 @@ class GameListView extends HookConsumerWidget {
           shape: const BorderDirectional(
             bottom: BorderSide(width: 1.0),
           ),
-          leading: const Row(
+          leading: Row(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              Icon(
-                Icons.color_lens,
-                size: 25.0,
-              ),
-              SizedBox(width: 8.0),
-              Icon(
-                Icons.circle,
-                color: Colors.white60,
-                size: 10.0,
+              FastCachedImage(
+                url: game.iconUrl,
+                cacheHeight: 50,
+                cacheWidth: 50,
               ),
             ],
           ),
