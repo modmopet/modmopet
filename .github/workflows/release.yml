@@ -1,0 +1,103 @@
+name: Release
+on:
+  push:
+    branches:
+    - main
+    - rc
+    - beta
+    - hotfix
+    - "*.x"
+
+env:
+  FLUTTER_VERSION: '3.10.x'
+
+jobs:
+  sem-version:
+    name: SemVersion
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - id: sem-version
+      name: Sem Version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx --force -p conventional-changelog-conventionalcommits@5 -p @semantic-release/git -p -p semantic-release-export-data -p https://github.com/Tlepel/semantic-release.git#fix-versions-share-head semantic-release --dry-run
+
+    outputs:
+      WILL_RELEASE: ${{ steps.sem-version.outputs.new-release-published }}
+      VERSION: ${{ steps.sem-version.outputs.new-release-version }}
+
+  build:
+    name: Build
+    needs: [ sem-version ]
+    strategy:
+      matrix:
+        target: [ windows, linux, macos]
+        include:
+          - target: windows
+            runner: windows-latest
+          - target: linux
+            runner: ubuntu-latest
+          - target: macos
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
+    environment: ${{ github.ref_name }}
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install Flutter & Dependencies
+      uses: subosito/flutter-action@2.10.0
+      with:
+        flutter-version: ${{ env.flutter_version }}
+    - name: Build Flutter ${{ matrix.target }}
+      run: |
+        flutter build ${{ matrix.target }} --flavor ${{ github.ref_name }}
+
+    - name: Zip artifact
+      if: ${{ matrix.runner == 'windows-latest' }}
+      shell: pwsh
+      run: Compress-Archive "build/${{ matrix.target }}" "modmopet-${{ matrix.target }}.zip"
+    - name: Zip artifact
+      if: ${{ matrix.os != 'windows' }}
+      shell: bash
+      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: modmopet-${{ matrix.target }}
+        path: modmopet-${{ matrix.target }}.*
+
+  release:
+    name: Release
+    needs: [ build, sem-version ]
+    runs-on: ubuntu-latest
+    if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
+    environment: ${{ github.ref_name }}
+    timeout-minutes: 2
+    steps:
+    - name: download-artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts/
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v3
+      with:
+        node-version: 16
+
+    - id: sem-version
+      name: Sem Version
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      run: npx --force -p conventional-changelog-conventionalcommits@5 -p @semantic-release/git -p -p semantic-release-export-data -p https://github.com/Tlepel/semantic-release.git#fix-versions-share-head semantic-release
