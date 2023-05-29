@@ -19,7 +19,7 @@ mixin _$Mod {
   String get id => throw _privateConstructorUsedError;
   String get title => throw _privateConstructorUsedError;
   int get category => throw _privateConstructorUsedError;
-  String get version => throw _privateConstructorUsedError;
+  String? get version => throw _privateConstructorUsedError;
   Map<dynamic, dynamic> get game => throw _privateConstructorUsedError;
   String? get subtitle => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
@@ -38,7 +38,7 @@ abstract class $ModCopyWith<$Res> {
       {String id,
       String title,
       int category,
-      String version,
+      String? version,
       Map<dynamic, dynamic> game,
       String? subtitle,
       String? description,
@@ -60,7 +60,7 @@ class _$ModCopyWithImpl<$Res, $Val extends Mod> implements $ModCopyWith<$Res> {
     Object? id = null,
     Object? title = null,
     Object? category = null,
-    Object? version = null,
+    Object? version = freezed,
     Object? game = null,
     Object? subtitle = freezed,
     Object? description = freezed,
@@ -79,10 +79,10 @@ class _$ModCopyWithImpl<$Res, $Val extends Mod> implements $ModCopyWith<$Res> {
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as int,
-      version: null == version
+      version: freezed == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       game: null == game
           ? _value.game
           : game // ignore: cast_nullable_to_non_nullable
@@ -113,7 +113,7 @@ abstract class _$$_ModCopyWith<$Res> implements $ModCopyWith<$Res> {
       {String id,
       String title,
       int category,
-      String version,
+      String? version,
       Map<dynamic, dynamic> game,
       String? subtitle,
       String? description,
@@ -132,7 +132,7 @@ class __$$_ModCopyWithImpl<$Res> extends _$ModCopyWithImpl<$Res, _$_Mod>
     Object? id = null,
     Object? title = null,
     Object? category = null,
-    Object? version = null,
+    Object? version = freezed,
     Object? game = null,
     Object? subtitle = freezed,
     Object? description = freezed,
@@ -151,10 +151,10 @@ class __$$_ModCopyWithImpl<$Res> extends _$ModCopyWithImpl<$Res, _$_Mod>
           ? _value.category
           : category // ignore: cast_nullable_to_non_nullable
               as int,
-      version: null == version
+      version: freezed == version
           ? _value.version
           : version // ignore: cast_nullable_to_non_nullable
-              as String,
+              as String?,
       game: null == game
           ? _value._game
           : game // ignore: cast_nullable_to_non_nullable
@@ -198,7 +198,7 @@ class _$_Mod extends _Mod {
   @override
   final int category;
   @override
-  final String version;
+  final String? version;
   final Map<dynamic, dynamic> _game;
   @override
   Map<dynamic, dynamic> get game {
@@ -268,7 +268,7 @@ abstract class _Mod extends Mod {
       {required final String id,
       required final String title,
       required final int category,
-      required final String version,
+      required final String? version,
       required final Map<dynamic, dynamic> game,
       final String? subtitle,
       final String? description,
@@ -282,7 +282,7 @@ abstract class _Mod extends Mod {
   @override
   int get category;
   @override
-  String get version;
+  String? get version;
   @override
   Map<dynamic, dynamic> get game;
   @override

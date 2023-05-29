@@ -1,17 +1,29 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:window_manager/window_manager.dart';
 import 'src/app.dart';
 import 'src/screen/settings/settings_controller.dart';
 import 'src/screen/settings/settings_service.dart';
 
+const String emulatorBoxName = 'emulator';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  String imageCacheDirectory = '${(await getApplicationDocumentsDirectory()).path}image_cache';
+  String imageCacheDirectory = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
   await FastCachedImageConfig.init(subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
+
+  // Local storage
+  await GetStorage.init();
+  if (kDebugMode) {
+    GetStorage().erase();
+  }
 
   // Set window settings
   await windowManager.ensureInitialized();

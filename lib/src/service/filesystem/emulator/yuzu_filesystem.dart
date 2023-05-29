@@ -1,41 +1,68 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/game.dart';
-import 'package:modmopet/src/service/filesystem/emulator_filesystem_interface.dart';
+import 'package:modmopet/src/entity/mod.dart';
+import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
+import 'package:modmopet/src/service/logger.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-class YuzuFilesystem extends ChangeNotifier implements EmulatorFilesystemInterface {
+class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInterface {
   YuzuFilesystem._();
-
   static final instance = YuzuFilesystem._();
+  static const String emulatorId = 'yuzu';
+  static const String applicationFolderName = 'yuzu';
   static const String identifierDirectory = 'load';
-
-  String applicationFolderPath = '';
-  final String _applicationFolderName = 'yuzu';
   final String _gameListPath = 'cache${Platform.pathSeparator}game_list';
 
-  Future<Directory> _emulatorDirectory() async {
-    final modMopetFolder = await getApplicationSupportDirectory();
-    return Directory('${modMopetFolder.path}../$_applicationFolderName');
+  @override
+  String getIdentifier() => identifierDirectory;
+
+  @override
+  Future<Directory> defaultEmulatorAppDirectory() async {
+    Directory applicationSupportDirectory = await getApplicationSupportDirectory();
+    return Directory(
+        '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
   }
 
   @override
-  Future<Stream<FileSystemEntity>> modDirectoryList(Game game, {bool recursive = false}) async {
-    final Directory emulatorModDirectory = await _emulatorDirectory();
-    final Directory modDirectory = Directory(emulatorModDirectory.path + Platform.pathSeparator + game.id);
-    return modDirectory.list(recursive: recursive);
+  Future<Stream<FileSystemEntity>> getModDirectoryList(Game game, {bool recursive = false}) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    if (await emulatorAppDirectory.exists()) {
+      final Directory modDirectory = Directory(emulatorAppDirectory.path + Platform.pathSeparator + game.id);
+      return modDirectory.list(recursive: recursive);
+    }
+
+    return const Stream<FileSystemEntity>.empty();
   }
 
   @override
-  Future<Stream<FileSystemEntity>> gameFileList() async {
-    final Directory emulatorModDirectory = await _emulatorDirectory();
-    final Directory gameListDirectory = Directory(emulatorModDirectory.path + Platform.pathSeparator + _gameListPath);
-    return gameListDirectory.list();
+  Future<Stream<FileSystemEntity>> getGameFileList() async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    if (await emulatorAppDirectory.exists()) {
+      final Directory gameListDirectory = Directory(emulatorAppDirectory.path + Platform.pathSeparator + _gameListPath);
+      return gameListDirectory.list();
+    }
+
+    return const Stream<FileSystemEntity>.empty();
+  }
+
+  Future<bool> installMod(Mod mod) async {
+    return true;
   }
 
   @override
-  Future<void> setApplicationFolderPath(String path) async {
-    applicationFolderPath = path;
-    notifyListeners();
+  Future<bool> isIdentiedByDirectoryStructure(String emulatorDirectoryPath) async {
+    final Directory emulatorDirectory = Directory(emulatorDirectoryPath);
+    await for (var element in emulatorDirectory.list()) {
+      if (element is Directory) {
+        final directory = path.basename(element.path);
+        if (directory == YuzuFilesystem.identifierDirectory) {
+          LoggerService.instance.log('Yuzu application folder found at: $emulatorDirectoryPath');
+          return true;
+        }
+      }
+    }
+
+    return false;
   }
 }

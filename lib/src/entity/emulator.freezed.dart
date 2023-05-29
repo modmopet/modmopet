@@ -16,10 +16,11 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Emulator {
-  int get id => throw _privateConstructorUsedError;
+  String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   EmulatorFilesystemInterface get filesystem =>
       throw _privateConstructorUsedError;
+  String? get path => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EmulatorCopyWith<Emulator> get copyWith =>
@@ -31,7 +32,11 @@ abstract class $EmulatorCopyWith<$Res> {
   factory $EmulatorCopyWith(Emulator value, $Res Function(Emulator) then) =
       _$EmulatorCopyWithImpl<$Res, Emulator>;
   @useResult
-  $Res call({int id, String name, EmulatorFilesystemInterface filesystem});
+  $Res call(
+      {String id,
+      String name,
+      EmulatorFilesystemInterface filesystem,
+      String? path});
 }
 
 /// @nodoc
@@ -50,12 +55,13 @@ class _$EmulatorCopyWithImpl<$Res, $Val extends Emulator>
     Object? id = null,
     Object? name = null,
     Object? filesystem = null,
+    Object? path = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -64,6 +70,10 @@ class _$EmulatorCopyWithImpl<$Res, $Val extends Emulator>
           ? _value.filesystem
           : filesystem // ignore: cast_nullable_to_non_nullable
               as EmulatorFilesystemInterface,
+      path: freezed == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -75,7 +85,11 @@ abstract class _$$_EmulatorCopyWith<$Res> implements $EmulatorCopyWith<$Res> {
       __$$_EmulatorCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({int id, String name, EmulatorFilesystemInterface filesystem});
+  $Res call(
+      {String id,
+      String name,
+      EmulatorFilesystemInterface filesystem,
+      String? path});
 }
 
 /// @nodoc
@@ -92,12 +106,13 @@ class __$$_EmulatorCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? filesystem = null,
+    Object? path = freezed,
   }) {
     return _then(_$_Emulator(
       id: null == id
           ? _value.id
           : id // ignore: cast_nullable_to_non_nullable
-              as int,
+              as String,
       name: null == name
           ? _value.name
           : name // ignore: cast_nullable_to_non_nullable
@@ -106,26 +121,36 @@ class __$$_EmulatorCopyWithImpl<$Res>
           ? _value.filesystem
           : filesystem // ignore: cast_nullable_to_non_nullable
               as EmulatorFilesystemInterface,
+      path: freezed == path
+          ? _value.path
+          : path // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Emulator implements _Emulator {
-  const _$_Emulator(
-      {required this.id, required this.name, required this.filesystem});
+class _$_Emulator extends _Emulator {
+  _$_Emulator(
+      {required this.id,
+      required this.name,
+      required this.filesystem,
+      this.path})
+      : super._();
 
   @override
-  final int id;
+  final String id;
   @override
   final String name;
   @override
   final EmulatorFilesystemInterface filesystem;
+  @override
+  final String? path;
 
   @override
   String toString() {
-    return 'Emulator(id: $id, name: $name, filesystem: $filesystem)';
+    return 'Emulator(id: $id, name: $name, filesystem: $filesystem, path: $path)';
   }
 
   @override
@@ -136,11 +161,12 @@ class _$_Emulator implements _Emulator {
             (identical(other.id, id) || other.id == id) &&
             (identical(other.name, name) || other.name == name) &&
             (identical(other.filesystem, filesystem) ||
-                other.filesystem == filesystem));
+                other.filesystem == filesystem) &&
+            (identical(other.path, path) || other.path == path));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, filesystem);
+  int get hashCode => Object.hash(runtimeType, id, name, filesystem, path);
 
   @JsonKey(ignore: true)
   @override
@@ -149,18 +175,22 @@ class _$_Emulator implements _Emulator {
       __$$_EmulatorCopyWithImpl<_$_Emulator>(this, _$identity);
 }
 
-abstract class _Emulator implements Emulator {
-  const factory _Emulator(
-      {required final int id,
+abstract class _Emulator extends Emulator {
+  factory _Emulator(
+      {required final String id,
       required final String name,
-      required final EmulatorFilesystemInterface filesystem}) = _$_Emulator;
+      required final EmulatorFilesystemInterface filesystem,
+      final String? path}) = _$_Emulator;
+  _Emulator._() : super._();
 
   @override
-  int get id;
+  String get id;
   @override
   String get name;
   @override
   EmulatorFilesystemInterface get filesystem;
+  @override
+  String? get path;
   @override
   @JsonKey(ignore: true)
   _$$_EmulatorCopyWith<_$_Emulator> get copyWith =>

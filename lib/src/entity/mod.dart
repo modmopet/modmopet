@@ -8,7 +8,7 @@ class Mod with _$Mod {
     required final String id,
     required final String title,
     required final int category,
-    required final String version,
+    required final String? version,
     required final Map<dynamic, dynamic> game,
     String? subtitle,
     String? description,

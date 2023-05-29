@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
+import 'package:modmopet/src/service/logger.dart';
 
 class GameService {
   GameService._();
@@ -10,7 +10,7 @@ class GameService {
   Future<dynamic> buildTitleMap() async {
     File titlesJsonFile = await PlatformFilesystem.instance.getFile('titles.US.en.json');
     if (await titlesJsonFile.exists()) {
-      debugPrint('Titles found.');
+      LoggerService.instance.log('Game Service: Titles database found.');
       String? jsonContent = await titlesJsonFile.readAsString();
       final titlesJson = await jsonDecode(jsonContent);
 

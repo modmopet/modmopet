@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/entity/mod.dart';
@@ -13,7 +13,7 @@ class ModsRepository {
     Directory gameModsDirectory = await PlatformFilesystem.instance.gameModsDirectory(game, source);
     if (await gameModsDirectory.exists()) {
       final Stream<FileSystemEntity> modDirectories = gameModsDirectory.list(recursive: true);
-      for (var modDirectory in await modDirectories.toList()) {
+      await for (var modDirectory in modDirectories) {
         final File modConfigYaml = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
         if (await modConfigYaml.exists()) {
           final content = await modConfigYaml.readAsString();

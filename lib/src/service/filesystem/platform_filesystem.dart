@@ -60,7 +60,7 @@ class PlatformFilesystem {
   }
 
   Future<Directory> gameRootDirectory(String gameId) async {
-    final localPath = await _applicationDocumentsDirectory;
+    final localPath = await _applicationSupportDirectory;
     final gameRootDirectoryPath = '${localPath.path}${Platform.pathSeparator}games${Platform.pathSeparator}$gameId';
     return Directory(gameRootDirectoryPath);
   }

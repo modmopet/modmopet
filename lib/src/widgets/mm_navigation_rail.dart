@@ -1,48 +1,50 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/config.dart';
+import 'package:modmopet/src/screen/games/game_list_view.dart';
+import 'package:modmopet/src/screen/settings/settings_view.dart';
+import 'package:modmopet/src/themes/color_schemes.g.dart';
+
+final navigationIndexProvider = StateProvider<int>((ref) => 0);
 
 class MMNavigationRail extends HookConsumerWidget {
   final double destinationPadding;
   const MMNavigationRail({
-    this.destinationPadding = 5.0,
+    this.destinationPadding = 10.0,
     super.key,
   });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // Navigation index
-    final navigationRailIndex = useState(0);
+    final navigationIndex = ref.watch(navigationIndexProvider.notifier);
+
     return NavigationRail(
       labelType: NavigationRailLabelType.all,
       backgroundColor: Colors.transparent,
-      indicatorColor: Colors.purple,
-      leading: const Column(
-        children: [
-          Text(MMConfig.title),
-          Text(MMConfig.version),
-        ],
-      ),
-      selectedIndex: navigationRailIndex.value,
+      indicatorColor: MMColors.instance.primary,
+      selectedIndex: navigationIndex.state,
       onDestinationSelected: (index) {
-        navigationRailIndex.value = index;
+        navigationIndex.update((state) => index);
+        switch (index) {
+          case 0:
+            Navigator.pushReplacementNamed(context, GameListView.routeName);
+            break;
+          case 1:
+            Navigator.pushReplacementNamed(context, SettingsView.routeName);
+          default:
+        }
+        if (index == 0) {
+          Navigator.pushNamed(context, GameListView.routeName);
+        }
+        if (index == 1) {
+          Navigator.pushNamed(context, SettingsView.routeName);
+        }
       },
       destinations: [
-        NavigationRailDestination(
-          padding: EdgeInsets.only(top: 20.0, bottom: destinationPadding),
-          icon: const Icon(Icons.view_list),
-          label: const Text('Games'),
-        ),
-        NavigationRailDestination(
-          padding: EdgeInsets.symmetric(vertical: destinationPadding),
-          icon: const Icon(Icons.settings),
-          label: const Text('Settings'),
-        ),
-        NavigationRailDestination(
-          padding: EdgeInsets.symmetric(vertical: destinationPadding),
-          icon: const Icon(Icons.settings),
-          label: const Text('Settings'),
+        const NavigationRailDestination(
+          padding: EdgeInsets.only(top: 33.0),
+          icon: Icon(Icons.view_list),
+          label: Text('Games'),
         ),
         NavigationRailDestination(
           padding: EdgeInsets.symmetric(vertical: destinationPadding),
@@ -50,9 +52,9 @@ class MMNavigationRail extends HookConsumerWidget {
           label: const Text('Settings'),
         ),
       ],
-      selectedIconTheme: const IconThemeData(color: Colors.white70),
+      selectedIconTheme: IconThemeData(color: MMColors.instance.lightWhite),
       unselectedIconTheme: const IconThemeData(color: Colors.white24),
-      selectedLabelTextStyle: const TextStyle(color: Colors.white70),
+      selectedLabelTextStyle: TextStyle(color: MMColors.instance.lightWhite),
       unselectedLabelTextStyle: const TextStyle(color: Colors.white24),
     );
   }

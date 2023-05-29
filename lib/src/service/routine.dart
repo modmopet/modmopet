@@ -2,13 +2,11 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/service/github.dart';
 import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
-import 'package:path_provider/path_provider.dart';
 
 class AppRoutineService {
   AppRoutineService._();
@@ -16,7 +14,7 @@ class AppRoutineService {
   static final instance = AppRoutineService._();
 
   Future<void> checkAppHealth() async {
-    _doAppDirectoryRoutine();
+    // _doAppDirectoryRoutine();
   }
 
   Future<void> checkTitlesDatabase() async {
@@ -33,23 +31,30 @@ class AppRoutineService {
     }
   }
 
-  Future<void> checkForUpdate(Game game, GitSource source) async {
+  Future<void> checkForUpdates(Game game) async {
+    for (GitSource source in game.sources) {
+      // LoggerService.instance.log('Update Manager: Update source ${source.uri}');
+      await _doUpdateIteration(game, source);
+    }
+  }
+
+  Future<void> _doUpdateIteration(Game game, GitSource source) async {
     String? latestGithubCommitHash = await GithubService.instance.getLatestCommitHash(source);
     String? latestCommitHash = await PlatformFilesystem.instance.readFromLocal('latestCommitHash');
 
     if (latestGithubCommitHash == null) {
-      LoggerService.instance.log('CheckForUpdate: Error. Unable to get latest commit hash.');
+      LoggerService.instance.log('Update Manager: Error. Unable to get latest commit hash.');
     } else if (latestCommitHash == null) {
-      LoggerService.instance.log('CheckForUpdate: No local commit hash file found. Updating.');
+      LoggerService.instance.log('Update Manager: No local commit hash file found. Updating.');
       await _doUpdateCommitHashFile(latestGithubCommitHash);
       await _doDownloadAndSaveArchive(game, source);
     } else if (latestCommitHash != latestGithubCommitHash) {
-      LoggerService.instance.log('CheckForUpdate: New mods changes available! Update.');
+      LoggerService.instance.log('Update Manager: New mods changes available! Update.');
       await _doUpdateCommitHashFile(latestGithubCommitHash);
       await _doDownloadAndSaveArchive(game, source);
-      LoggerService.instance.log('CheckForUpdate: Update successful!');
+      LoggerService.instance.log('Update Manager: Update successful!');
     } else {
-      LoggerService.instance.log('No need to update.');
+      LoggerService.instance.log('Update Manager: No need to update.');
     }
   }
 
@@ -67,15 +72,15 @@ class AppRoutineService {
     }
 
     // Download, extract, delete zipfile
-    LoggerService.instance.log('CheckForUpdates: Downloading zipball...');
+    LoggerService.instance.log('Update Manager: Downloading zipball...');
     final response = await Dio().download(
       '${source.uri}/archive/refs/heads/${source.branch}.zip',
       zipballFile.path,
     );
 
     if (response.statusCode == 200) {
-      LoggerService.instance.log('CheckForUpdate: Downloading successfull...');
-      LoggerService.instance.log('CheckForUpdate: Cleanup folder...');
+      LoggerService.instance.log('Update Manager: Downloading successfull...');
+      LoggerService.instance.log('Update Manager: Cleanup folder...');
       final Directory sourceFolder = Directory(
         '${gameRootDirectory.path}${Platform.pathSeparator}${source.repository}-${source.branch}',
       );
@@ -84,29 +89,17 @@ class AppRoutineService {
         sourceFolder.delete();
       }
 
-      await unzipSource(zipballFile, gameRootDirectory);
+      await _unzipSource(zipballFile, gameRootDirectory);
     }
   }
 
-  Future<void> _doAppDirectoryRoutine() async {
-    debugPrint('HealthCheck: Process directory routines.');
-    Directory appData = await getApplicationSupportDirectory();
-    Directory appFolder = Directory('${appData.path}/ModUI');
-    if (!await appFolder.exists()) {
-      LoggerService.instance.log(
-        'Application Support directory missing! Create folder at: ${appData.path}',
-      );
-      appFolder.create();
-    }
-  }
-
-  Future<void> unzipSource(File zipFile, Directory gameRootDirectory) async {
+  Future<void> _unzipSource(File zipFile, Directory gameRootDirectory) async {
     final InputFileStream inputStream = InputFileStream(zipFile.path);
     final Archive archive = ZipDecoder().decodeBuffer(inputStream);
-    LoggerService.instance.log('CheckForUpdate: Unzip zipball...');
+    LoggerService.instance.log('Update Manager: Unzip zipball...');
     extractArchiveToDisk(archive, '${gameRootDirectory.path}/source');
     if (zipFile.existsSync()) {
-      LoggerService.instance.log('CheckForUpdate: Delete unzipped zipball...');
+      LoggerService.instance.log('Update Manager: Delete unzipped zipball...');
       await zipFile.delete();
     }
   }

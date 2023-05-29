@@ -9,9 +9,8 @@ final sourceProvider = StateProvider<GitSource?>((ref) => null);
 
 final modsProvider = FutureProvider<List<Mod>>((ref) async {
   final game = ref.watch(gameProvider);
-  final source = ref.watch(sourceProvider);
-  if (game != null && source != null) {
-    return await ModsRepository().getAvailableMods(game, source);
+  if (game != null) {
+    return ModsRepository().getAvailableMods(game, game.sources.first);
   }
 
   return [];

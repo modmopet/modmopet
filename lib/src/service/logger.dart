@@ -5,7 +5,7 @@ class LoggerService extends ChangeNotifier {
   List<String> messages = [];
   static final instance = LoggerService._();
 
-  void log(String message) {
+  Future<void> log(String message) async {
     messages.add(message);
     notifyListeners();
   }
