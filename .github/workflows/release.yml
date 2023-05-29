@@ -113,8 +113,9 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       if: needs.sem-version.outputs.WILL_RELEASE == 'true'
       run: |
-        ARGS='--repo ${{ github.repository }} --target ${{ github.sha }} --generate-notes'
+        gh auth login --with-token < <(echo "${{ secrets.GH_TOKEN }}")
+        ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} --generate-notes"
         if [ -z "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ]; then
-          ARGS='$ARGS --latest'
+          ARGS="$ARGS --prerelease"
         fi
-        gh release create "v${{ needs.sem-version.outputs.VERSION }}" $ARGS ./artifacts/*
+        gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*
