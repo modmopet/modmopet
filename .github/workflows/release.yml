@@ -117,4 +117,4 @@ jobs:
         if [ -z "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ]; then
           ARGS="$ARGS --prerelease"
         fi
-        gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*
+        gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
