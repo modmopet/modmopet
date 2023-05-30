@@ -85,7 +85,7 @@ jobs:
       shell: pwsh
       run: Compress-Archive "build/${{ matrix.target }}" "modmopet-${{ matrix.target }}.zip"
     - name: Zip artifact
-      if: ${{ matrix.runner != 'windows' }}
+      if: ${{ matrix.runner != 'windows-latest' }}
       shell: bash
       run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}"
 
