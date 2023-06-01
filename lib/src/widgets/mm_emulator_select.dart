@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
-import 'package:modmopet/src/service/storage.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
 
 class MMEmulatorSelect extends HookConsumerWidget {
@@ -24,8 +23,9 @@ class MMEmulatorSelect extends HookConsumerWidget {
           height: 82,
         ),
         const SizedBox(height: 35),
-        MMElevatedButton(
+        MMElevatedButton.primary(
           onPressed: () {
+            debugPrint('Picked emulator $emulatorId');
             ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
             Navigator.pushNamed(context, GameListView.routeName);
           },

@@ -2,10 +2,10 @@ import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/game.dart';
+import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/provider/game_list_provider.dart';
-import 'package:modmopet/src/provider/mod_list_provider.dart';
 import 'package:modmopet/src/screen/games/games_emulator_view.dart';
-import 'package:modmopet/src/screen/mods/mod_list_view.dart';
+import 'package:modmopet/src/screen/mods/mods_view.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_loading_indicator.dart';
 
@@ -69,11 +69,12 @@ class GameListView extends HookConsumerWidget {
           ),
           onTap: () {
             // Set game
+            debugPrint('Set game to: ${game.id}');
             ref.read(gameProvider.notifier).state = game;
             ref.read(sourceProvider.notifier).state = game.sources.first;
             Navigator.restorablePushNamed(
               context,
-              ModListView.routeName,
+              ModsView.routeName,
             );
           },
           subtitle: Row(

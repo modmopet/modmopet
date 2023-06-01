@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
 import 'package:path/path.dart' as path;
@@ -11,7 +10,8 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   static const String emulatorId = 'ryujinx';
   static const String applicationFolderName = 'Ryujinx';
   static const String identifierDirectory = 'games';
-  final String _gameListPath = 'games';
+  static const String modsDirectoryBasename = 'mods';
+  static const String gamesDirectoryBasename = 'games';
 
   @override
   String getIdentifier() => identifierDirectory;
@@ -23,22 +23,53 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
         '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
   }
 
+  /// Gets the directory of a potentially installed mod
   @override
-  Future<Stream<FileSystemEntity>> getModDirectoryList(Game game, {bool recursive = false}) async {
+  Future<Directory> getModDirectory(String gameTitleId, String basename) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    final modDirectory = Directory(
+      '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$basename',
+    );
+
+    return modDirectory;
+  }
+
+  // Gets a list of all directories inside the mod folder of the emulator
+  @override
+  Future<List<FileSystemEntity>> getModsDirectoryList(String gameTitleId, {bool recursive = false}) async {
     final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
     if (emulatorAppDirectory.existsSync()) {
-      final Directory modDirectory = Directory(emulatorAppDirectory.path + Platform.pathSeparator + game.id);
-      return modDirectory.list(recursive: recursive);
+      final Directory modDirectory = Directory(
+        '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}${gameTitleId.toLowerCase()}',
+      );
+
+      if (await modDirectory.exists()) {
+        final modDirectoryList = modDirectory.list(recursive: recursive);
+        return modDirectoryList.toList();
+      }
     }
 
-    return const Stream<FileSystemEntity>.empty();
+    return [];
   }
 
   @override
-  Future<Stream<FileSystemEntity>> getGameFileList() async {
+  Future<Directory> getGameDirectory(String gameId) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    final gameDirectory = Directory(
+      emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename + Platform.pathSeparator + gameId,
+    );
+
+    return gameDirectory;
+  }
+
+  /// Gets the games metadata directory of the emulator to identify the installed games by titleId
+  @override
+  Future<Stream<FileSystemEntity>> getGamesDirectoryList() async {
     final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
     if (emulatorAppDirectory.existsSync()) {
-      final Directory gameListDirectory = Directory(emulatorAppDirectory.path + Platform.pathSeparator + _gameListPath);
+      final Directory gameListDirectory = Directory(
+        emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename,
+      );
       return gameListDirectory.list();
     }
 
@@ -46,12 +77,12 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   }
 
   @override
-  Future<bool> isIdentiedByDirectoryStructure(String emulatorDirectoryPath) async {
+  Future<bool> isIdentifiedByDirectoryStructure(String emulatorDirectoryPath) async {
     final Directory emulatorDirectory = Directory(emulatorDirectoryPath);
     await for (var element in emulatorDirectory.list()) {
       if (element is Directory) {
         final directory = path.basename(element.path);
-        if (directory == RyujinxFilesystem.identifierDirectory) {
+        if (directory == identifierDirectory) {
           LoggerService.instance.log('Filesystem: $emulatorId application folder found at: $emulatorDirectoryPath');
           return true;
         }

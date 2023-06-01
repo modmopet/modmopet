@@ -31,6 +31,7 @@ dependencies:
   universal_html:
     git:
       url: https://github.com/89pleasure/universal_html.git
+  url_launcher: ^6.1.11
   window_manager: ^0.3.4
   yaml: ^3.1.2
 

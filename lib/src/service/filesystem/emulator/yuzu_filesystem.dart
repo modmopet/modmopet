@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
@@ -12,7 +11,8 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   static const String emulatorId = 'yuzu';
   static const String applicationFolderName = 'yuzu';
   static const String identifierDirectory = 'load';
-  final String _gameListPath = 'cache${Platform.pathSeparator}game_list';
+  static const String modsDirectoryBasename = 'mods';
+  static final String gamesDirectoryBasename = 'cache${Platform.pathSeparator}game_list';
 
   @override
   String getIdentifier() => identifierDirectory;
@@ -24,22 +24,56 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
         '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
   }
 
+  /// Gets the directory of a potentially installed mod
   @override
-  Future<Stream<FileSystemEntity>> getModDirectoryList(Game game, {bool recursive = false}) async {
+  Future<Directory> getModDirectory(String gameTitleId, String basename) async {
     final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
-    if (await emulatorAppDirectory.exists()) {
-      final Directory modDirectory = Directory(emulatorAppDirectory.path + Platform.pathSeparator + game.id);
-      return modDirectory.list(recursive: recursive);
-    }
+    final modDirectory = Directory(
+      emulatorAppDirectory.path +
+          Platform.pathSeparator +
+          modsDirectoryBasename +
+          Platform.pathSeparator +
+          gameTitleId +
+          Platform.pathSeparator +
+          basename,
+    );
 
-    return const Stream<FileSystemEntity>.empty();
+    return modDirectory;
   }
 
   @override
-  Future<Stream<FileSystemEntity>> getGameFileList() async {
+  Future<List<FileSystemEntity>> getModsDirectoryList(String gameTitleId, {bool recursive = false}) async {
     final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
     if (await emulatorAppDirectory.exists()) {
-      final Directory gameListDirectory = Directory(emulatorAppDirectory.path + Platform.pathSeparator + _gameListPath);
+      final Directory modDirectory = Directory(
+        emulatorAppDirectory.path + Platform.pathSeparator + identifierDirectory + Platform.pathSeparator + gameTitleId,
+      );
+      return modDirectory.list(recursive: recursive).toList();
+    }
+
+    return [];
+  }
+
+  @override
+  Future<Directory> getGameDirectory(String gameTitleId) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    final gameDirectory = Directory(
+      emulatorAppDirectory.path +
+          Platform.pathSeparator +
+          gamesDirectoryBasename +
+          Platform.pathSeparator +
+          gameTitleId,
+    );
+
+    return gameDirectory;
+  }
+
+  @override
+  Future<Stream<FileSystemEntity>> getGamesDirectoryList() async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    if (await emulatorAppDirectory.exists()) {
+      final Directory gameListDirectory =
+          Directory(emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename);
       return gameListDirectory.list();
     }
 
@@ -51,12 +85,12 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   }
 
   @override
-  Future<bool> isIdentiedByDirectoryStructure(String emulatorDirectoryPath) async {
+  Future<bool> isIdentifiedByDirectoryStructure(String emulatorDirectoryPath) async {
     final Directory emulatorDirectory = Directory(emulatorDirectoryPath);
     await for (var element in emulatorDirectory.list()) {
       if (element is Directory) {
         final directory = path.basename(element.path);
-        if (directory == YuzuFilesystem.identifierDirectory) {
+        if (directory == identifierDirectory) {
           LoggerService.instance.log('Yuzu application folder found at: $emulatorDirectoryPath');
           return true;
         }

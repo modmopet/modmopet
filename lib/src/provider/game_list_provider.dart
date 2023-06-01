@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/entity/game.dart';
@@ -13,14 +12,13 @@ import 'package:path/path.dart' as path;
 // Holds the installed games as a List<Game>
 final gameListProvider = FutureProvider<List<Game>>((ref) async {
   List<Game> games = List.empty(growable: true);
-  final emulator = ref.watch(emulatorProvider);
-  final EmulatorFilesystemInterface? emulatorFilesystem = emulator.value?.filesystem;
-  final gameFileList = await emulatorFilesystem?.getGameFileList();
+  final emulator = ref.watch(emulatorProvider).value;
+  final EmulatorFilesystemInterface? emulatorFilesystem = emulator?.filesystem;
+  final gameFileList = await emulatorFilesystem?.getGamesDirectoryList();
 
   if (gameFileList != null) {
     Map<String, dynamic> titlesList = await GameService.instance.buildTitleMap();
     await for (FileSystemEntity element in gameFileList) {
-      debugPrint(element.path);
       final titleId = path.basenameWithoutExtension(element.path).toUpperCase();
       if (titlesList.containsKey(titleId)) {
         Map<String, List<GitSource>> sources = MMConfig().defaultSupportedSources;

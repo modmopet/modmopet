@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
-import 'package:modmopet/src/screen/mods/mod_list_view.dart';
+import 'package:modmopet/src/screen/mods/mods_view.dart';
 import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/screen/settings/settings_controller.dart';
 import 'package:modmopet/src/screen/settings/settings_view.dart';
@@ -30,8 +30,8 @@ class MMLayout extends HookConsumerWidget {
         return SettingsView(controller: settingsController);
       case GameListView.routeName:
         return const GameListView();
-      case ModListView.routeName:
-        return const ModListView();
+      case ModsView.routeName:
+        return const ModsView();
       default:
         return const GameListView();
     }
