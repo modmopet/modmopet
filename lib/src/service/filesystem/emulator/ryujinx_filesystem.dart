@@ -25,10 +25,10 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
 
   /// Gets the directory of a potentially installed mod
   @override
-  Future<Directory> getModDirectory(String gameTitleId, String basename) async {
+  Future<Directory> getModDirectory(String gameTitleId, String modUid) async {
     final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
     final modDirectory = Directory(
-      '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$basename',
+      '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$modUid',
     );
 
     return modDirectory;
@@ -40,7 +40,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
     final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
     if (emulatorAppDirectory.existsSync()) {
       final Directory modDirectory = Directory(
-        '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}${gameTitleId.toLowerCase()}',
+        '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}${gameTitleId.toUpperCase()}',
       );
 
       if (await modDirectory.exists()) {

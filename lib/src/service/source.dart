@@ -2,43 +2,25 @@ import 'dart:io';
 
 import 'package:archive/archive_io.dart';
 import 'package:dio/dio.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
+import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/service/github.dart';
 import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
 
-class AppRoutineService {
-  AppRoutineService._();
+class SourceService {
+  SourceService._();
+  static final instance = SourceService._();
 
-  static final instance = AppRoutineService._();
-
-  Future<void> checkAppHealth() async {
-    // _doAppDirectoryRoutine();
-  }
-
-  Future<void> checkTitlesDatabase() async {
-    File titlesJsonFile = await PlatformFilesystem.instance.getFile('titles.json');
-    if (!await titlesJsonFile.exists()) {
-      final response = await Dio().download(
-          'https://github.com/arch-box/titledb/releases/download/latest/titles.US.en.json', titlesJsonFile.path);
-
-      if (response.statusCode == 200) {
-        LoggerService.instance.log('Check title database: Download successfull...');
-      } else {
-        LoggerService.instance.log('Failed to download titles database with code: ${response.statusCode}');
-      }
-    }
-  }
-
-  Future<void> checkForUpdates(Game game) async {
+  Future<void> checkForUpdates(Game game, WidgetRef ref) async {
     for (GitSource source in game.sources) {
-      // LoggerService.instance.log('Update Manager: Update source ${source.uri}');
-      await _doUpdateIteration(game, source);
+      await _doUpdateIteration(game, source, ref);
     }
   }
 
-  Future<void> _doUpdateIteration(Game game, GitSource source) async {
+  Future<void> _doUpdateIteration(Game game, GitSource source, WidgetRef ref) async {
     String? latestGithubCommitHash = await GithubService.instance.getLatestCommitHash(source);
     String? latestCommitHash = await PlatformFilesystem.instance.readFromLocal('latestCommitHash');
 
@@ -48,11 +30,15 @@ class AppRoutineService {
       LoggerService.instance.log('Update Manager: No local commit hash file found. Updating.');
       await _doUpdateCommitHashFile(latestGithubCommitHash);
       await _doDownloadAndSaveArchive(game, source);
+      ref.invalidate(modsProvider);
+      await LoggerService.instance.log('Invalidate mods');
     } else if (latestCommitHash != latestGithubCommitHash) {
       LoggerService.instance.log('Update Manager: New mods changes available! Update.');
       await _doUpdateCommitHashFile(latestGithubCommitHash);
       await _doDownloadAndSaveArchive(game, source);
-      LoggerService.instance.log('Update Manager: Update successful!');
+      await LoggerService.instance.log('Update Manager: Update successful!');
+      ref.invalidate(modsProvider);
+      await LoggerService.instance.log('Invalidate mods');
     } else {
       LoggerService.instance.log('Update Manager: No need to update.');
     }
@@ -63,7 +49,7 @@ class AppRoutineService {
   }
 
   Future<void> _doDownloadAndSaveArchive(Game game, GitSource source) async {
-    final Directory gameRootDirectory = await PlatformFilesystem.instance.gameRootDirectory(game.id);
+    final Directory gameRootDirectory = await PlatformFilesystem.instance.gameRootDirectory(game.id.toUpperCase());
     final File zipballFile = await PlatformFilesystem.instance
         .getUserFile('${gameRootDirectory.path}${Platform.pathSeparator}${source.branch}.zip');
 

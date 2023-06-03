@@ -5,7 +5,7 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
 import 'package:modmopet/src/screen/mods/mods_list_view.dart';
-import 'package:modmopet/src/service/routine.dart';
+import 'package:modmopet/src/service/source.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_breadcrumbs_bar.dart';
 
@@ -18,9 +18,11 @@ class ModsView extends HookConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(gameProvider);
 
-    // Use memoized function to call update routine only on first build
+    // Use memoized function to call update routine only on first widget build
     useMemoized(() async {
-      if (game != null) AppRoutineService.instance.checkForUpdates(game);
+      if (game != null) {
+        await SourceService.instance.checkForUpdates(game, ref);
+      }
     });
 
     TabController tabController = useTabController(initialLength: 2);
@@ -82,7 +84,7 @@ class ModsView extends HookConsumerWidget {
             controller: tabController,
             children: const [
               SingleChildScrollView(
-                physics: BouncingScrollPhysics(),
+                physics: ScrollPhysics(),
                 child: ModsListView(),
               ),
               Text('no data.')

@@ -15,7 +15,10 @@ class MMBreadcrumbsBar extends StatelessWidget {
     return Container(
       height: 45,
       width: double.infinity,
-      decoration: const BoxDecoration(border: Border(bottom: BorderSide())),
+      decoration: BoxDecoration(
+        color: Theme.of(context).scaffoldBackgroundColor,
+        border: const Border(bottom: BorderSide()),
+      ),
       child: Padding(
         padding: const EdgeInsets.only(left: 5.0),
         child: Row(

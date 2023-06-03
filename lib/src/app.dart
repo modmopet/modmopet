@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/service/routine.dart';
+import 'package:modmopet/src/service/game.dart';
 import 'package:modmopet/src/widgets/mm_layout.dart';
 import 'screen/settings/settings_controller.dart';
 import 'themes/color_schemes.g.dart';
@@ -25,14 +25,9 @@ class App extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Start app routines
-    AppRoutineService.instance.checkAppHealth();
-
     useMemoized(() async {
-      await AppRoutineService.instance.checkTitlesDatabase();
+      await GameService.instance.checkTitlesDatabase();
     });
-
-    AppRoutineService.instance.checkTitlesDatabase();
 
     return AnimatedBuilder(
       animation: settingsController,

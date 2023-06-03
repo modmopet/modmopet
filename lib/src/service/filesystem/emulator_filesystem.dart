@@ -10,4 +10,6 @@ abstract interface class EmulatorFilesystemInterface {
   String getIdentifier();
 }
 
-abstract class EmulatorFilesystem implements EmulatorFilesystemInterface {}
+abstract class EmulatorFilesystem implements EmulatorFilesystemInterface {
+  final String mmPrefix = 'mm_';
+}

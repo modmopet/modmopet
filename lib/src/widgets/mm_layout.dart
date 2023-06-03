@@ -69,7 +69,11 @@ class MMLayout extends HookConsumerWidget {
             children: [
               Container(
                 width: 100.0,
-                decoration: const BoxDecoration(border: Border(right: BorderSide())),
+                decoration: const BoxDecoration(
+                  border: Border(
+                    right: BorderSide(),
+                  ),
+                ),
                 child: const MMNavigationRail(),
               ),
               Expanded(
@@ -78,7 +82,10 @@ class MMLayout extends HookConsumerWidget {
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
                     Expanded(
-                      child: getScreenByRoute(routeSettings, ref),
+                      child: Container(
+                        color: Theme.of(context).scaffoldBackgroundColor,
+                        child: getScreenByRoute(routeSettings, ref),
+                      ),
                     ),
                     Container(
                       decoration: BoxDecoration(

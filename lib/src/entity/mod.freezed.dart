@@ -21,11 +21,12 @@ mixin _$Mod {
   Category get category => throw _privateConstructorUsedError;
   String? get version => throw _privateConstructorUsedError;
   Map<dynamic, dynamic> get game => throw _privateConstructorUsedError;
-  String get path => throw _privateConstructorUsedError;
+  String get origin => throw _privateConstructorUsedError;
   String? get subtitle => throw _privateConstructorUsedError;
   String? get description => throw _privateConstructorUsedError;
   List<dynamic>? get author => throw _privateConstructorUsedError;
-  bool get installed => throw _privateConstructorUsedError;
+  bool get isInstalled => throw _privateConstructorUsedError;
+  bool get hasUpdate => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $ModCopyWith<Mod> get copyWith => throw _privateConstructorUsedError;
@@ -42,11 +43,12 @@ abstract class $ModCopyWith<$Res> {
       Category category,
       String? version,
       Map<dynamic, dynamic> game,
-      String path,
+      String origin,
       String? subtitle,
       String? description,
       List<dynamic>? author,
-      bool installed});
+      bool isInstalled,
+      bool hasUpdate});
 }
 
 /// @nodoc
@@ -66,11 +68,12 @@ class _$ModCopyWithImpl<$Res, $Val extends Mod> implements $ModCopyWith<$Res> {
     Object? category = null,
     Object? version = freezed,
     Object? game = null,
-    Object? path = null,
+    Object? origin = null,
     Object? subtitle = freezed,
     Object? description = freezed,
     Object? author = freezed,
-    Object? installed = null,
+    Object? isInstalled = null,
+    Object? hasUpdate = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -93,9 +96,9 @@ class _$ModCopyWithImpl<$Res, $Val extends Mod> implements $ModCopyWith<$Res> {
           ? _value.game
           : game // ignore: cast_nullable_to_non_nullable
               as Map<dynamic, dynamic>,
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
+      origin: null == origin
+          ? _value.origin
+          : origin // ignore: cast_nullable_to_non_nullable
               as String,
       subtitle: freezed == subtitle
           ? _value.subtitle
@@ -109,9 +112,13 @@ class _$ModCopyWithImpl<$Res, $Val extends Mod> implements $ModCopyWith<$Res> {
           ? _value.author
           : author // ignore: cast_nullable_to_non_nullable
               as List<dynamic>?,
-      installed: null == installed
-          ? _value.installed
-          : installed // ignore: cast_nullable_to_non_nullable
+      isInstalled: null == isInstalled
+          ? _value.isInstalled
+          : isInstalled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasUpdate: null == hasUpdate
+          ? _value.hasUpdate
+          : hasUpdate // ignore: cast_nullable_to_non_nullable
               as bool,
     ) as $Val);
   }
@@ -129,11 +136,12 @@ abstract class _$$_ModCopyWith<$Res> implements $ModCopyWith<$Res> {
       Category category,
       String? version,
       Map<dynamic, dynamic> game,
-      String path,
+      String origin,
       String? subtitle,
       String? description,
       List<dynamic>? author,
-      bool installed});
+      bool isInstalled,
+      bool hasUpdate});
 }
 
 /// @nodoc
@@ -150,11 +158,12 @@ class __$$_ModCopyWithImpl<$Res> extends _$ModCopyWithImpl<$Res, _$_Mod>
     Object? category = null,
     Object? version = freezed,
     Object? game = null,
-    Object? path = null,
+    Object? origin = null,
     Object? subtitle = freezed,
     Object? description = freezed,
     Object? author = freezed,
-    Object? installed = null,
+    Object? isInstalled = null,
+    Object? hasUpdate = null,
   }) {
     return _then(_$_Mod(
       id: null == id
@@ -177,9 +186,9 @@ class __$$_ModCopyWithImpl<$Res> extends _$ModCopyWithImpl<$Res, _$_Mod>
           ? _value._game
           : game // ignore: cast_nullable_to_non_nullable
               as Map<dynamic, dynamic>,
-      path: null == path
-          ? _value.path
-          : path // ignore: cast_nullable_to_non_nullable
+      origin: null == origin
+          ? _value.origin
+          : origin // ignore: cast_nullable_to_non_nullable
               as String,
       subtitle: freezed == subtitle
           ? _value.subtitle
@@ -193,9 +202,13 @@ class __$$_ModCopyWithImpl<$Res> extends _$ModCopyWithImpl<$Res, _$_Mod>
           ? _value._author
           : author // ignore: cast_nullable_to_non_nullable
               as List<dynamic>?,
-      installed: null == installed
-          ? _value.installed
-          : installed // ignore: cast_nullable_to_non_nullable
+      isInstalled: null == isInstalled
+          ? _value.isInstalled
+          : isInstalled // ignore: cast_nullable_to_non_nullable
+              as bool,
+      hasUpdate: null == hasUpdate
+          ? _value.hasUpdate
+          : hasUpdate // ignore: cast_nullable_to_non_nullable
               as bool,
     ));
   }
@@ -210,11 +223,12 @@ class _$_Mod extends _Mod {
       required this.category,
       required this.version,
       required final Map<dynamic, dynamic> game,
-      required this.path,
+      required this.origin,
       this.subtitle,
       this.description,
       final List<dynamic>? author,
-      this.installed = false})
+      this.isInstalled = false,
+      this.hasUpdate = false})
       : _game = game,
         _author = author,
         super._();
@@ -236,7 +250,7 @@ class _$_Mod extends _Mod {
   }
 
   @override
-  final String path;
+  final String origin;
   @override
   final String? subtitle;
   @override
@@ -253,11 +267,14 @@ class _$_Mod extends _Mod {
 
   @override
   @JsonKey()
-  final bool installed;
+  final bool isInstalled;
+  @override
+  @JsonKey()
+  final bool hasUpdate;
 
   @override
   String toString() {
-    return 'Mod(id: $id, title: $title, category: $category, version: $version, game: $game, path: $path, subtitle: $subtitle, description: $description, author: $author, installed: $installed)';
+    return 'Mod(id: $id, title: $title, category: $category, version: $version, game: $game, origin: $origin, subtitle: $subtitle, description: $description, author: $author, isInstalled: $isInstalled, hasUpdate: $hasUpdate)';
   }
 
   @override
@@ -271,14 +288,16 @@ class _$_Mod extends _Mod {
                 other.category == category) &&
             (identical(other.version, version) || other.version == version) &&
             const DeepCollectionEquality().equals(other._game, _game) &&
-            (identical(other.path, path) || other.path == path) &&
+            (identical(other.origin, origin) || other.origin == origin) &&
             (identical(other.subtitle, subtitle) ||
                 other.subtitle == subtitle) &&
             (identical(other.description, description) ||
                 other.description == description) &&
             const DeepCollectionEquality().equals(other._author, _author) &&
-            (identical(other.installed, installed) ||
-                other.installed == installed));
+            (identical(other.isInstalled, isInstalled) ||
+                other.isInstalled == isInstalled) &&
+            (identical(other.hasUpdate, hasUpdate) ||
+                other.hasUpdate == hasUpdate));
   }
 
   @override
@@ -289,11 +308,12 @@ class _$_Mod extends _Mod {
       category,
       version,
       const DeepCollectionEquality().hash(_game),
-      path,
+      origin,
       subtitle,
       description,
       const DeepCollectionEquality().hash(_author),
-      installed);
+      isInstalled,
+      hasUpdate);
 
   @JsonKey(ignore: true)
   @override
@@ -309,11 +329,12 @@ abstract class _Mod extends Mod {
       required final Category category,
       required final String? version,
       required final Map<dynamic, dynamic> game,
-      required final String path,
+      required final String origin,
       final String? subtitle,
       final String? description,
       final List<dynamic>? author,
-      final bool installed}) = _$_Mod;
+      final bool isInstalled,
+      final bool hasUpdate}) = _$_Mod;
   const _Mod._() : super._();
 
   @override
@@ -327,7 +348,7 @@ abstract class _Mod extends Mod {
   @override
   Map<dynamic, dynamic> get game;
   @override
-  String get path;
+  String get origin;
   @override
   String? get subtitle;
   @override
@@ -335,7 +356,9 @@ abstract class _Mod extends Mod {
   @override
   List<dynamic>? get author;
   @override
-  bool get installed;
+  bool get isInstalled;
+  @override
+  bool get hasUpdate;
   @override
   @JsonKey(ignore: true)
   _$$_ModCopyWith<_$_Mod> get copyWith => throw _privateConstructorUsedError;
