@@ -1,7 +1,11 @@
 name: Flutter Workflow
 env:
   FLUTTER_VERSION: "2.2.3"
-on: push
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
 jobs:
   test:
     name: Run Tests
