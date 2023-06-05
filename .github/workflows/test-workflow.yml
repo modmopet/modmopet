@@ -57,4 +57,4 @@ jobs:
           prerelease: true
           title: "ModMopet-nightly"
           files: |
-            ModMopet-nightly-mac.zip
+            build/macos/build/Products/Release/ModMopet-nightly-mac.zip
