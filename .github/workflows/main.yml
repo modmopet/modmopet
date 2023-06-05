@@ -95,6 +95,7 @@ jobs:
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
     timeout-minutes: 2
+    permissions: write-all
     steps:
     - name: download-artifacts
       uses: actions/download-artifact@v3
