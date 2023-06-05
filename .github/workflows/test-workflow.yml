@@ -47,7 +47,7 @@ jobs:
         uses: thedoctor0/zip-release@0.7.1
         with:
           type: 'zip'
-          filename: 'release.zip'
+          filename: 'ModMopet-nightly-mac.zip'
           path: 'build/macos/Build/Products/Release'
           exclusions: '/App.*/ /FlutterMacOS/ /*.framework/*'
       - uses: "marvinpinto/action-automatic-releases@latest"
@@ -57,4 +57,4 @@ jobs:
           prerelease: true
           title: "ModMopet-nightly"
           files: |
-            build/macos/Build/Products/Release
+            ModMopet-nightly-mac.zip
