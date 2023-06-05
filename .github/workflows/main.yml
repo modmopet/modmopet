@@ -73,12 +73,16 @@ jobs:
         flutter build ${{ matrix.target }}
 
 
-    - name: Zip artifact
+    - name: Zip windows artifact
       if: ${{ matrix.runner == 'windows-latest' }}
       shell: pwsh
       run: Compress-Archive "build/${{ matrix.target }}" "modmopet-${{ matrix.target }}.zip"
-    - name: Zip artifact
-      if: ${{ matrix.runner != 'windows-latest' }}
+    - name: Zip macos artifact
+      if: ${{ matrix.runner == 'macos-latest' }}
+      shell: bash
+      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}/Build/Products/Release"
+    - name: Zip linux artifact
+      if: ${{ matrix.runner == 'ubuntu-latest' }}
       shell: bash
       run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}"
 
