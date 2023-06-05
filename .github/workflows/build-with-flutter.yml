@@ -47,7 +47,7 @@ jobs:
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest-nightly"
+          automatic_release_tag: "nightly"
           prerelease: true
           title: "ModMopet-nightly"
           files: |
