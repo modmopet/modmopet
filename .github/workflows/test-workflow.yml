@@ -50,7 +50,6 @@ jobs:
           filename: 'ModMopet-nightly-mac.zip'
           directory: 'build/macos/build/Products/Release'
           path: 'ModMopet.app/'
-          exclusions: '/App.*/ /FlutterMacOS/ /*.framework/*'
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
