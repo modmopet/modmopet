@@ -43,6 +43,13 @@ jobs:
           channel: 'stable'
       - run: flutter config --enable-macos-desktop
       - run: flutter build macos
+      - name: Archive Release
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'release.zip'
+          path: 'build/macos/Build/Products/Release'
+          exclusions: '/App.*/ /FlutterMacOS/ /*.framework/*'
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
@@ -50,4 +57,4 @@ jobs:
           prerelease: true
           title: "ModMopet-nightly"
           files: |
-            build/macos/Build/Products/Release/Mod Mopet.app
+            build/macos/Build/Products/Release
