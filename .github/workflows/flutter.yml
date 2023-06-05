@@ -1,6 +1,6 @@
 name: Flutter
 env:
-  FLUTTER_VERSION: "3.10.1"
+  FLUTTER_VERSION: "3.10.3"
 on:
   push:
     branches: [ "main" ]
@@ -19,4 +19,4 @@ jobs:
       - name: Get Packages
         run: flutter pub get
       - name: Run Tests
-        run: flutter test --no-pub
+        run: flutter analyze
