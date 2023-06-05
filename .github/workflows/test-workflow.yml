@@ -3,8 +3,9 @@ env:
   FLUTTER_VERSION: "3.10.3"
 on: workflow_dispatch
 jobs:
-  # build-release-windows:
+  #build-release-windows:
   #  runs-on: windows-latest
+  #  permissions: write-all
   #  steps:
   #    - uses: actions/checkout@v3
   #    - uses: subosito/flutter-action@v2
@@ -20,19 +21,34 @@ jobs:
   #        title: "ModMopet Nightly"
   #        files: |
   #          build/macos/Build/Products/Release/Mod Mopet.app
-  # build-release-linux:
-  #  runs-on: ubuntu-latest
-  #  steps:
-  #    - uses: actions/checkout@v3
-  #    - uses: subosito/flutter-action@v2
-  #      with:
-  #        flutter-version: FLUTTER_VERSION
-  #        channel: 'stable'
-  #    - run: |
-  #        sudo apt-get update -y
-  #        sudo apt-get install -y ninja-build libgtk-3-dev
-  #    - run: flutter config --enable-linux-desktop
-  #    - run: flutter build linux
+  build-release-linux:
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - uses: actions/checkout@v3
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: FLUTTER_VERSION
+          channel: 'stable'
+      - run: |
+          sudo apt-get update -y
+          sudo apt-get install -y ninja-build libgtk-3-dev
+      - run: flutter config --enable-linux-desktop
+      - run: flutter build linux --release
+      - name: Archive Linux Release
+        uses: thedoctor0/zip-release@0.7.1
+        with:
+          type: 'zip'
+          filename: 'ModMopet-nightly-linux.zip'
+          directory: 'build/linux/release/bundle'
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "nightly"
+          prerelease: true
+          title: "ModMopet-nightly"
+          files: |
+            build/linux/release/bundle/ModMopet-nightly-linux.zip
   build-release-macos:
     runs-on: macos-latest
     permissions: write-all
