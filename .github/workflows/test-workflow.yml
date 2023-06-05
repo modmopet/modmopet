@@ -48,7 +48,8 @@ jobs:
         with:
           type: 'zip'
           filename: 'ModMopet-nightly-mac.zip'
-          path: 'build/macos/Build/Products/Release'
+          directory: 'build/macos/build/Products/Release'
+          path: 'ModMopet.app/'
           exclusions: '/App.*/ /FlutterMacOS/ /*.framework/*'
       - uses: "marvinpinto/action-automatic-releases@latest"
         with:
