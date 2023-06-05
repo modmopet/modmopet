@@ -23,7 +23,7 @@ class GameService {
   }
 
   Future<dynamic> buildTitleMap() async {
-    File titlesJsonFile = await PlatformFilesystem.instance.getFile('titles.US.en.json');
+    File titlesJsonFile = await PlatformFilesystem.instance.getFile('titles.json');
     if (await titlesJsonFile.exists()) {
       LoggerService.instance.log('Game Service: Titles database found.');
       String? jsonContent = await titlesJsonFile.readAsString();

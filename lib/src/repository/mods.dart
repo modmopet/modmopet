@@ -24,7 +24,7 @@ class ModsRepository {
 
     debugPrint('Check for mod update: $installedModVersion vs $sourceModVersion');
 
-    return sourceModVersion == installedModVersion;
+    return sourceModVersion != installedModVersion;
   }
 
   Future<List<Mod>> getAvailableMods(Emulator emulator, Game game, GitSource source) async {
@@ -42,7 +42,7 @@ class ModsRepository {
             Mod mod = await parseModFromYaml(modConfig, modDirectory, emulator, game);
             modList.add(mod);
           } catch (e) {
-            debugPrint('Config file ${modConfigYaml.path} format not valid, skip: $e');
+            debugPrint('Config file format not valid, skip: $e');
           }
         }
       }
@@ -57,36 +57,16 @@ class ModsRepository {
     Emulator emulator,
     Game game,
   ) async {
-    final String id = yamlConfig['id'];
-    final String title = yamlConfig['title'];
-    final int category = yamlConfig['category'];
-    final dynamic version = yamlConfig['version'];
-    final YamlMap gameMap = yamlConfig['game'];
-    final String? subtitle = yamlConfig['subtitle'];
-    final YamlList? authorList = yamlConfig['author'];
-    final bool isInstalled = await isModInstalled(emulator.filesystem, game.id, id);
-    final bool hasUpdate =
-        isInstalled == true ? await hasModUpdate(emulator.filesystem, game.id, id, modDirectory.path) : false;
-
-    return Mod(
-      id: id,
-      title: title,
-      category: Category.values.singleWhere(
-        (element) => element.id == category,
-      ),
-      version: version,
-      game: gameMap.value,
-      origin: modDirectory.path,
-      subtitle: subtitle,
-      isInstalled: isInstalled,
-      hasUpdate: hasUpdate,
-      author: authorList,
-    );
+    final bool isInstalled = await isModInstalled(emulator.filesystem, game.id, yamlConfig['id']);
+    final bool hasUpdate = isInstalled == true
+        ? await hasModUpdate(emulator.filesystem, game.id, yamlConfig['id'], modDirectory.path)
+        : false;
+    return Mod.fromYaml(yamlConfig, modDirectory.path, isInstalled: isInstalled, hasUpdate: hasUpdate);
   }
 
   /// Gets a version of a mod by its path
-  Future<String> getModVersion(String modOriginPath, {String configFileBasename = 'config.yaml'}) async {
-    final directory = Directory(modOriginPath);
+  Future<String> getModVersion(String path, {String configFileBasename = 'config.yaml'}) async {
+    final directory = Directory(path);
     final File configYaml = File('${directory.path}${Platform.pathSeparator}$configFileBasename');
     final sourceModConfig = await loadYaml(await configYaml.readAsString());
     return sourceModConfig['version'];

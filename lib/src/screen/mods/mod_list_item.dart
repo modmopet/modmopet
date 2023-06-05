@@ -30,9 +30,18 @@ class ModListItem extends ConsumerWidget {
     if (authors != null && authors.isNotEmpty) {
       for (Map author in authors) {
         authorsLinks.add(
-          InkWell(
-            onTap: author['link'] != null ? () => _launchAuthorLink(author['link']) : null,
-            child: author['name'] != null ? Text(author['name']) : const Text('unknown'),
+          TextButton(
+            onPressed: author['link'] != null ? () => _launchAuthorLink(author['link']) : null,
+            child: author['name'] != null
+                ? Text(
+                    author['name'],
+                    softWrap: true,
+                    style: TextStyle(
+                      fontSize: 11.0,
+                      color: MMColors.instance.bodyText,
+                    ),
+                  )
+                : const Text('unknown'),
           ),
         );
       }
@@ -70,14 +79,17 @@ class ModListItem extends ConsumerWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Column(
-              mainAxisSize: MainAxisSize.max,
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                ...createAuthorsTextLinks(mod.author),
-                mod.version != null ? Text('v${mod.version!}') : Container(),
-              ],
+            SizedBox(
+              width: 300.0,
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.end,
+                crossAxisAlignment: CrossAxisAlignment.end,
+                children: [
+                  ...createAuthorsTextLinks(mod.author),
+                  mod.version != null ? Text('v${mod.version!}') : Container(),
+                ],
+              ),
             ),
             const SizedBox(width: 15.0),
             ...buildActionButtons(ref),

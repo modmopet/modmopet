@@ -66,17 +66,15 @@ class PlatformFilesystem {
 
   Future<Directory> modsSourceDirectory(Game game, GitSource source) async {
     final String sourceRoot = '${(await gameRootDirectory(game.id.toUpperCase())).path}${Platform.pathSeparator}source';
-    final String repositoryFolderName = '${source.repository}-${source.branch}';
     final String modsRoot =
-        sourceRoot + Platform.pathSeparator + repositoryFolderName + Platform.pathSeparator + source.root;
+        sourceRoot + Platform.pathSeparator + source.repository + Platform.pathSeparator + source.root;
+    debugPrint(modsRoot);
     return Directory(modsRoot);
   }
 
   Directory gameModsDirectorySync(Game game, GitSource source) {
     final String sourceRoot = '${(gameRootDirectory(game.id.toUpperCase()))}${Platform.pathSeparator}source';
-    final String repositoryFolderName = '${source.repository}-${source.branch}';
-    final String modsRoot =
-        sourceRoot + Platform.pathSeparator + repositoryFolderName + Platform.pathSeparator + source.root;
+    final String modsRoot = sourceRoot + Platform.pathSeparator + source.root;
     return Directory(modsRoot);
   }
 

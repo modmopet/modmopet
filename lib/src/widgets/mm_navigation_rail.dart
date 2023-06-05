@@ -21,7 +21,7 @@ class MMNavigationRail extends HookConsumerWidget {
     return NavigationRail(
       labelType: NavigationRailLabelType.all,
       backgroundColor: Colors.transparent,
-      indicatorColor: MMColors.instance.primary,
+      indicatorColor: Colors.transparent,
       selectedIndex: navigationIndex.state,
       onDestinationSelected: (index) {
         navigationIndex.update((state) => index);
@@ -52,10 +52,14 @@ class MMNavigationRail extends HookConsumerWidget {
           label: const Text('Settings'),
         ),
       ],
-      selectedIconTheme: IconThemeData(color: MMColors.instance.lightWhite),
-      unselectedIconTheme: const IconThemeData(color: Colors.white24),
-      selectedLabelTextStyle: TextStyle(color: MMColors.instance.lightWhite),
-      unselectedLabelTextStyle: const TextStyle(color: Colors.white24),
+      selectedIconTheme: IconThemeData(color: MMColors.instance.bodyText),
+      unselectedIconTheme: const IconThemeData(color: Colors.white38),
+      selectedLabelTextStyle: Theme.of(context)
+          .textTheme
+          .bodyMedium
+          ?.copyWith(color: MMColors.instance.bodyText, fontWeight: FontWeight.bold),
+      unselectedLabelTextStyle:
+          Theme.of(context).textTheme.bodyMedium?.copyWith(color: Colors.white38, fontWeight: FontWeight.bold),
     );
   }
 }

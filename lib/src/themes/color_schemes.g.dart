@@ -4,11 +4,12 @@ class MMColors {
   MMColors._();
   static final instance = MMColors._();
 
-  Color get primary => const Color.fromARGB(255, 193, 12, 51);
+  Color get primary => const Color(0xFFDD3A55);
   Color get secondary => const Color.fromARGB(255, 137, 219, 201);
-  Color get lightWhite => Colors.white.withAlpha(230);
-  Color get background => const Color.fromARGB(255, 32, 42, 40);
-  Color get bodyText => const Color.fromARGB(255, 247, 244, 244);
+  Color get lightWhite => const Color.fromARGB(255, 250, 242, 255);
+  Color get background => const Color(0xFF180506);
+  Color get backgroundBorder => const Color(0xFF423034);
+  Color get bodyText => const Color(0xFFF9F9F9);
 }
 
 const lightColorScheme = ColorScheme(

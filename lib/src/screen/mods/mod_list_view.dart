@@ -18,29 +18,42 @@ class ModListView extends ConsumerWidget {
     return ExpansionTile(
       title: Text(
         category.name,
-        style: Theme.of(context).textTheme.bodyLarge?.copyWith(fontSize: 18.0, fontWeight: FontWeight.bold),
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold, color: MMColors.instance.primary),
       ),
       leading: Column(
         mainAxisSize: MainAxisSize.max,
         children: [
           category.icon,
-          Text(modsByCategory.valueOrNull != null ? modsByCategory.valueOrNull!.length.toString() : ''),
+          Text(
+            modsByCategory.valueOrNull != null ? modsByCategory.valueOrNull!.length.toString() : '',
+            style: TextStyle(
+              color: MMColors.instance.bodyText,
+            ),
+          ),
         ],
       ),
-      textColor: MMColors.instance.lightWhite,
-      subtitle: Text(category.description),
-      iconColor: MMColors.instance.lightWhite,
+      textColor: MMColors.instance.bodyText,
+      subtitle: Text(
+        category.description,
+        style: TextStyle(
+          color: MMColors.instance.bodyText,
+        ),
+      ),
+      iconColor: MMColors.instance.bodyText,
       collapsedIconColor: MMColors.instance.primary,
       shape: Border(
-        bottom: BorderSide(width: 2.0, color: MMColors.instance.primary),
+        bottom: BorderSide(width: 2.0, color: MMColors.instance.backgroundBorder),
       ),
       collapsedShape: Border(
-        bottom: BorderSide(width: 2.0, color: MMColors.instance.primary),
+        bottom: BorderSide(width: 2.0, color: MMColors.instance.backgroundBorder),
       ),
       childrenPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
       tilePadding: const EdgeInsets.symmetric(
-        horizontal: 22.0,
-        vertical: 10.0,
+        horizontal: 20.0,
+        vertical: 5.0,
       ),
       initiallyExpanded: true,
       children: [
@@ -104,7 +117,7 @@ class ModListView extends ConsumerWidget {
                   children: [
                     Icon(
                       icon,
-                      color: MMColors.instance.lightWhite,
+                      color: MMColors.instance.bodyText,
                       size: 28.0,
                     ),
                     const SizedBox(
