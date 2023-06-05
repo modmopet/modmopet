@@ -35,6 +35,7 @@ jobs:
   #    - run: flutter build linux
   build-release-macos:
     runs-on: macos-latest
+    permissions: write-all
     steps:
       - uses: actions/checkout@v3
       - uses: subosito/flutter-action@v2
