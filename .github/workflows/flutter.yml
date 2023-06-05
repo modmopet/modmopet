@@ -1,6 +1,6 @@
-name: Flutter Workflow
+name: Flutter
 env:
-  FLUTTER_VERSION: "2.2.3"
+  FLUTTER_VERSION: "3.10.1"
 on:
   push:
     branches: [ "main" ]
