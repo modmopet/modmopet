@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
-import 'package:modmopet/src/screen/mods/mod_list_view.dart';
+import 'package:modmopet/src/screen/mods/mods_view.dart';
+import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/screen/settings/settings_controller.dart';
 import 'package:modmopet/src/screen/settings/settings_view.dart';
 import 'package:modmopet/src/service/logger.dart';
+import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_navigation_rail.dart';
 
 class MMLayout extends HookConsumerWidget {
@@ -16,14 +19,20 @@ class MMLayout extends HookConsumerWidget {
     super.key,
   });
 
-  Widget getScreenByRoute(RouteSettings routeSettings) {
+  Widget getScreenByRoute(RouteSettings routeSettings, WidgetRef ref) {
+    // Select emulator on fresh application state, can be changed anytime
+    final emulatorId = ref.watch(selectedEmulatorIdProvider.notifier).state;
+    if (emulatorId == null) {
+      return const EmulatorPickerView();
+    }
+
     switch (routeSettings.name) {
       case SettingsView.routeName:
         return SettingsView(controller: settingsController);
       case GameListView.routeName:
         return const GameListView();
-      case ModListView.routeName:
-        return const ModListView();
+      case ModsView.routeName:
+        return const ModsView();
       default:
         return const GameListView();
     }
@@ -35,38 +44,78 @@ class MMLayout extends HookConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
+        // TOP BAR
+        Container(
+          width: double.infinity,
+          height: 48.0,
+          decoration: BoxDecoration(
+            color: MMColors.instance.background,
+            border: Border(
+              bottom: BorderSide(color: MMColors.instance.backgroundBorder),
+            ),
+          ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // leading
+              Container(),
+              // center
+              const Text('ModMopet'),
+              // tailing
+              Container(),
+            ],
+          ),
+        ),
         Expanded(
           child: Row(
             children: [
+              // NAVIGATOIN RAIL
               Container(
                 width: 100.0,
-                decoration: const BoxDecoration(border: Border(right: BorderSide(width: 1))),
+                decoration: BoxDecoration(
+                  color: MMColors.instance.background,
+                  border: Border(
+                    right: BorderSide(color: MMColors.instance.backgroundBorder),
+                  ),
+                ),
                 child: const MMNavigationRail(),
               ),
               Expanded(
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
                   children: [
+                    // CONTENT
                     Expanded(
-                      child: getScreenByRoute(routeSettings),
-                    ),
-                    Container(
-                      decoration: BoxDecoration(
+                      child: Container(
                         color: Theme.of(context).scaffoldBackgroundColor,
+                        child: getScreenByRoute(routeSettings, ref),
+                      ),
+                    ),
+                    // FOOTER BAR
+                    Container(
+                      alignment: Alignment.centerLeft,
+                      decoration: BoxDecoration(
+                        color: MMColors.instance.background,
                         border: Border(
-                          top: BorderSide(width: 1.0, color: Theme.of(context).shadowColor),
+                          top: BorderSide(width: 1.0, color: MMColors.instance.backgroundBorder),
                         ),
                       ),
                       width: double.infinity,
-                      height: 28.0,
+                      height: 32.0,
                       child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                        padding: const EdgeInsets.symmetric(horizontal: 10.0),
                         child: ListenableBuilder(
                           listenable: LoggerService.instance,
                           builder: (context, widget) {
                             return LoggerService.instance.messages.isNotEmpty
                                 ? Text(
                                     LoggerService.instance.messages.last,
-                                    style: Theme.of(context).textTheme.bodySmall!.copyWith(color: Colors.grey),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodySmall!
+                                        .copyWith(color: MMColors.instance.bodyText),
                                   )
                                 : Container();
                           },

@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 
+class MMColors {
+  MMColors._();
+  static final instance = MMColors._();
+
+  Color get primary => const Color(0xFFDD3A55);
+  Color get secondary => const Color.fromARGB(255, 137, 219, 201);
+  Color get lightWhite => const Color.fromARGB(255, 250, 242, 255);
+  Color get background => const Color(0xFF180506);
+  Color get backgroundBorder => const Color(0xFF423034);
+  Color get bodyText => const Color(0xFFF9F9F9);
+}
+
 const lightColorScheme = ColorScheme(
   brightness: Brightness.light,
   primary: Color(0xFF6F4DA0),
@@ -36,11 +48,11 @@ const lightColorScheme = ColorScheme(
 
 const darkColorScheme = ColorScheme(
   brightness: Brightness.dark,
-  primary: Color(0xFFD7BAFF),
+  primary: Color.fromARGB(255, 193, 12, 51),
   onPrimary: Color(0xFF3F1B6E),
   primaryContainer: Color(0xFF563586),
   onPrimaryContainer: Color(0xFFEDDCFF),
-  secondary: Color(0xFFD8B9FF),
+  secondary: Color.fromARGB(255, 202, 162, 171),
   onSecondary: Color(0xFF401B6E),
   secondaryContainer: Color(0xFF573486),
   onSecondaryContainer: Color(0xFFEDDCFF),

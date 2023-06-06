@@ -1,12 +1,14 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
-import 'package:modmopet/src/service/filesystem/emulator_filesystem_interface.dart';
+import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 part 'emulator.freezed.dart';
 
 @freezed
 class Emulator with _$Emulator {
-  const factory Emulator({
-    required int id,
+  Emulator._();
+  factory Emulator({
+    required String id,
     required String name,
     required EmulatorFilesystemInterface filesystem,
+    String? path,
   }) = _Emulator;
 }

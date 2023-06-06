@@ -122,7 +122,7 @@ class __$$_GitSourceCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$_GitSource extends _GitSource {
+class _$_GitSource extends _GitSource with DiagnosticableTreeMixin {
   const _$_GitSource(
       {required this.user,
       required this.repository,
@@ -140,8 +140,19 @@ class _$_GitSource extends _GitSource {
   final String branch;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'GitSource(user: $user, repository: $repository, root: $root, branch: $branch)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'GitSource'))
+      ..add(DiagnosticsProperty('user', user))
+      ..add(DiagnosticsProperty('repository', repository))
+      ..add(DiagnosticsProperty('root', root))
+      ..add(DiagnosticsProperty('branch', branch));
   }
 
   @override

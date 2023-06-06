@@ -1,0 +1,118 @@
+name: Release
+on: workflow_dispatch
+
+env:
+  FLUTTER_VERSION: '3.10.x'
+
+jobs:
+  sem-version:
+    name: SemVersion
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+
+    - name: Sem-Version
+      id: sem-version
+      uses: shiipou/sem-version@beta
+      with:
+        ALLOW_FAILURE: false
+
+    outputs:
+      WILL_RELEASE: ${{ steps.sem-version.outputs.WILL_RELEASE }}
+      IS_PRE_RELEASE: ${{ steps.sem-version.outputs.IS_PRE_RELEASE }}
+      VERSION: ${{ steps.sem-version.outputs.VERSION }}
+
+  build:
+    name: Build
+    needs: [ sem-version ]
+    strategy:
+      matrix:
+        target: [ windows, linux, macos]
+        include:
+          - target: windows
+            runner: windows-latest
+          - target: linux
+            runner: ubuntu-latest
+          - target: macos
+            runner: macos-latest
+    runs-on: ${{ matrix.runner }}
+    if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
+    environment: ${{ github.ref_name }}
+    timeout-minutes: 10
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Install Flutter
+      uses: subosito/flutter-action@v2.10.0
+      with:
+        flutter-version: ${{ env.flutter_version }}
+        cache: true
+        cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
+        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
+        architecture: x64 # optional, x64 or arm64
+
+    - name: Install Dependencies (windows)
+      if: ${{ matrix.runner == 'windows-latest' }}
+      run: |
+        flutter config --enable-windows-desktop
+    - name: Install Dependencies (linux)
+      if: ${{ matrix.runner == 'ubuntu-latest' }}
+      run: |
+        sudo apt-get update -y
+        sudo apt-get install -y ninja-build libgtk-3-dev
+        flutter config --enable-linux-desktop
+    - name: Install Dependencies (macos)
+      if: ${{ matrix.runner == 'macos-latest' }}
+      run: |
+        flutter config --enable-macos-desktop
+      
+    - name: Build Flutter ${{ matrix.target }}
+      run: |
+        flutter build ${{ matrix.target }}
+
+
+    - name: Zip windows artifact
+      if: ${{ matrix.runner == 'windows-latest' }}
+      shell: pwsh
+      run: Compress-Archive "build/${{ matrix.target }}" "modmopet-${{ matrix.target }}.zip"
+    - name: Zip macos artifact
+      if: ${{ matrix.runner == 'macos-latest' }}
+      shell: bash
+      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}/Build/Products/Release"
+    - name: Zip linux artifact
+      if: ${{ matrix.runner == 'ubuntu-latest' }}
+      shell: bash
+      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}"
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: modmopet-${{ matrix.target }}
+        path: modmopet-${{ matrix.target }}.*
+
+  release:
+    name: Release
+    needs: [ build, sem-version ]
+    runs-on: ubuntu-latest
+    if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
+    environment: ${{ github.ref_name }}
+    timeout-minutes: 2
+    permissions: write-all
+    steps:
+    - name: download-artifacts
+      uses: actions/download-artifact@v3
+      with:
+        path: artifacts/
+
+    - name: Release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      if: needs.sem-version.outputs.WILL_RELEASE == 'true'
+      run: |
+        ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} --generate-notes"
+        if [ -z "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ]; then
+          ARGS="$ARGS --prerelease"
+        fi
+        gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*

@@ -1,157 +1,150 @@
-import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/provider/mod_list_provider.dart';
-import 'package:modmopet/src/service/routine.dart';
-import '../../entity/mod.dart';
+import 'package:modmopet/src/entity/mod.dart';
+import 'package:modmopet/src/screen/mods/mod_list_item.dart';
+import 'package:modmopet/src/themes/color_schemes.g.dart';
+import 'package:modmopet/src/widgets/mm_loading_indicator.dart';
 
-/// Displays a list of available mods for the game
-class ModListView extends HookConsumerWidget {
-  static const routeName = '/mod_list';
-  const ModListView({super.key});
+class ModListView extends ConsumerWidget {
+  final Category category;
+  const ModListView({
+    required this.category,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final mods = ref.watch(modsProvider);
-    final game = ref.watch(gameProvider);
-    final source = ref.watch(sourceProvider);
-
-    // Use memoized function to call update routine only on first build
-    useMemoized(() async {
-      await AppRoutineService.instance.checkForUpdate(game!, source!);
-    });
-
-    TabController tabController = useTabController(initialLength: 2);
-
-    return Column(
-      children: [
-        Container(
-          height: 150.0,
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: FastCachedImageProvider(game!.bannerUrl!),
-              fit: BoxFit.cover,
-              opacity: 0.6,
+    final modsByCategory = ref.watch(modsProvider(category));
+    return ExpansionTile(
+      title: Text(
+        category.name,
+        style: Theme.of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(fontSize: 16.0, fontWeight: FontWeight.bold, color: MMColors.instance.primary),
+      ),
+      leading: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: [
+          category.icon,
+          Text(
+            modsByCategory.valueOrNull != null ? modsByCategory.valueOrNull!.length.toString() : '',
+            style: TextStyle(
+              color: MMColors.instance.bodyText,
             ),
           ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(20.0),
-                child: SizedBox(
-                  height: 45,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        game.title,
-                        style: Theme.of(context).textTheme.bodyLarge,
-                      ),
-                      Text(game.version),
-                    ],
-                  ),
-                ),
-              ),
-              TabBar(
-                indicatorSize: TabBarIndicatorSize.tab,
-                controller: tabController,
-                tabs: const [
-                  Tab(
-                    child: Icon(Icons.games_sharp),
-                  ),
-                  Tab(
-                    child: Icon(Icons.gamepad),
-                  ),
-                ],
-              ),
-            ],
-          ),
+        ],
+      ),
+      textColor: MMColors.instance.bodyText,
+      subtitle: Text(
+        category.description,
+        style: TextStyle(
+          color: MMColors.instance.bodyText,
         ),
-        Expanded(
-          child: TabBarView(
-            controller: tabController,
-            children: [
-              Container(
-                child: mods.when(
-                  loading: () => const SizedBox(
-                    width: 100.0,
-                    height: 100.0,
-                    child: Center(
-                      child: CircularProgressIndicator(),
-                    ),
-                  ),
-                  error: (err, stack) => Text(err.toString()),
-                  data: (mods) {
-                    return buildListView(mods);
-                  },
-                ),
-              ),
-              const Text('no data.')
-            ],
-          ),
+      ),
+      iconColor: MMColors.instance.bodyText,
+      collapsedIconColor: MMColors.instance.primary,
+      shape: Border(
+        bottom: BorderSide(width: 2.0, color: MMColors.instance.backgroundBorder),
+      ),
+      collapsedShape: Border(
+        bottom: BorderSide(width: 2.0, color: MMColors.instance.backgroundBorder),
+      ),
+      childrenPadding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 15.0),
+      tilePadding: const EdgeInsets.symmetric(
+        horizontal: 20.0,
+        vertical: 5.0,
+      ),
+      initiallyExpanded: true,
+      children: [
+        modsByCategory.when(
+          skipLoadingOnRefresh: false,
+          skipLoadingOnReload: true,
+          data: (mods) => createListView(context, mods),
+          error: (e, _) => Text(e.toString()),
+          loading: () => MMLoadingIndicator(),
         ),
       ],
     );
   }
 
-  Widget buildListView(List<Mod> mods) {
-    return ListView.builder(
-      restorationId: 'modListView',
-      itemCount: mods.length,
-      itemBuilder: (BuildContext context, int index) {
-        final Mod mod = mods[index];
-        return ListTile(
-          title: Text(mod.title),
-          leading: const Row(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              Icon(
-                Icons.color_lens,
-                size: 25.0,
-              ),
-              SizedBox(width: 8.0),
-              Icon(
-                Icons.circle,
-                color: Colors.white60,
-                size: 10.0,
-              ),
-            ],
+  Widget createListView(BuildContext context, List<Mod> mods) {
+    final availableMods = mods.where((mod) => mod.isInstalled == false).toList();
+    final installedMods = mods.where((mod) => mod.isInstalled == true).toList();
+    return Column(
+      children: [
+        ...buildModList(context, 'Installed mods', Icons.check_circle_outline, installedMods),
+        ...buildModList(context, 'Available mods', Icons.download_for_offline_outlined, availableMods),
+      ],
+    );
+  }
+
+  List<Widget> buildModList(BuildContext context, String title, IconData icon, List<Mod> mods) {
+    if (mods.isNotEmpty) {
+      return [
+        Container(
+          padding: const EdgeInsets.only(top: 10.0),
+          margin: const EdgeInsets.only(bottom: 45.0),
+          decoration: const BoxDecoration(
+            border: Border(
+              left: BorderSide(color: Colors.black87, width: 1.0),
+              top: BorderSide(color: Colors.black87, width: 0.7),
+              right: BorderSide(color: Colors.black87, width: 1.0),
+              bottom: BorderSide(color: Colors.black87, width: 1.2),
+            ),
+            gradient: LinearGradient(
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+              colors: [
+                Colors.black26,
+                Colors.black38,
+              ],
+            ),
           ),
-          subtitle: mod.subtitle != null ? Text(mod.subtitle!) : const Text('Some subtitle'),
-          trailing: Row(
-            mainAxisSize: MainAxisSize.min,
+          child: Column(
             children: [
-              Column(
-                mainAxisSize: MainAxisSize.max,
-                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                crossAxisAlignment: CrossAxisAlignment.end,
-                children: [
-                  mod.author?['name'] != null ? Text('by ${mod.author?['name']}') : const Text('by unknown'),
-                  Text('v${mod.version}'),
-                ],
-              ),
-              const SizedBox(width: 8.0),
-              OutlinedButton(
-                onPressed: null,
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Colors.white,
-                  side: BorderSide.none,
-                  textStyle: Theme.of(context).textTheme.labelMedium,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(20.0),
+              Container(
+                alignment: Alignment.centerLeft,
+                height: 50.0,
+                width: double.infinity,
+                padding: const EdgeInsets.only(left: 18.0, right: 18.0, bottom: 10.0),
+                decoration: BoxDecoration(
+                  border: Border(
+                    bottom: BorderSide(color: MMColors.instance.primary, width: 1.0),
                   ),
                 ),
-                child: const Text('Activate'),
+                child: Row(
+                  children: [
+                    Icon(
+                      icon,
+                      color: MMColors.instance.bodyText,
+                      size: 28.0,
+                    ),
+                    const SizedBox(
+                      width: 8.0,
+                    ),
+                    Text(
+                      title,
+                      style: Theme.of(context).textTheme.bodyLarge,
+                    ),
+                  ],
+                ),
               ),
-              const SizedBox(width: 8.0),
+              ListView.builder(
+                shrinkWrap: true,
+                restorationId: 'modCategory${category.id}ListView',
+                itemCount: mods.length,
+                physics: const NeverScrollableScrollPhysics(),
+                itemBuilder: (_, int index) {
+                  return ModListItem(mods[index], index.isEven);
+                },
+              ),
             ],
           ),
-        );
-      },
-    );
+        ),
+      ];
+    }
+
+    return [];
   }
 }

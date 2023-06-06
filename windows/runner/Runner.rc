@@ -89,13 +89,13 @@ BEGIN
     BEGIN
         BLOCK "040904e4"
         BEGIN
-            VALUE "CompanyName", "com.example" "\0"
-            VALUE "FileDescription", "Mod Mopet" "\0"
+            VALUE "CompanyName", "modmopet" "\0"
+            VALUE "FileDescription", "ModMopet" "\0"
             VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "Mod Mopet" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2023 com.example. All rights reserved." "\0"
-            VALUE "OriginalFilename", "mod_gui.exe" "\0"
-            VALUE "ProductName", "Mod Mopet" "\0"
+            VALUE "InternalName", "ModMopet" "\0"
+            VALUE "LegalCopyright", "Copyright (C) 2023 ModMopet. All rights reserved." "\0"
+            VALUE "OriginalFilename", "ModMopet.exe" "\0"
+            VALUE "ProductName", "ModMopet" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END

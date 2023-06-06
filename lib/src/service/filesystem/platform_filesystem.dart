@@ -4,7 +4,6 @@ import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:path_provider/path_provider.dart';
-import 'package:path/path.dart' as path;
 
 class PlatformFilesystem {
   PlatformFilesystem._();
@@ -60,24 +59,22 @@ class PlatformFilesystem {
   }
 
   Future<Directory> gameRootDirectory(String gameId) async {
-    final localPath = await _applicationDocumentsDirectory;
+    final localPath = await _applicationSupportDirectory;
     final gameRootDirectoryPath = '${localPath.path}${Platform.pathSeparator}games${Platform.pathSeparator}$gameId';
     return Directory(gameRootDirectoryPath);
   }
 
-  Future<Directory> gameModsDirectory(Game game, GitSource source) async {
-    final String sourceRoot = '${(await gameRootDirectory(game.id)).path}${Platform.pathSeparator}source';
-    final String repositoryFolderName = '${source.repository}-${source.branch}';
+  Future<Directory> modsSourceDirectory(Game game, GitSource source) async {
+    final String sourceRoot = '${(await gameRootDirectory(game.id.toUpperCase())).path}${Platform.pathSeparator}source';
     final String modsRoot =
-        sourceRoot + Platform.pathSeparator + repositoryFolderName + Platform.pathSeparator + source.root;
+        sourceRoot + Platform.pathSeparator + source.repository + Platform.pathSeparator + source.root;
+    debugPrint(modsRoot);
     return Directory(modsRoot);
   }
 
   Directory gameModsDirectorySync(Game game, GitSource source) {
-    final String sourceRoot = '${(gameRootDirectory(game.id))}${Platform.pathSeparator}source';
-    final String repositoryFolderName = '${source.repository}-${source.branch}';
-    final String modsRoot =
-        sourceRoot + Platform.pathSeparator + repositoryFolderName + Platform.pathSeparator + source.root;
+    final String sourceRoot = '${(gameRootDirectory(game.id.toUpperCase()))}${Platform.pathSeparator}source';
+    final String modsRoot = sourceRoot + Platform.pathSeparator + source.root;
     return Directory(modsRoot);
   }
 
@@ -90,21 +87,6 @@ class PlatformFilesystem {
       directory.create(recursive: true);
     } catch (e) {
       debugPrint('Folder already exists.');
-    }
-  }
-
-  Future<void> copyDirectory(Directory from, Directory to, {bool replace = true, bool recursive = false}) async {
-    if (replace && await to.exists()) await to.delete(recursive: true);
-    if (await from.exists()) {
-      await for (final FileSystemEntity entity in from.list(recursive: recursive)) {
-        if (entity is Directory) {
-          var newDirectory = Directory(path.join(to.absolute.path, path.basename(entity.path)));
-          await newDirectory.create();
-          await copyDirectory(entity.absolute, newDirectory);
-        } else if (entity is File) {
-          await entity.copy(path.join(to.path, path.basename(entity.path)));
-        }
-      }
     }
   }
 

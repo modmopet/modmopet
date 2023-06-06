@@ -1,41 +1,94 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:modmopet/src/entity/game.dart';
-import 'package:modmopet/src/service/filesystem/emulator_filesystem_interface.dart';
+import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
+import 'package:modmopet/src/service/logger.dart';
+import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
-class RyujinxFilesystem extends ChangeNotifier implements EmulatorFilesystemInterface {
+class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInterface {
   RyujinxFilesystem._();
-
   static final instance = RyujinxFilesystem._();
+  static const String emulatorId = 'ryujinx';
+  static const String applicationFolderName = 'Ryujinx';
   static const String identifierDirectory = 'games';
+  static const String modsDirectoryBasename = 'mods';
+  static const String gamesDirectoryBasename = 'games';
 
-  String applicationFolderPath = '';
-  final String _applicationFolderName = 'Ryujinx';
-  final String _gameListPath = 'games';
+  @override
+  String getIdentifier() => identifierDirectory;
 
-  Future<Directory> _emulatorDirectory() async {
-    final modMopetFolder = await getApplicationSupportDirectory();
-    return Directory('${modMopetFolder.path}/../$_applicationFolderName');
+  @override
+  Future<Directory> defaultEmulatorAppDirectory() async {
+    Directory applicationSupportDirectory = await getApplicationSupportDirectory();
+    return Directory(
+        '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
+  }
+
+  /// Gets the directory of a potentially installed mod
+  @override
+  Future<Directory> getModDirectory(String gameTitleId, String modUid) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    final modDirectory = Directory(
+      '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$modUid',
+    );
+
+    return modDirectory;
+  }
+
+  // Gets a list of all directories inside the mod folder of the emulator
+  @override
+  Future<List<FileSystemEntity>> getModsDirectoryList(String gameTitleId, {bool recursive = false}) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    if (emulatorAppDirectory.existsSync()) {
+      final Directory modDirectory = Directory(
+        '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}${gameTitleId.toUpperCase()}',
+      );
+
+      if (await modDirectory.exists()) {
+        final modDirectoryList = modDirectory.list(recursive: recursive);
+        return modDirectoryList.toList();
+      }
+    }
+
+    return [];
   }
 
   @override
-  Future<Stream<FileSystemEntity>> modDirectoryList(Game game, {bool recursive = false}) async {
-    final Directory emulatorModDirectory = await _emulatorDirectory();
-    final Directory modDirectory = Directory(emulatorModDirectory.path + Platform.pathSeparator + game.id);
-    return modDirectory.list(recursive: recursive);
+  Future<Directory> getGameDirectory(String gameId) async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    final gameDirectory = Directory(
+      emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename + Platform.pathSeparator + gameId,
+    );
+
+    return gameDirectory;
+  }
+
+  /// Gets the games metadata directory of the emulator to identify the installed games by titleId
+  @override
+  Future<Stream<FileSystemEntity>> getGamesDirectoryList() async {
+    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+    if (emulatorAppDirectory.existsSync()) {
+      final Directory gameListDirectory = Directory(
+        emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename,
+      );
+      return gameListDirectory.list();
+    }
+
+    return const Stream<FileSystemEntity>.empty();
   }
 
   @override
-  Future<Stream<FileSystemEntity>> gameFileList() async {
-    final Directory emulatorModDirectory = await _emulatorDirectory();
-    final Directory gameListDirectory = Directory(emulatorModDirectory.path + Platform.pathSeparator + _gameListPath);
-    return gameListDirectory.list();
-  }
+  Future<bool> isIdentifiedByDirectoryStructure(String emulatorDirectoryPath) async {
+    final Directory emulatorDirectory = Directory(emulatorDirectoryPath);
+    await for (var element in emulatorDirectory.list()) {
+      if (element is Directory) {
+        final directory = path.basename(element.path);
+        if (directory == identifierDirectory) {
+          LoggerService.instance.log('Filesystem: $emulatorId application folder found at: $emulatorDirectoryPath');
+          return true;
+        }
+      }
+    }
 
-  @override
-  Future<void> setApplicationFolderPath(String path) async {
-    applicationFolderPath = path;
-    notifyListeners();
+    return false;
   }
 }

@@ -1,13 +1,16 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/config.dart';
-import 'package:modmopet/src/service/routine.dart';
 import 'package:modmopet/src/widgets/mm_layout.dart';
 import 'screen/settings/settings_controller.dart';
-import 'screen/settings/settings_view.dart';
 import 'themes/color_schemes.g.dart';
+
+class SimplePageRoute<T> extends MaterialPageRoute<T> {
+  SimplePageRoute({builder, settings}) : super(builder: builder);
+
+  @override
+  Duration get transitionDuration => const Duration(milliseconds: 0);
+}
 
 /// The Widget that configures your application.
 class App extends HookConsumerWidget {
@@ -20,15 +23,6 @@ class App extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // Start app routines
-    AppRoutineService.instance.checkAppHealth();
-
-    useMemoized(() async {
-      await AppRoutineService.instance.checkTitlesDatabase();
-    });
-
-    AppRoutineService.instance.checkTitlesDatabase();
-
     return AnimatedBuilder(
       animation: settingsController,
       builder: (BuildContext context, Widget? child) {
@@ -51,33 +45,20 @@ class App extends HookConsumerWidget {
             // Define a light and dark color theme. Then, read the user's
             // preferred ThemeMode (light, dark, or system default) from the
             // SettingsController to display the correct theme.
-            theme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
-            darkTheme: ThemeData(useMaterial3: true, colorScheme: darkColorScheme),
+            theme:
+                ThemeData(useMaterial3: true, colorScheme: darkColorScheme, dividerColor: MMColors.instance.background),
+            darkTheme:
+                ThemeData(useMaterial3: true, colorScheme: darkColorScheme, dividerColor: MMColors.instance.background),
             themeMode: settingsController.themeMode,
 
             // Define a function to handle named routes in order to support
             // Flutter web url navigation and deep linking.
             onGenerateRoute: (RouteSettings routeSettings) {
-              return MaterialPageRoute<void>(
+              return SimplePageRoute<void>(
                 settings: routeSettings,
                 builder: (BuildContext context) {
-                  return Scaffold(
-                    appBar: AppBar(
-                      title: const Text(MMConfig.title),
-                      titleSpacing: 10.0,
-                      titleTextStyle: const TextStyle(fontSize: 15.0),
-                      toolbarHeight: 38.0,
-                      centerTitle: true,
-                      actions: [
-                        IconButton(
-                          icon: const Icon(Icons.settings),
-                          onPressed: () {
-                            Navigator.restorablePushNamed(context, SettingsView.routeName);
-                          },
-                        ),
-                      ],
-                    ),
-                    body: MMLayout(
+                  return Material(
+                    child: MMLayout(
                       settingsController: settingsController,
                       routeSettings: routeSettings,
                     ),
