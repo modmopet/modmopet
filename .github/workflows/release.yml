@@ -100,20 +100,20 @@ jobs:
       with:
         name: modmopet-${{ matrix.target }}
         path: modmopet-${{ matrix.target }}.*
-
   release:
     name: Release
     needs: [ build, sem-version ]
     runs-on: ubuntu-latest
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
+    permissions:
+      contents: write
     timeout-minutes: 2
     steps:
     - name: download-artifacts
       uses: actions/download-artifact@v3
       with:
         path: artifacts/
-
     - name: Release
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
