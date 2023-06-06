@@ -5,6 +5,7 @@ on:
     - main
     - rc
     - beta
+    - nightly
     - hotfix
     - "*.x"
 
@@ -25,6 +26,7 @@ jobs:
       uses: shiipou/sem-version@beta
       with:
         ALLOW_FAILURE: false
+        PRERELEASE_BRANCHES_REGEX: '^(rc|beta|nightly|hotfix)$'
 
     outputs:
       WILL_RELEASE: ${{ steps.sem-version.outputs.WILL_RELEASE }}
