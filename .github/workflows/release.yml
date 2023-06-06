@@ -42,10 +42,13 @@ jobs:
         include:
           - target: windows
             runner: windows-latest
+            artifact: windows/
           - target: linux
             runner: ubuntu-latest
+            artifact: linux/
           - target: macos
             runner: macos-latest
+            artifact: macos/
     runs-on: ${{ matrix.runner }}
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
@@ -85,18 +88,18 @@ jobs:
     - name: Zip artifact
       if: ${{ matrix.runner == 'windows-latest' }}
       shell: pwsh
-      run: Compress-Archive "build/${{ matrix.target }}" "modmopet-${{ matrix.target }}.zip"
+      run: Compress-Archive "build/${{ matrix.artifact }}" "modmopet-${{ matrix.target }}.zip"
     - name: Zip artifact
       if: ${{ matrix.runner != 'windows-latest' }}
       shell: bash
-      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.target }}"
+      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.artifact }}"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
         name: modmopet-${{ matrix.target }}
         path: modmopet-${{ matrix.target }}.*
-
+S
   release:
     name: Release
     needs: [ build, sem-version ]
