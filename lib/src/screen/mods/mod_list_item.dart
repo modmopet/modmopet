@@ -7,6 +7,7 @@ import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:tinycolor2/tinycolor2.dart';
+import 'package:yaml/yaml.dart';
 
 class ModListItem extends ConsumerWidget {
   const ModListItem(
@@ -52,6 +53,7 @@ class ModListItem extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final textTheme = Theme.of(context).textTheme;
     return Container(
       decoration: BoxDecoration(
         color: isEven == true ? Colors.black87 : null,
@@ -72,9 +74,15 @@ class ModListItem extends ConsumerWidget {
         title: Text(
           mod.title,
           maxLines: 1,
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
+          style: textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
         ),
-        subtitle: mod.subtitle != null ? Text(mod.subtitle!, style: Theme.of(context).textTheme.bodySmall) : null,
+        subtitle: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            mod.subtitle != null ? Text(mod.subtitle!, style: textTheme.bodySmall) : Container(),
+            buildGameVersionCompatibility(mod, textTheme),
+          ],
+        ),
         minVerticalPadding: 20.0,
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
@@ -87,7 +95,7 @@ class ModListItem extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   ...createAuthorsTextLinks(mod.author),
-                  mod.version != null ? Text('v${mod.version!}') : Container(),
+                  mod.version == null ? const Text('No version') : Text('v${mod.version!}'),
                 ],
               ),
             ),
@@ -98,6 +106,25 @@ class ModListItem extends ConsumerWidget {
         ),
       ),
     );
+  }
+
+  Widget buildGameVersionCompatibility(Mod mod, TextTheme textTheme) {
+    if (mod.game.isNotEmpty && mod.game.containsKey('version')) {
+      final YamlList gameVersions = mod.game['version'];
+      return Row(
+        children: [
+          Tooltip(
+            message: 'Supported game versions',
+            child: Text(
+              gameVersions.map((e) => 'v$e').join(' | '),
+              style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary, fontWeight: FontWeight.bold),
+            ),
+          ),
+        ],
+      );
+    }
+
+    return Container();
   }
 
   List<Widget> buildActionButtons(WidgetRef ref) {

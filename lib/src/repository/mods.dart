@@ -40,6 +40,7 @@ class ModsRepository {
           var modConfig = await loadYaml(content);
           try {
             Mod mod = await parseModFromYaml(modConfig, modDirectory, emulator, game);
+
             modList.add(mod);
           } catch (e) {
             debugPrint('Config file format not valid, skip: $e');

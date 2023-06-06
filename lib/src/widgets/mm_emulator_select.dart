@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
@@ -25,21 +27,27 @@ class MMEmulatorSelect extends HookConsumerWidget {
         const SizedBox(height: 35),
         MMElevatedButton.primary(
           onPressed: () {
+            bool withCustomSelect = false;
+
+            // On macos this needs to be always true in sandbox mode to get access to directories outside of sandbox container
+            // if (Platform.isMacOS) withCustomSelect = true;
+
             ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
-            ref.read(withCustomSelectProvider.notifier).state = false;
+            ref.read(withCustomSelectProvider.notifier).state = withCustomSelect;
             Navigator.of(context).pushReplacementNamed(GameListView.routeName);
           },
           child: Text(supportedEmulatorMetadata['name']),
         ),
         const SizedBox(height: 10.0),
-        MMElevatedButton.secondary(
-          onPressed: () {
-            ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
-            ref.read(withCustomSelectProvider.notifier).state = true;
-            Navigator.of(context).pushReplacementNamed(GameListView.routeName);
-          },
-          child: const Text('Select manually'),
-        ),
+        if (Platform.isMacOS == false)
+          MMElevatedButton.secondary(
+            onPressed: () {
+              ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
+              ref.read(withCustomSelectProvider.notifier).state = true;
+              Navigator.of(context).pushReplacementNamed(GameListView.routeName);
+            },
+            child: const Text('Select manually'),
+          ),
       ],
     );
   }
