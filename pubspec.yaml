@@ -9,6 +9,7 @@ environment:
 
 dependencies:
   archive: ^3.3.7
+  async_zip: ^0.1.0
   auto_size_text: ^3.0.0
   dio: ^5.1.2
   dropdown_button2: ^2.1.3

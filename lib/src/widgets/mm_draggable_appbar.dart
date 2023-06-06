@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
@@ -22,13 +24,24 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              mainAxisSize: MainAxisSize.max,
               children: [
                 // leading
-                Container(),
+                SizedBox(
+                  width: 300.0,
+                  child: Container(),
+                ),
                 // center
-                const Text('ModMopet'),
-                // tailing
-                createWindowActionButtons(context),
+                const Expanded(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text('ModMopet'),
+                    ],
+                  ),
+                ),
+                // Windows only
+                if (Platform.isWindows) createWindowsActionButtons(context),
               ],
             ),
           ),
@@ -37,10 +50,12 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
     );
   }
 
-  // Only used on Windows/Linux, MacOS automatically adds buttons to the very left of the window
-  Widget createWindowActionButtons(BuildContext context) {
+  Widget createWindowsActionButtons(BuildContext context) {
     return Container(
+      width: 300.0,
+      padding: const EdgeInsets.only(right: 10.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.end,
         children: [
           IconButton(
             onPressed: () => windowManager.minimize(),
@@ -58,7 +73,7 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
               windowManager.unmaximize();
             },
             icon: const Icon(
-              Icons.maximize,
+              Icons.square_outlined,
               size: 18.0,
             ),
           ),

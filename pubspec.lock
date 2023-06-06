@@ -49,6 +49,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.11.0"
+  async_zip:
+    dependency: "direct main"
+    description:
+      name: async_zip
+      sha256: "268e763eebbd7353dd91c73374b6e9aaf6f50d61ffd244623d0961785051589c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "0.1.0"
   auto_size_text:
     dependency: "direct main"
     description:
