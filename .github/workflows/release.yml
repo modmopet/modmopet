@@ -82,7 +82,7 @@ jobs:
       
     - name: Build Flutter ${{ matrix.target }}
       env:
-        APP_GITHUB_API_TOKEN=${{ secrets.APP_GITHUB_API_TOKEN }}
+        APP_GITHUB_API_TOKEN: ${{ secrets.APP_GITHUB_API_TOKEN }}
       run: |
         make build ${{ matrix.target }}
 
