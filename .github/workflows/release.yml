@@ -100,7 +100,7 @@ jobs:
       with:
         name: modmopet-${{ matrix.target }}
         path: modmopet-${{ matrix.target }}.*
-S
+
   release:
     name: Release
     needs: [ build, sem-version ]
