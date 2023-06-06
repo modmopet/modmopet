@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/repository/mods.dart';
-import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/mod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:yaml/yaml.dart';
 part 'mod.freezed.dart';
 part 'mod.g.dart';
 
@@ -96,26 +95,26 @@ class Mods extends _$Mods {
   @override
   FutureOr<List<Mod>> build(Category category) async => _fetchModsByCategory();
 
-  Future<void> installMod(EmulatorFilesystemInterface filesystem, Game game, Mod mod) async {
+  Future<void> installMod(Emulator emulator, Game game, Mod mod) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ModService.instance.installMod(game.id, mod, filesystem);
+      await ModService.instance.installMod(game.id, mod, emulator);
       return _fetchModsByCategory();
     });
   }
 
-  Future<void> updateMod(EmulatorFilesystemInterface filesystem, Game game, Mod mod) async {
+  Future<void> updateMod(Emulator emulator, Game game, Mod mod) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      ModService.instance.updateMod(game.id, mod, filesystem);
+      ModService.instance.updateMod(game.id, mod, emulator);
       return _fetchModsByCategory();
     });
   }
 
-  Future<void> removeMod(EmulatorFilesystemInterface filesystem, Game game, Mod mod) async {
+  Future<void> removeMod(Emulator emulator, Game game, Mod mod) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ModService.instance.removeMod(game.id, mod, filesystem);
+      await ModService.instance.removeMod(game.id, mod, emulator);
       return _fetchModsByCategory();
     });
   }

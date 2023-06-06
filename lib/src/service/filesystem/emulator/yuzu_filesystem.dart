@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
@@ -26,37 +27,38 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
 
   /// Gets the directory of a potentially installed mod
   @override
-  Future<Directory> getModDirectory(String gameTitleId, String basename) async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String modUid) async {
     final modDirectory = Directory(
-      emulatorAppDirectory.path +
-          Platform.pathSeparator +
-          modsDirectoryBasename +
-          Platform.pathSeparator +
-          gameTitleId +
-          Platform.pathSeparator +
-          basename,
+      '${emulator.path!}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$modUid',
     );
 
     return modDirectory;
   }
 
   @override
-  Future<List<FileSystemEntity>> getModsDirectoryList(String gameTitleId, {bool recursive = false}) async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<List<FileSystemEntity>> getModsDirectoryList(
+    Emulator emulator,
+    String gameTitleId, {
+    bool recursive = false,
+  }) async {
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (await emulatorAppDirectory.exists()) {
       final Directory modDirectory = Directory(
         emulatorAppDirectory.path + Platform.pathSeparator + identifierDirectory + Platform.pathSeparator + gameTitleId,
       );
-      return modDirectory.list(recursive: recursive).toList();
+
+      if (await modDirectory.exists()) {
+        final modDirectoryList = modDirectory.list(recursive: recursive);
+        return modDirectoryList.toList();
+      }
     }
 
     return [];
   }
 
   @override
-  Future<Directory> getGameDirectory(String gameTitleId) async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<Directory> getGameDirectory(Emulator emulator, String gameTitleId) async {
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     final gameDirectory = Directory(
       emulatorAppDirectory.path +
           Platform.pathSeparator +
@@ -69,8 +71,8 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   }
 
   @override
-  Future<Stream<FileSystemEntity>> getGamesDirectoryList() async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator) async {
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (await emulatorAppDirectory.exists()) {
       final Directory gameListDirectory =
           Directory(emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename);

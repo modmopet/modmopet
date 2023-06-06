@@ -5,20 +5,20 @@ import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/entity/mod.dart';
-import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
 import 'package:yaml/yaml.dart';
 
 class ModsRepository {
   /// Checks a mods directory is installed to the emulators mod folder
-  Future<bool> isModInstalled(EmulatorFilesystemInterface filesystem, String gameTitleId, String modId) async {
-    final modDirectory = await filesystem.getModDirectory(gameTitleId.toUpperCase(), modId.toLowerCase());
+  Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String modId) async {
+    final modDirectory =
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), modId.toLowerCase());
     return await modDirectory.exists();
   }
 
-  Future<bool> hasModUpdate(
-      EmulatorFilesystemInterface filesystem, String gameTitleId, String modId, String modOrigin) async {
-    final installedModDirectory = await filesystem.getModDirectory(gameTitleId.toUpperCase(), modId.toLowerCase());
+  Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String modId, String modOrigin) async {
+    final installedModDirectory =
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), modId.toLowerCase());
     final int installedModVersion = getExtendedVersionNumber(await getModVersion(installedModDirectory.path));
     final int sourceModVersion = getExtendedVersionNumber(await getModVersion(modOrigin));
 
@@ -58,10 +58,9 @@ class ModsRepository {
     Emulator emulator,
     Game game,
   ) async {
-    final bool isInstalled = await isModInstalled(emulator.filesystem, game.id, yamlConfig['id']);
-    final bool hasUpdate = isInstalled == true
-        ? await hasModUpdate(emulator.filesystem, game.id, yamlConfig['id'], modDirectory.path)
-        : false;
+    final bool isInstalled = await isModInstalled(emulator, game.id, yamlConfig['id']);
+    final bool hasUpdate =
+        isInstalled == true ? await hasModUpdate(emulator, game.id, yamlConfig['id'], modDirectory.path) : false;
     return Mod.fromYaml(yamlConfig, modDirectory.path, isInstalled: isInstalled, hasUpdate: hasUpdate);
   }
 
