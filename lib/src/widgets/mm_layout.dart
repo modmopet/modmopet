@@ -8,6 +8,7 @@ import 'package:modmopet/src/screen/settings/settings_controller.dart';
 import 'package:modmopet/src/screen/settings/settings_view.dart';
 import 'package:modmopet/src/service/logger.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
+import 'package:modmopet/src/widgets/mm_draggable_appbar.dart';
 import 'package:modmopet/src/widgets/mm_navigation_rail.dart';
 
 class MMLayout extends HookConsumerWidget {
@@ -41,28 +42,7 @@ class MMLayout extends HookConsumerWidget {
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         // TOP BAR
-        Container(
-          width: double.infinity,
-          height: 48.0,
-          decoration: BoxDecoration(
-            color: MMColors.instance.background,
-            border: Border(
-              bottom: BorderSide(color: MMColors.instance.backgroundBorder),
-            ),
-          ),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // leading
-              Container(),
-              // center
-              const Text('ModMopet'),
-              // tailing
-              Container(),
-            ],
-          ),
-        ),
+        const DraggableAppBar(),
         Expanded(
           child: Row(
             children: [
@@ -72,7 +52,8 @@ class MMLayout extends HookConsumerWidget {
                 decoration: BoxDecoration(
                   color: MMColors.instance.background,
                   border: Border(
-                    right: BorderSide(color: MMColors.instance.backgroundBorder),
+                    right:
+                        BorderSide(color: MMColors.instance.backgroundBorder),
                   ),
                 ),
                 child: const MMNavigationRail(),
@@ -95,7 +76,9 @@ class MMLayout extends HookConsumerWidget {
                       decoration: BoxDecoration(
                         color: MMColors.instance.background,
                         border: Border(
-                          top: BorderSide(width: 1.0, color: MMColors.instance.backgroundBorder),
+                          top: BorderSide(
+                              width: 1.0,
+                              color: MMColors.instance.backgroundBorder),
                         ),
                       ),
                       width: double.infinity,
@@ -111,7 +94,8 @@ class MMLayout extends HookConsumerWidget {
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodySmall!
-                                        .copyWith(color: MMColors.instance.bodyText),
+                                        .copyWith(
+                                            color: MMColors.instance.bodyText),
                                   )
                                 : Container();
                           },

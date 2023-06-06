@@ -28,7 +28,7 @@ class App extends HookConsumerWidget {
       builder: (BuildContext context, Widget? child) {
         return ProviderScope(
           child: MaterialApp(
-            debugShowCheckedModeBanner: false,
+            debugShowCheckedModeBanner: true,
             // Providing a restorationScopeId allows the Navigator built by the
             // MaterialApp to restore the navigation stack when a user leaves and
             // returns to the app after it has been killed while running in the
@@ -45,10 +45,14 @@ class App extends HookConsumerWidget {
             // Define a light and dark color theme. Then, read the user's
             // preferred ThemeMode (light, dark, or system default) from the
             // SettingsController to display the correct theme.
-            theme:
-                ThemeData(useMaterial3: true, colorScheme: darkColorScheme, dividerColor: MMColors.instance.background),
-            darkTheme:
-                ThemeData(useMaterial3: true, colorScheme: darkColorScheme, dividerColor: MMColors.instance.background),
+            theme: ThemeData(
+                useMaterial3: true,
+                colorScheme: darkColorScheme,
+                dividerColor: MMColors.instance.background),
+            darkTheme: ThemeData(
+                useMaterial3: true,
+                colorScheme: darkColorScheme,
+                dividerColor: MMColors.instance.background),
             themeMode: settingsController.themeMode,
 
             // Define a function to handle named routes in order to support
