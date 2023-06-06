@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
@@ -7,6 +8,7 @@ import 'package:modmopet/src/repository/mods.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/mod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:yaml/yaml.dart';
 part 'mod.freezed.dart';
 part 'mod.g.dart';
 
@@ -41,7 +43,7 @@ class Mod with _$Mod {
       category: Category.values.singleWhere(
         (category) => category.id == yaml['category'],
       ),
-      version: yaml['version'] ?? 'unknown',
+      version: yaml['version'],
       game: yaml['game'],
       origin: origin,
       isInstalled: isInstalled,
@@ -57,6 +59,7 @@ class Mods extends _$Mods {
     final gitSources = ref.watch(gitSourcesProvider);
     final selectedGitSource = ref.watch(selectedSourceProvider);
     final emulator = ref.watch(emulatorProvider).value;
+    final modsFilter = ref.watch(modsVersionFilterProvider);
 
     // 1. Fetch mods
     final modsByCategory = await ModsRepository().getAvailableMods(
@@ -66,10 +69,26 @@ class Mods extends _$Mods {
     );
 
     // 2. Filter mods by category
-    final filteredMods = modsByCategory.where((element) => element.category.id == category.id).toList();
+    final filteredMods = modsByCategory.where((element) {
+      if (modsFilter != null) {
+        return element.category.id == category.id && element.game['version'].contains(modsFilter);
+      }
+
+      return element.category.id == category.id;
+    }).toList();
 
     // 3. Sort by title
     filteredMods.sort((a, b) => a.title.compareTo(b.title));
+
+    // Set<String> uniqueGameVersions = {};
+    // for (var element in filteredMods) {
+    //   final YamlList gameVersions = element.game['version'];
+    //   for (var element in gameVersions) {
+    //     uniqueGameVersions.add(element);
+    //   }
+    // }
+
+    // debugPrint(uniqueGameVersions.toString());
 
     return filteredMods;
   }
@@ -101,6 +120,9 @@ class Mods extends _$Mods {
     });
   }
 }
+
+final modsVersionFilterProvider = StateProvider<String?>((ref) => null);
+final uniqueGameVersionProvider = StateProvider<Set<String>>((ref) => <String>{});
 
 enum Category {
   performance(

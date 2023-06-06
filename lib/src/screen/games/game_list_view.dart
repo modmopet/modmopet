@@ -57,8 +57,8 @@ class GameListView extends HookConsumerWidget {
       loading: () => MMLoadingIndicator(),
       error: (err, stack) => Text(err.toString()),
       data: (games) {
-        if (games.isNotEmpty) {
-          ListView.builder(
+        if (games.isNotEmpty == true) {
+          return ListView.builder(
             restorationId: 'modListView',
             itemCount: games.length,
             itemBuilder: (BuildContext context, int index) {
@@ -68,6 +68,7 @@ class GameListView extends HookConsumerWidget {
                 shape: const BorderDirectional(
                   bottom: BorderSide(width: 1.0),
                 ),
+                minVerticalPadding: 15.0,
                 leading: Row(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,12 +87,6 @@ class GameListView extends HookConsumerWidget {
                     ModsView.routeName,
                   );
                 },
-                subtitle: Row(
-                  children: [
-                    Text('Version: ${game.version}'),
-                  ],
-                ),
-                trailing: const Text('Placeholder'),
               );
             },
           );

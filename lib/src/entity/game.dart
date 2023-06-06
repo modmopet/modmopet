@@ -18,3 +18,5 @@ class Game with _$Game {
 }
 
 final gameProvider = StateProvider<Game?>((ref) => null);
+
+final selectedGameVersionProvider = StateProvider<String?>((ref) => null);
