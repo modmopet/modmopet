@@ -42,13 +42,13 @@ jobs:
         include:
           - target: windows
             runner: windows-latest
-            artifact: windows/
+            artifact: windows/runner/Release/*
           - target: linux
             runner: ubuntu-latest
-            artifact: linux/
+            artifact: linux/x64/release/bundle/*
           - target: macos
             runner: macos-latest
-            artifact: macos/
+            artifact: macos/Build/Product/Release/ModMopet.app
     runs-on: ${{ matrix.runner }}
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
@@ -82,8 +82,7 @@ jobs:
       
     - name: Build Flutter ${{ matrix.target }}
       run: |
-        flutter build ${{ matrix.target }}
-
+        make build ${{ matrix.target }}
 
     - name: Zip artifact
       if: ${{ matrix.runner == 'windows-latest' }}
@@ -92,7 +91,7 @@ jobs:
     - name: Zip artifact
       if: ${{ matrix.runner != 'windows-latest' }}
       shell: bash
-      run: tar -C "build/" -czf "modmopet-${{ matrix.target }}.tar.gz" "${{ matrix.artifact }}"
+      run: tar -C "build/$(dirname ${{ matrix.artifact }})/" -czf "modmopet-${{ matrix.target }}.tar.gz" "$(basename ${{ matrix.artifact }})"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
@@ -115,7 +114,7 @@ S
 
     - name: Release
       env:
-        GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       if: needs.sem-version.outputs.WILL_RELEASE == 'true'
       run: |
         ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} --generate-notes"
