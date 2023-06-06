@@ -151,7 +151,7 @@ class ModListItem extends ConsumerWidget {
       onPressed: () {
         final emulator = ref.read(emulatorProvider).value;
         final game = ref.read(gameProvider);
-        ref.read(modsProvider(mod.category).notifier).installMod(emulator!.filesystem, game!, mod);
+        ref.read(modsProvider(mod.category).notifier).installMod(emulator!, game!, mod);
       },
       child: const Row(
         children: [
@@ -173,7 +173,7 @@ class ModListItem extends ConsumerWidget {
       onPressed: () {
         final emulator = ref.read(emulatorProvider).value;
         final game = ref.read(gameProvider);
-        ref.read(modsProvider(mod.category).notifier).removeMod(emulator!.filesystem, game!, mod);
+        ref.read(modsProvider(mod.category).notifier).removeMod(emulator!, game!, mod);
       },
       child: const Row(
         children: [
@@ -196,7 +196,7 @@ class ModListItem extends ConsumerWidget {
       onPressed: () {
         final emulator = ref.read(emulatorProvider).value;
         final game = ref.read(gameProvider);
-        ref.read(modsProvider(mod.category).notifier).updateMod(emulator!.filesystem, game!, mod);
+        ref.read(modsProvider(mod.category).notifier).updateMod(emulator!, game!, mod);
       },
       child: const Row(
         children: [

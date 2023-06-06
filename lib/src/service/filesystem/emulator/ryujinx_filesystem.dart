@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
 import 'package:path/path.dart' as path;
@@ -25,10 +26,9 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
 
   /// Gets the directory of a potentially installed mod
   @override
-  Future<Directory> getModDirectory(String gameTitleId, String modUid) async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String modUid) async {
     final modDirectory = Directory(
-      '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$modUid',
+      '${emulator.path!}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$modUid',
     );
 
     return modDirectory;
@@ -36,8 +36,12 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
 
   // Gets a list of all directories inside the mod folder of the emulator
   @override
-  Future<List<FileSystemEntity>> getModsDirectoryList(String gameTitleId, {bool recursive = false}) async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<List<FileSystemEntity>> getModsDirectoryList(
+    Emulator emulator,
+    String gameTitleId, {
+    bool recursive = false,
+  }) async {
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (emulatorAppDirectory.existsSync()) {
       final Directory modDirectory = Directory(
         '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}${gameTitleId.toUpperCase()}',
@@ -53,8 +57,8 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   }
 
   @override
-  Future<Directory> getGameDirectory(String gameId) async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<Directory> getGameDirectory(Emulator emulator, String gameId) async {
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     final gameDirectory = Directory(
       emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename + Platform.pathSeparator + gameId,
     );
@@ -64,8 +68,8 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
 
   /// Gets the games metadata directory of the emulator to identify the installed games by titleId
   @override
-  Future<Stream<FileSystemEntity>> getGamesDirectoryList() async {
-    final Directory emulatorAppDirectory = await defaultEmulatorAppDirectory();
+  Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator) async {
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (emulatorAppDirectory.existsSync()) {
       final Directory gameListDirectory = Directory(
         emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename,

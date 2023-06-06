@@ -14,7 +14,7 @@ final gameListProvider = FutureProvider<List<Game>>((ref) async {
   List<Game> games = List.empty(growable: true);
   final emulator = ref.watch(emulatorProvider).value;
   final EmulatorFilesystemInterface? emulatorFilesystem = emulator?.filesystem;
-  final gameFileList = await emulatorFilesystem?.getGamesDirectoryList();
+  final gameFileList = await emulatorFilesystem?.getGamesDirectoryList(emulator!);
 
   // Check if titles database needs to be downloaded first
   await GameService.instance.checkTitlesDatabase();

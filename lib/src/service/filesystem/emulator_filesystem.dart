@@ -1,11 +1,13 @@
 import 'dart:io';
 
+import 'package:modmopet/src/entity/emulator.dart';
+
 abstract interface class EmulatorFilesystemInterface {
   Future<Directory> defaultEmulatorAppDirectory();
-  Future<Directory> getGameDirectory(String gameTitleId);
-  Future<Directory> getModDirectory(String gameTitleId, String path);
-  Future<List<FileSystemEntity>> getModsDirectoryList(String gameTitleId, {bool recursive = false});
-  Future<Stream<FileSystemEntity>> getGamesDirectoryList();
+  Future<Directory> getGameDirectory(Emulator emulator, String gameTitleId);
+  Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String path);
+  Future<List<FileSystemEntity>> getModsDirectoryList(Emulator emulator, String gameTitleId, {bool recursive = false});
+  Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator);
   Future<bool> isIdentifiedByDirectoryStructure(String emulatorDirectoryPath);
   String getIdentifier();
 }
