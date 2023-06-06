@@ -55,24 +55,30 @@ class EmulatorService {
     return null;
   }
 
-  Future<Emulator?> evaluateEmulator(String? currentEmulatorId) async {
+  Future<Emulator?> evaluateEmulator(String? currentEmulatorId, bool withCustomSelect) async {
     if (currentEmulatorId != null) {
       // Create emulator object
       Emulator? emulator = await createEmulatorById(currentEmulatorId);
       if (emulator != null) {
-        // Check if default emulator application folder path is valid
-        if (!await EmulatorService.instance.isValidEmulatorPath(emulator)) {
-          // Try again by user selected path
-          String? selectedPath = await FilePicker.platform.getDirectoryPath();
-          if (selectedPath != null) {
-            final updatedEmulator = emulator.copyWith(path: selectedPath);
-            if (await EmulatorService.instance.isValidEmulatorPath(updatedEmulator)) {
-              return updatedEmulator;
-            }
-          }
-        } else {
-          return emulator;
+        // Check if default emulator application folder path is valid or user wants to select manually
+        if (!await EmulatorService.instance.isValidEmulatorPath(emulator) || withCustomSelect) {
+          return updateEmulatorPathByUserSelection(emulator);
         }
+
+        return emulator;
+      }
+    }
+
+    return null;
+  }
+
+  Future<Emulator?> updateEmulatorPathByUserSelection(Emulator emulator) async {
+    // Try again by user selected path
+    String? selectedPath = await FilePicker.platform.getDirectoryPath();
+    if (selectedPath != null) {
+      final updatedEmulator = emulator.copyWith(path: selectedPath);
+      if (await EmulatorService.instance.isValidEmulatorPath(updatedEmulator)) {
+        return updatedEmulator;
       }
     }
 

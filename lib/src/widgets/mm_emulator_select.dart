@@ -25,12 +25,21 @@ class MMEmulatorSelect extends HookConsumerWidget {
         const SizedBox(height: 35),
         MMElevatedButton.primary(
           onPressed: () {
-            debugPrint('Picked emulator $emulatorId');
             ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
-            Navigator.pushNamed(context, GameListView.routeName);
+            ref.read(withCustomSelectProvider.notifier).state = false;
+            Navigator.of(context).pushReplacementNamed(GameListView.routeName);
           },
           child: Text(supportedEmulatorMetadata['name']),
-        )
+        ),
+        const SizedBox(height: 10.0),
+        MMElevatedButton.secondary(
+          onPressed: () {
+            ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
+            ref.read(withCustomSelectProvider.notifier).state = true;
+            Navigator.of(context).pushReplacementNamed(GameListView.routeName);
+          },
+          child: const Text('Select manually'),
+        ),
       ],
     );
   }

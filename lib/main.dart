@@ -28,11 +28,13 @@ void main() async {
   // Set window settings
   await windowManager.ensureInitialized();
   WindowOptions windowOptions = const WindowOptions(
-    minimumSize: Size(1200, 800),
+    size: Size(1200, 800),
+    minimumSize: Size(1000, 700),
     center: true,
     backgroundColor: Colors.transparent,
     skipTaskbar: false,
     titleBarStyle: TitleBarStyle.hidden,
+    title: 'ModMopet',
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     await windowManager.show();
@@ -47,12 +49,18 @@ void main() async {
   // This prevents a sudden theme change when the app is first displayed.
   await settingsController.loadSettings();
 
-  // Run the app and pass in the SettingsController. The app listens to the
-  // SettingsController for changes, then passes it further down to the
-  // SettingsView.
+  final supportedLocales = [
+    const Locale('en', 'US'),
+    const Locale('de', 'DE'),
+    const Locale('fr', 'FR'),
+    const Locale('es', 'ES'),
+    const Locale('it', 'IT'),
+    const Locale('pt', 'BR'),
+    const Locale('pt', 'PT')
+  ];
   runApp(
     EasyLocalization(
-      supportedLocales: const [Locale('en', 'US')],
+      supportedLocales: supportedLocales,
       path: 'assets/translations',
       child: App(settingsController: settingsController),
     ),

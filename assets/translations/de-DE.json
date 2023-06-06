@@ -1,0 +1,8 @@
+{
+    "emulator_not_found_title": "Ups, was für ein Pech!",
+    "emulator_not_found_text": "Leider konnte im angegebenen Verzeichnis keine gültige Ordnerstruktur erkannt werden.\nBitte überprüfen Sie, ob Sie den Emulator korrekt installiert haben.",
+    "emulator_not_found_button": "Versuchen Sie es erneut!",
+    "no_games_found_title": "Ups, was für ein Pech!",
+    "no_games_found_text": "Es scheint als hättest du deinem Emulator noch keine Spiele hinzugefügt.",
+    "no_games_found_button": "Neu laden"
+}

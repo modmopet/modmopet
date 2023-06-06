@@ -1,1 +1,8 @@
-{}
+{
+    "emulator_not_found_title": "Oops, what a shame!",
+    "emulator_not_found_text": "Unfortunately, no valid folder structure could be detected in the specified directory.\nPlease check if you have installed the emulator correctly.",
+    "emulator_not_found_button": "Try again!",
+    "no_games_found_title": "Oops, what a shame!",
+    "no_games_found_text": "It seems you haven't added any games to your emulator yet.",
+    "no_games_found_button": "Reload"
+}

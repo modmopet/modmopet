@@ -13,7 +13,7 @@ class EmulatorPickerView extends HookConsumerWidget {
     final supportedEmulators = MMConfig().supportedEmulators;
 
     // Create a list of available emulators to choose from
-    List<MMEmulatorSelect> availableEmulatorList = [];
+    List<Widget> availableEmulatorList = [];
     for (var element in supportedEmulators.entries) {
       availableEmulatorList.add(MMEmulatorSelect(emulatorId: element.key, supportedEmulatorMetadata: element.value));
     }

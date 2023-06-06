@@ -26,14 +26,12 @@ dependencies:
   github: ^9.14.0
   hooks_riverpod: ^2.3.6
   json_annotation: ^4.8.1
+  lottie: ^2.4.0
   path: ^1.8.3
   path_provider: ^2.0.15
   riverpod_annotation: ^2.1.1
   shared_preferences: ^2.1.1
   tinycolor2: ^3.0.1
-  universal_html:
-    git:
-      url: https://github.com/89pleasure/universal_html.git
   url_launcher: ^6.1.11
   window_manager: ^0.3.4
   yaml: ^3.1.2

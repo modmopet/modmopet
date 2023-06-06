@@ -1,0 +1,8 @@
+{
+    "emulator_not_found_title": "¡Uy, qué pena!",
+    "emulator_not_found_text": "Lamentablemente, no se ha podido detectar una estructura de carpetas válida en el directorio especificado. Por favor, compruebe si ha instalado el emulador correctamente.",
+    "emulator_not_found_button": "¡Inténtalo de nuevo!",
+    "no_games_found_title": "¡Uy, qué putada!",
+    "no_games_found_text": "Parece que aún no has añadido ningún juego a tu emulador",
+    "no_games_found_button": "Recargar"
+}
