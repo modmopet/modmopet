@@ -41,7 +41,12 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
                   ),
                 ),
                 // Windows only
-                if (Platform.isWindows) createWindowsActionButtons(context),
+                if (Platform.isWindows)
+                  createWindowsActionButtons(context)
+                else
+                  Container(
+                    width: 300.0,
+                  ),
               ],
             ),
           ),
