@@ -32,22 +32,29 @@ class EmulatorService {
 
   Future<Emulator?> createEmulatorById(String emulatorId) async {
     final supportedEmulators = MMConfig().supportedEmulators;
-    final EmulatorFilesystem emulatorFilesystem = MMConfig().supportedEmulators[emulatorId]['filesystem'];
+    final EmulatorFilesystem emulatorFilesystem =
+        MMConfig().supportedEmulators[emulatorId]['filesystem'];
 
     if (emulatorFilesystem.runtimeType == YuzuFilesystem) {
-      final defaultPath = (await emulatorFilesystem.defaultEmulatorAppDirectory()).path;
+      final defaultPath =
+          (await emulatorFilesystem.defaultEmulatorAppDirectory()).path;
       return Emulator(
         id: emulatorId,
         name: supportedEmulators[emulatorId]['name'],
         filesystem: supportedEmulators[emulatorId]['filesystem'],
+        hasMetadataSupport: supportedEmulators[emulatorId]
+            ['hasMetadataSupport'],
         path: defaultPath,
       );
     } else if (emulatorFilesystem.runtimeType == RyujinxFilesystem) {
-      final defaultPath = (await emulatorFilesystem.defaultEmulatorAppDirectory()).path;
+      final defaultPath =
+          (await emulatorFilesystem.defaultEmulatorAppDirectory()).path;
       return Emulator(
         id: emulatorId,
         name: supportedEmulators[emulatorId]['name'],
         filesystem: supportedEmulators[emulatorId]['filesystem'],
+        hasMetadataSupport: supportedEmulators[emulatorId]
+            ['hasMetadataSupport'],
         path: defaultPath,
       );
     }
@@ -55,13 +62,15 @@ class EmulatorService {
     return null;
   }
 
-  Future<Emulator?> evaluateEmulator(String? currentEmulatorId, bool withCustomSelect) async {
+  Future<Emulator?> evaluateEmulator(
+      String? currentEmulatorId, bool withCustomSelect) async {
     if (currentEmulatorId != null) {
       // Create emulator object
       Emulator? emulator = await createEmulatorById(currentEmulatorId);
       if (emulator != null) {
         // Check if default emulator application folder path is valid or user wants to select manually
-        if (!await EmulatorService.instance.isValidEmulatorPath(emulator) || withCustomSelect) {
+        if (!await EmulatorService.instance.isValidEmulatorPath(emulator) ||
+            withCustomSelect) {
           return updateEmulatorPathByUserSelection(emulator);
         }
 

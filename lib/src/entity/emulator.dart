@@ -9,6 +9,7 @@ class Emulator with _$Emulator {
     required String id,
     required String name,
     required EmulatorFilesystemInterface filesystem,
+    required bool hasMetadataSupport,
     String? path,
   }) = _Emulator;
 }

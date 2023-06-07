@@ -20,6 +20,7 @@ mixin _$Emulator {
   String get name => throw _privateConstructorUsedError;
   EmulatorFilesystemInterface get filesystem =>
       throw _privateConstructorUsedError;
+  bool get hasMetadataSupport => throw _privateConstructorUsedError;
   String? get path => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
@@ -36,6 +37,7 @@ abstract class $EmulatorCopyWith<$Res> {
       {String id,
       String name,
       EmulatorFilesystemInterface filesystem,
+      bool hasMetadataSupport,
       String? path});
 }
 
@@ -55,6 +57,7 @@ class _$EmulatorCopyWithImpl<$Res, $Val extends Emulator>
     Object? id = null,
     Object? name = null,
     Object? filesystem = null,
+    Object? hasMetadataSupport = null,
     Object? path = freezed,
   }) {
     return _then(_value.copyWith(
@@ -70,6 +73,10 @@ class _$EmulatorCopyWithImpl<$Res, $Val extends Emulator>
           ? _value.filesystem
           : filesystem // ignore: cast_nullable_to_non_nullable
               as EmulatorFilesystemInterface,
+      hasMetadataSupport: null == hasMetadataSupport
+          ? _value.hasMetadataSupport
+          : hasMetadataSupport // ignore: cast_nullable_to_non_nullable
+              as bool,
       path: freezed == path
           ? _value.path
           : path // ignore: cast_nullable_to_non_nullable
@@ -89,6 +96,7 @@ abstract class _$$_EmulatorCopyWith<$Res> implements $EmulatorCopyWith<$Res> {
       {String id,
       String name,
       EmulatorFilesystemInterface filesystem,
+      bool hasMetadataSupport,
       String? path});
 }
 
@@ -106,6 +114,7 @@ class __$$_EmulatorCopyWithImpl<$Res>
     Object? id = null,
     Object? name = null,
     Object? filesystem = null,
+    Object? hasMetadataSupport = null,
     Object? path = freezed,
   }) {
     return _then(_$_Emulator(
@@ -121,6 +130,10 @@ class __$$_EmulatorCopyWithImpl<$Res>
           ? _value.filesystem
           : filesystem // ignore: cast_nullable_to_non_nullable
               as EmulatorFilesystemInterface,
+      hasMetadataSupport: null == hasMetadataSupport
+          ? _value.hasMetadataSupport
+          : hasMetadataSupport // ignore: cast_nullable_to_non_nullable
+              as bool,
       path: freezed == path
           ? _value.path
           : path // ignore: cast_nullable_to_non_nullable
@@ -136,6 +149,7 @@ class _$_Emulator extends _Emulator {
       {required this.id,
       required this.name,
       required this.filesystem,
+      required this.hasMetadataSupport,
       this.path})
       : super._();
 
@@ -146,11 +160,13 @@ class _$_Emulator extends _Emulator {
   @override
   final EmulatorFilesystemInterface filesystem;
   @override
+  final bool hasMetadataSupport;
+  @override
   final String? path;
 
   @override
   String toString() {
-    return 'Emulator(id: $id, name: $name, filesystem: $filesystem, path: $path)';
+    return 'Emulator(id: $id, name: $name, filesystem: $filesystem, hasMetadataSupport: $hasMetadataSupport, path: $path)';
   }
 
   @override
@@ -162,11 +178,14 @@ class _$_Emulator extends _Emulator {
             (identical(other.name, name) || other.name == name) &&
             (identical(other.filesystem, filesystem) ||
                 other.filesystem == filesystem) &&
+            (identical(other.hasMetadataSupport, hasMetadataSupport) ||
+                other.hasMetadataSupport == hasMetadataSupport) &&
             (identical(other.path, path) || other.path == path));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, filesystem, path);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, filesystem, hasMetadataSupport, path);
 
   @JsonKey(ignore: true)
   @override
@@ -180,6 +199,7 @@ abstract class _Emulator extends Emulator {
       {required final String id,
       required final String name,
       required final EmulatorFilesystemInterface filesystem,
+      required final bool hasMetadataSupport,
       final String? path}) = _$_Emulator;
   _Emulator._() : super._();
 
@@ -189,6 +209,8 @@ abstract class _Emulator extends Emulator {
   String get name;
   @override
   EmulatorFilesystemInterface get filesystem;
+  @override
+  bool get hasMetadataSupport;
   @override
   String? get path;
   @override
