@@ -5,10 +5,10 @@ import 'package:modmopet/src/themes/color_schemes.g.dart';
 
 class MMBreadcrumbsBar extends ConsumerWidget {
   final String breadcrumb;
-  final String routeName;
+  final String? routeName;
   const MMBreadcrumbsBar(
-    this.breadcrumb,
-    this.routeName, {
+    this.breadcrumb, {
+    this.routeName,
     super.key,
   });
 
@@ -19,7 +19,10 @@ class MMBreadcrumbsBar extends ConsumerWidget {
       width: double.infinity,
       decoration: BoxDecoration(
         color: Theme.of(context).scaffoldBackgroundColor,
-        border: const Border(bottom: BorderSide()),
+        border: Border(
+            bottom: BorderSide(
+          color: MMColors.instance.backgroundBorder,
+        )),
       ),
       child: Padding(
         padding: const EdgeInsets.only(left: 5.0),
@@ -27,14 +30,30 @@ class MMBreadcrumbsBar extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            IconButton(
-              onPressed: () {
-                ref.read(selectedSourceProvider.notifier).clear();
-                Navigator.pushReplacementNamed(context, routeName);
-              },
-              icon: Icon(Icons.arrow_back, color: MMColors.instance.primary),
+            routeName != null
+                ? IconButton(
+                    onPressed: () {
+                      ref.read(selectedSourceProvider.notifier).clear();
+                      Navigator.pushReplacementNamed(context, routeName!);
+                    },
+                    icon: Icon(Icons.arrow_back,
+                        color: MMColors.instance.primary),
+                  )
+                : Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: Icon(
+                      Icons.circle,
+                      color: MMColors.instance.lightWhite,
+                      size: 8.0,
+                    ),
+                  ),
+            Text(
+              breadcrumb,
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyMedium
+                  ?.copyWith(fontWeight: FontWeight.bold),
             ),
-            Text(breadcrumb),
           ],
         ),
       ),

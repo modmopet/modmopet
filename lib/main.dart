@@ -16,8 +16,10 @@ const String emulatorBoxName = 'emulator';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  String imageCacheDirectory = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
-  await FastCachedImageConfig.init(subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
+  String imageCacheDirectory =
+      '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
+  await FastCachedImageConfig.init(
+      subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
 
   // Local storage
   await GetStorage.init();

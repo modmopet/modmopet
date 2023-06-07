@@ -11,6 +11,7 @@ import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/screen/games/games_emulator_view.dart';
 import 'package:modmopet/src/screen/mods/mods_view.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
+import 'package:modmopet/src/widgets/mm_breadcrumbs_bar.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
 import 'package:modmopet/src/widgets/mm_loading_indicator.dart';
 
@@ -27,15 +28,29 @@ class GameListView extends HookConsumerWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Container(
-          height: 150.0,
+        const MMBreadcrumbsBar('Games - Overview'),
+        const SizedBox(
+          height: 140.0,
           width: double.maxFinite,
+          child: GamesEmulatorView(),
+        ),
+        Container(
+          height: 45,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
           decoration: BoxDecoration(
-            border: Border(
-              bottom: BorderSide(color: MMColors.instance.primary, width: 3),
+            border: Border.symmetric(
+              horizontal: BorderSide(
+                width: 1,
+                color: MMColors.instance.backgroundBorder,
+              ),
             ),
           ),
-          child: const GamesEmulatorView(),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisSize: MainAxisSize.min,
+            children: [createActionMenu(context, ref)],
+          ),
         ),
         Expanded(
           child: emulator.when(
@@ -235,6 +250,22 @@ class GameListView extends HookConsumerWidget {
                   style: textTheme.bodySmall
                       ?.copyWith(color: MMColors.instance.secondary)),
             ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget createActionMenu(BuildContext context, WidgetRef ref) {
+    return Row(
+      children: [
+        IconButton(
+          tooltip: 'Reload',
+          onPressed: () => ref.invalidate(gameListProvider),
+          color: MMColors.instance.primary,
+          icon: const Icon(
+            Icons.refresh_outlined,
+            size: 24.0,
           ),
         ),
       ],
