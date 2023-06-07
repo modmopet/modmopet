@@ -51,12 +51,14 @@ class SelectedSource extends _$SelectedSource {
   @override
   GitSource? build() {
     final availableSources = ref.watch(gitSourcesProvider);
-    return availableSources.first;
+    return availableSources.isNotEmpty ? availableSources.first : null;
   }
 
   void select(GitSource source) {
     state = source;
   }
+
+  void clear() => state = null;
 }
 
 @riverpod
@@ -64,8 +66,11 @@ Future<void> updateSources(UpdateSourcesRef ref) async {
   final game = ref.watch(gameProvider);
   final availableGitSources = ref.watch(gitSourcesProvider);
   final selectedSource = ref.watch(selectedSourceProvider);
-  debugPrint('Check for new updates.');
-  await _doUpdateIteration(game!.id, selectedSource ?? availableGitSources.first, ref);
+
+  // Only check for update if game has configured sources
+  if (availableGitSources.isNotEmpty) {
+    await _doUpdateIteration(game!.id, selectedSource ?? availableGitSources.first, ref);
+  }
 }
 
 Future<void> _doUpdateIteration(String gameTitleId, GitSource source, FutureProviderRef ref) async {

@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 
-class MMBreadcrumbsBar extends StatelessWidget {
+class MMBreadcrumbsBar extends ConsumerWidget {
   final String breadcrumb;
   final String routeName;
   const MMBreadcrumbsBar(
@@ -11,7 +13,7 @@ class MMBreadcrumbsBar extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Container(
       height: 45,
       width: double.infinity,
@@ -26,7 +28,10 @@ class MMBreadcrumbsBar extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             IconButton(
-              onPressed: () => Navigator.pushReplacementNamed(context, routeName),
+              onPressed: () {
+                ref.read(selectedSourceProvider.notifier).clear();
+                Navigator.pushReplacementNamed(context, routeName);
+              },
               icon: Icon(Icons.arrow_back, color: MMColors.instance.primary),
             ),
             Text(breadcrumb),

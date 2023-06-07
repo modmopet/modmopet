@@ -1,6 +1,5 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/extensions.dart';
@@ -10,11 +9,13 @@ class ModService {
   static final instance = ModService._();
 
   Future<void> installMod(
-      String gameTitleId, Mod mod, Emulator emulator) async {
+    String gameTitleId,
+    Mod mod,
+    Emulator emulator,
+  ) async {
     final modSourceDirectory = Directory(mod.origin);
     final titleId = gameTitleId.toUpperCase();
-    final emulatorModDirectory =
-        await emulator.filesystem.getModDirectory(emulator, titleId, mod.id);
+    final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, titleId, mod.title);
 
     if (await emulatorModDirectory.exists() == false) {
       await emulatorModDirectory.create();
@@ -28,9 +29,7 @@ class ModService {
   }
 
   Future<void> removeMod(String gameTitleId, Mod mod, Emulator emulator) async {
-    final emulatorModDirectory = await emulator.filesystem
-        .getModDirectory(emulator, gameTitleId, mod.id);
-    debugPrint(emulatorModDirectory.path);
+    final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, gameTitleId, mod.title);
     await emulatorModDirectory.delete(recursive: true);
   }
 }

@@ -10,19 +10,17 @@ import 'package:yaml/yaml.dart';
 
 class ModsRepository {
   /// Checks a mods directory is installed to the emulators mod folder
-  Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String modId) async {
+  Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier) async {
     final modDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), modId.toLowerCase());
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier.toLowerCase());
     return await modDirectory.exists();
   }
 
-  Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String modId, String modOrigin) async {
+  Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String identfier, String modOrigin) async {
     final installedModDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), modId.toLowerCase());
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier.toLowerCase());
     final int installedModVersion = getExtendedVersionNumber(await getModVersion(installedModDirectory.path));
     final int sourceModVersion = getExtendedVersionNumber(await getModVersion(modOrigin));
-
-    debugPrint('Check for mod update: $installedModVersion vs $sourceModVersion');
 
     return sourceModVersion != installedModVersion;
   }
@@ -58,9 +56,9 @@ class ModsRepository {
     Emulator emulator,
     Game game,
   ) async {
-    final bool isInstalled = await isModInstalled(emulator, game.id, yamlConfig['id']);
+    final bool isInstalled = await isModInstalled(emulator, game.id, yamlConfig['title']);
     final bool hasUpdate =
-        isInstalled == true ? await hasModUpdate(emulator, game.id, yamlConfig['id'], modDirectory.path) : false;
+        isInstalled == true ? await hasModUpdate(emulator, game.id, yamlConfig['title'], modDirectory.path) : false;
     return Mod.fromYaml(yamlConfig, modDirectory.path, isInstalled: isInstalled, hasUpdate: hasUpdate);
   }
 

@@ -45,6 +45,7 @@ class Mod with _$Mod {
       version: yaml['version'],
       game: yaml['game'],
       origin: origin,
+      author: yaml['author'],
       isInstalled: isInstalled,
       hasUpdate: hasUpdate,
     );
@@ -88,6 +89,9 @@ class Mods extends _$Mods {
     // }
 
     // debugPrint(uniqueGameVersions.toString());
+
+    // Add a delay for the feeling
+    await Future.delayed(const Duration(milliseconds: 500));
 
     return filteredMods;
   }

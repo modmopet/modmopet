@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
 import 'package:modmopet/src/screen/settings/settings_view.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
@@ -27,6 +28,7 @@ class MMNavigationRail extends HookConsumerWidget {
         navigationIndex.update((state) => index);
         switch (index) {
           case 0:
+            ref.read(selectedSourceProvider.notifier).clear();
             Navigator.pushReplacementNamed(context, GameListView.routeName);
             break;
           case 1:

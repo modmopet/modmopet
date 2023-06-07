@@ -21,7 +21,6 @@ class ModsView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final game = ref.watch(gameProvider);
-
     useMemoized(() => ref.watch(updateSourcesProvider));
 
     return Column(
@@ -139,7 +138,7 @@ Future<void> _launchWebsite(String uri) async {
 }
 
 Widget createSourceMenu(BuildContext context, WidgetRef ref) {
-  final selectedSource = ref.watch(selectedSourceProvider);
+  final GitSource? selectedSource = ref.watch(selectedSourceProvider);
   return Row(
     children: [
       const Text('Source: '),
@@ -147,9 +146,17 @@ Widget createSourceMenu(BuildContext context, WidgetRef ref) {
       createSourceDropdown(context, ref),
       IconButton(
         tooltip: 'Open Github',
-        onPressed: () => _launchWebsite(selectedSource!.uri),
+        onPressed: selectedSource != null ? () => _launchWebsite(selectedSource.uri) : null,
         icon: const Icon(
           Icons.open_in_browser_outlined,
+          size: 24.0,
+        ),
+      ),
+      IconButton(
+        tooltip: 'Check for updates',
+        onPressed: () => ref.invalidate(gitSourcesProvider),
+        icon: const Icon(
+          Icons.update,
           size: 24.0,
         ),
       ),
@@ -175,8 +182,9 @@ Widget createSourceDropdown(BuildContext context, WidgetRef ref) {
     );
   }).toList();
 
-  return MMDropdown<GitSource>(
+  return MMDropdown<GitSource?>(
     items: items,
+    hint: 'Github Source',
     onChanged: (value) {
       ref.read(selectedSourceProvider.notifier).select(value!);
     },

@@ -68,7 +68,6 @@ class PlatformFilesystem {
     final String sourceRoot = '${(await gameRootDirectory(game.id.toUpperCase())).path}${Platform.pathSeparator}source';
     final String modsRoot =
         sourceRoot + Platform.pathSeparator + source.repository + Platform.pathSeparator + source.root;
-    debugPrint(modsRoot);
     return Directory(modsRoot);
   }
 

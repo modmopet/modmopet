@@ -29,9 +29,6 @@ class MMConfig {
   };
 
   final Map<String, List<GitSource>> defaultSupportedSources = {
-    "01006F8002326000": [
-      const GitSource(user: 'HolographicWings', repository: 'TOTK-Mods-collection', root: 'Mods', branch: 'main'),
-    ],
     "0100F2C0115B6000": [
       const GitSource(user: 'HolographicWings', repository: 'TOTK-Mods-collection', root: 'Mods', branch: 'main'),
     ]

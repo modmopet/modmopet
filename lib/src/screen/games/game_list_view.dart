@@ -20,6 +20,7 @@ class GameListView extends HookConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final emulator = ref.watch(emulatorProvider);
+
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -81,7 +82,7 @@ class GameListView extends HookConsumerWidget {
                   ],
                 ),
                 onTap: () {
-                  ref.read(gameProvider.notifier).state = game;
+                  ref.watch(gameProvider.notifier).state = game;
                   Navigator.restorablePushNamed(
                     context,
                     ModsView.routeName,
