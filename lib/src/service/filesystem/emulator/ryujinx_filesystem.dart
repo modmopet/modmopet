@@ -1,5 +1,7 @@
+import 'dart:convert';
 import 'dart:io';
 import 'package:modmopet/src/entity/emulator.dart';
+import 'package:modmopet/src/entity/game_meta.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
 import 'package:path/path.dart' as path;
@@ -21,7 +23,8 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   Future<Directory> defaultEmulatorAppDirectory() async {
     Directory applicationSupportDirectory = await getApplicationSupportDirectory();
     return Directory(
-        '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
+      '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName',
+    );
   }
 
   /// Gets the directory of a potentially installed mod
@@ -78,6 +81,29 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
     }
 
     return const Stream<FileSystemEntity>.empty();
+  }
+
+  /// Gets the game metadata from the emulator to display info about the playtime and other things
+  @override
+  Future<dynamic> getGameMetadata(Emulator emulator, String gameTitleId) async {
+    final Directory emulatorGameDirectory = await getGameDirectory(emulator, gameTitleId);
+    if (emulatorGameDirectory.existsSync()) {
+      final File gameMetaFile = File(
+        '${emulatorGameDirectory.path}${Platform.pathSeparator}gui${Platform.pathSeparator}metadata.json',
+      );
+
+      if (gameMetaFile.existsSync()) {
+        final Map<String, dynamic> metaData = await jsonDecode(gameMetaFile.readAsStringSync());
+        return GameMeta(
+          title: metaData.containsKey('title') ? metaData['title']! : '',
+          favorite: metaData.containsKey('favorite') ? metaData['favorite']! as bool : false,
+          playTime: metaData.containsKey('time_played') ? metaData['time_played']! as int : 0,
+          lastPlayed: metaData.containsKey('last_played_utc') ? DateTime.tryParse(metaData['last_played_utc']) : null,
+        );
+      }
+    }
+
+    return {};
   }
 
   @override

@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
@@ -54,6 +53,11 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
     }
 
     return [];
+  }
+
+  @override
+  Future<dynamic> getGameMetadata(Emulator emulator, String gameTitleId) async {
+    return {};
   }
 
   @override

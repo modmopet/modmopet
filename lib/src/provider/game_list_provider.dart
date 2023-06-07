@@ -1,5 +1,4 @@
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/entity/game.dart';
@@ -25,6 +24,7 @@ final gameListProvider = FutureProvider<List<Game>>((ref) async {
     await for (FileSystemEntity element in gameFileList) {
       final titleId = path.basenameWithoutExtension(element.path).split('.').first.toUpperCase();
       if (titlesList.containsKey(titleId)) {
+        final dynamic gameMetadata = await emulatorFilesystem?.getGameMetadata(emulator!, titleId);
         Map<String, List<GitSource>> sources = MMConfig().defaultSupportedSources;
         final mappedSources = sources.map((key, value) => MapEntry(key.toUpperCase(), value));
         await LoggerService.instance.log('Found title: $titleId');
@@ -39,6 +39,7 @@ final gameListProvider = FutureProvider<List<Game>>((ref) async {
           bannerUrl: titleEntry['bannerUrl'],
           iconUrl: titleEntry['iconUrl'],
           publisher: titleEntry['publisher'],
+          meta: gameMetadata,
         );
         games.add(game);
       }
