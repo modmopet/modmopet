@@ -27,7 +27,6 @@ class ModListItem extends ConsumerWidget {
 
   List<Widget> createAuthorsTextLinks(List<dynamic>? authors) {
     List<Widget> authorsLinks = [];
-
     if (authors != null && authors.isNotEmpty) {
       for (Map author in authors) {
         authorsLinks.add(
@@ -39,8 +38,9 @@ class ModListItem extends ConsumerWidget {
                     softWrap: true,
                     style: TextStyle(
                       fontSize: 11.0,
-                      color: MMColors.instance.bodyText,
+                      color: author['link'] != null ? MMColors.instance.secondary : MMColors.instance.lightWhite,
                     ),
+                    overflow: TextOverflow.ellipsis,
                   )
                 : const Text('unknown'),
           ),
@@ -95,7 +95,16 @@ class ModListItem extends ConsumerWidget {
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   ...createAuthorsTextLinks(mod.author),
-                  mod.version == null ? const Text('No version') : Text('v${mod.version!}'),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 12.0,
+                    ),
+                    child: mod.version == null
+                        ? const Text('No version')
+                        : Text(
+                            'v${mod.version!}',
+                          ),
+                  ),
                 ],
               ),
             ),

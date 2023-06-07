@@ -4,13 +4,15 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 
 class MMDropdown<T> extends HookConsumerWidget {
-  const MMDropdown({required this.items, required this.onChanged, required this.value, super.key});
-  final List<DropdownMenuItem<T>>? items;
+  const MMDropdown({required this.items, required this.hint, required this.onChanged, required this.value, super.key});
+  final List<DropdownMenuItem<T>> items;
+  final String hint;
   final void Function(T?) onChanged;
   final T? value;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final textTheme = Theme.of(context).textTheme;
     return DropdownButtonHideUnderline(
       child: DropdownButton2(
         buttonStyleData: ButtonStyleData(
@@ -51,9 +53,14 @@ class MMDropdown<T> extends HookConsumerWidget {
           height: 40,
           padding: EdgeInsets.only(left: 14, right: 14),
         ),
-        hint: const Row(
+        hint: Row(
           children: [
-            Text('Test'),
+            Text(
+              hint,
+              style: textTheme.bodyMedium?.copyWith(
+                color: MMColors.instance.lightWhite.withOpacity(0.6),
+              ),
+            ),
           ],
         ),
         items: items,
