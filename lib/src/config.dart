@@ -20,17 +20,23 @@ class MMConfig {
       'name': 'Yuzu',
       'url': 'https://yuzu-emu.org',
       'filesystem': YuzuFilesystem.instance,
+      'hasMetadataSupport': false,
     },
     'ryujinx': {
       'name': 'Ryujinx',
       'url': 'https://ryujinx.org',
       'filesystem': RyujinxFilesystem.instance,
+      'hasMetadataSupport': true,
     },
   };
 
   final Map<String, List<GitSource>> defaultSupportedSources = {
     "0100F2C0115B6000": [
-      const GitSource(user: 'HolographicWings', repository: 'TOTK-Mods-collection', root: 'Mods', branch: 'main'),
+      const GitSource(
+          user: 'HolographicWings',
+          repository: 'TOTK-Mods-collection',
+          root: 'Mods',
+          branch: 'main'),
     ]
   };
 }

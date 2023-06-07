@@ -23,7 +23,7 @@ mixin _$Game {
   String get bannerUrl => throw _privateConstructorUsedError;
   String get iconUrl => throw _privateConstructorUsedError;
   String get publisher => throw _privateConstructorUsedError;
-  GameMeta get meta => throw _privateConstructorUsedError;
+  GameMeta? get meta => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $GameCopyWith<Game> get copyWith => throw _privateConstructorUsedError;
@@ -42,9 +42,9 @@ abstract class $GameCopyWith<$Res> {
       String bannerUrl,
       String iconUrl,
       String publisher,
-      GameMeta meta});
+      GameMeta? meta});
 
-  $GameMetaCopyWith<$Res> get meta;
+  $GameMetaCopyWith<$Res>? get meta;
 }
 
 /// @nodoc
@@ -67,7 +67,7 @@ class _$GameCopyWithImpl<$Res, $Val extends Game>
     Object? bannerUrl = null,
     Object? iconUrl = null,
     Object? publisher = null,
-    Object? meta = null,
+    Object? meta = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -98,17 +98,21 @@ class _$GameCopyWithImpl<$Res, $Val extends Game>
           ? _value.publisher
           : publisher // ignore: cast_nullable_to_non_nullable
               as String,
-      meta: null == meta
+      meta: freezed == meta
           ? _value.meta
           : meta // ignore: cast_nullable_to_non_nullable
-              as GameMeta,
+              as GameMeta?,
     ) as $Val);
   }
 
   @override
   @pragma('vm:prefer-inline')
-  $GameMetaCopyWith<$Res> get meta {
-    return $GameMetaCopyWith<$Res>(_value.meta, (value) {
+  $GameMetaCopyWith<$Res>? get meta {
+    if (_value.meta == null) {
+      return null;
+    }
+
+    return $GameMetaCopyWith<$Res>(_value.meta!, (value) {
       return _then(_value.copyWith(meta: value) as $Val);
     });
   }
@@ -128,10 +132,10 @@ abstract class _$$_GameCopyWith<$Res> implements $GameCopyWith<$Res> {
       String bannerUrl,
       String iconUrl,
       String publisher,
-      GameMeta meta});
+      GameMeta? meta});
 
   @override
-  $GameMetaCopyWith<$Res> get meta;
+  $GameMetaCopyWith<$Res>? get meta;
 }
 
 /// @nodoc
@@ -150,7 +154,7 @@ class __$$_GameCopyWithImpl<$Res> extends _$GameCopyWithImpl<$Res, _$_Game>
     Object? bannerUrl = null,
     Object? iconUrl = null,
     Object? publisher = null,
-    Object? meta = null,
+    Object? meta = freezed,
   }) {
     return _then(_$_Game(
       id: null == id
@@ -181,10 +185,10 @@ class __$$_GameCopyWithImpl<$Res> extends _$GameCopyWithImpl<$Res, _$_Game>
           ? _value.publisher
           : publisher // ignore: cast_nullable_to_non_nullable
               as String,
-      meta: null == meta
+      meta: freezed == meta
           ? _value.meta
           : meta // ignore: cast_nullable_to_non_nullable
-              as GameMeta,
+              as GameMeta?,
     ));
   }
 }
@@ -225,7 +229,7 @@ class _$_Game extends _Game {
   @override
   final String publisher;
   @override
-  final GameMeta meta;
+  final GameMeta? meta;
 
   @override
   String toString() {
@@ -277,7 +281,7 @@ abstract class _Game extends Game {
       required final String bannerUrl,
       required final String iconUrl,
       required final String publisher,
-      required final GameMeta meta}) = _$_Game;
+      required final GameMeta? meta}) = _$_Game;
   _Game._() : super._();
 
   @override
@@ -295,7 +299,7 @@ abstract class _Game extends Game {
   @override
   String get publisher;
   @override
-  GameMeta get meta;
+  GameMeta? get meta;
   @override
   @JsonKey(ignore: true)
   _$$_GameCopyWith<_$_Game> get copyWith => throw _privateConstructorUsedError;

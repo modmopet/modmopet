@@ -2,6 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/game_meta.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
@@ -40,7 +41,7 @@ class GameListView extends HookConsumerWidget {
           child: emulator.when(
             data: (emulator) {
               if (emulator != null) {
-                return buildGameListView(context, ref);
+                return buildGameListView(emulator, context, ref);
               }
 
               return emulatorNotFoundView(context, ref);
@@ -53,7 +54,8 @@ class GameListView extends HookConsumerWidget {
     );
   }
 
-  Widget buildGameListView(BuildContext context, WidgetRef ref) {
+  Widget buildGameListView(
+      Emulator emulator, BuildContext context, WidgetRef ref) {
     final games = ref.watch(gameListProvider);
     return games.when(
       loading: () => MMLoadingIndicator(),
@@ -81,14 +83,25 @@ class GameListView extends HookConsumerWidget {
                       ),
                     ],
                   ),
-                  subtitle: Text('by ${game.publisher}', style: Theme.of(context).textTheme.bodySmall),
+                  subtitle: Text('by ${game.publisher}',
+                      style: Theme.of(context).textTheme.bodySmall),
                   trailing: Container(
                     width: 175.0,
                     padding: const EdgeInsets.only(left: 10.0),
-                    decoration: BoxDecoration(
-                      border: Border(left: BorderSide(width: 1, color: MMColors.instance.backgroundBorder)),
-                    ),
-                    child: buildGameMetadataInfo(game.meta, Theme.of(context).textTheme),
+                    decoration: emulator.hasMetadataSupport == true
+                        ? BoxDecoration(
+                            border: Border(
+                                left: BorderSide(
+                                    width: 1,
+                                    color: MMColors.instance.backgroundBorder)),
+                          )
+                        : null,
+                    child: emulator.hasMetadataSupport && game.meta != null
+                        ? buildGameMetadataInfo(
+                            game.meta!,
+                            Theme.of(context).textTheme,
+                          )
+                        : Container(),
                   ),
                   onTap: () {
                     ref.watch(gameProvider.notifier).state = game;
@@ -213,10 +226,14 @@ class GameListView extends HookConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(formatDurationToPlayTime(Duration(minutes: meta.playTime), extended: true),
-                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
+              Text(
+                  formatDurationToPlayTime(Duration(minutes: meta.playTime),
+                      extended: true),
+                  style: textTheme.bodySmall
+                      ?.copyWith(color: MMColors.instance.secondary)),
               Text(formatDateTimeToReadable(meta.lastPlayed!),
-                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
+                  style: textTheme.bodySmall
+                      ?.copyWith(color: MMColors.instance.secondary)),
             ],
           ),
         ),

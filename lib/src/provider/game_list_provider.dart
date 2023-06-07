@@ -14,28 +14,38 @@ final gameListProvider = FutureProvider<List<Game>>((ref) async {
   List<Game> games = List.empty(growable: true);
   final emulator = ref.watch(emulatorProvider).value;
   final EmulatorFilesystemInterface? emulatorFilesystem = emulator?.filesystem;
-  final gameFileList = await emulatorFilesystem?.getGamesDirectoryList(emulator!);
+  final gameFileList =
+      await emulatorFilesystem?.getGamesDirectoryList(emulator!);
 
   // Check if titles database needs to be downloaded first
   await GameService.instance.checkTitlesDatabase();
 
   if (gameFileList != null) {
-    Map<String, dynamic> titlesList = await GameService.instance.buildTitleMap();
+    Map<String, dynamic> titlesList =
+        await GameService.instance.buildTitleMap();
     await for (FileSystemEntity element in gameFileList) {
-      final titleId = path.basenameWithoutExtension(element.path).split('.').first.toUpperCase();
+      final titleId = path
+          .basenameWithoutExtension(element.path)
+          .split('.')
+          .first
+          .toUpperCase();
       if (titlesList.containsKey(titleId)) {
-        final dynamic gameMetadata = await emulatorFilesystem?.getGameMetadata(emulator!, titleId);
-        Map<String, List<GitSource>> sources = MMConfig().defaultSupportedSources;
-        final mappedSources = sources.map((key, value) => MapEntry(key.toUpperCase(), value));
+        final dynamic gameMetadata =
+            await emulatorFilesystem?.getGameMetadata(emulator!, titleId);
+        Map<String, List<GitSource>> sources =
+            MMConfig().defaultSupportedSources;
+        final mappedSources =
+            sources.map((key, value) => MapEntry(key.toUpperCase(), value));
         await LoggerService.instance.log('Found title: $titleId');
         final titleEntry = titlesList[titleId];
         final game = Game(
           id: titleId,
           title: titleEntry['name'],
           version: 'unkown',
-          sources: mappedSources.isNotEmpty && mappedSources.containsKey(titleId)
-              ? mappedSources[titleId.toUpperCase()]!
-              : [],
+          sources:
+              mappedSources.isNotEmpty && mappedSources.containsKey(titleId)
+                  ? mappedSources[titleId.toUpperCase()]!
+                  : [],
           bannerUrl: titleEntry['bannerUrl'],
           iconUrl: titleEntry['iconUrl'],
           publisher: titleEntry['publisher'],

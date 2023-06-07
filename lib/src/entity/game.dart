@@ -15,7 +15,7 @@ class Game with _$Game {
     required String bannerUrl,
     required String iconUrl,
     required String publisher,
-    required GameMeta meta,
+    required GameMeta? meta,
   }) = _Game;
 }
 
