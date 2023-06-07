@@ -152,6 +152,14 @@ Widget createSourceMenu(BuildContext context, WidgetRef ref) {
           size: 24.0,
         ),
       ),
+      IconButton(
+        tooltip: 'Check for updates',
+        onPressed: () => ref.invalidate(gitSourcesProvider),
+        icon: const Icon(
+          Icons.update,
+          size: 24.0,
+        ),
+      ),
       const IconButton(
         tooltip: 'Not yet implemented',
         onPressed: null,

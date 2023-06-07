@@ -24,7 +24,6 @@ final gameListProvider = FutureProvider<List<Game>>((ref) async {
     Map<String, dynamic> titlesList = await GameService.instance.buildTitleMap();
     await for (FileSystemEntity element in gameFileList) {
       final titleId = path.basenameWithoutExtension(element.path).split('.').first.toUpperCase();
-      debugPrint(titleId);
       if (titlesList.containsKey(titleId)) {
         Map<String, List<GitSource>> sources = MMConfig().defaultSupportedSources;
         final mappedSources = sources.map((key, value) => MapEntry(key.toUpperCase(), value));
