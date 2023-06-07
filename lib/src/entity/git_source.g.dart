@@ -6,7 +6,7 @@ part of 'git_source.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$updateSourcesHash() => r'607248053988fa6905685f64dc8beaf68e2e7aec';
+String _$updateSourcesHash() => r'b030c237395b732e02504eafad50e624ae4a0604';
 
 /// See also [updateSources].
 @ProviderFor(updateSources)
@@ -36,7 +36,7 @@ final gitSourcesProvider =
 );
 
 typedef _$GitSources = AutoDisposeNotifier<List<GitSource>>;
-String _$selectedSourceHash() => r'df40a59fe8e029d85d158222d9ba059c6e80af71';
+String _$selectedSourceHash() => r'9373651c46642238b5060d0c1cf318902537057f';
 
 /// See also [SelectedSource].
 @ProviderFor(SelectedSource)

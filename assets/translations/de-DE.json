@@ -4,5 +4,26 @@
     "emulator_not_found_button": "Versuchen Sie es erneut!",
     "no_games_found_title": "Ups, was für ein Pech!",
     "no_games_found_text": "Es scheint als hättest du deinem Emulator noch keine Spiele hinzugefügt.",
-    "no_games_found_button": "Neu laden"
+    "no_games_found_button": "Neu laden",
+
+    "hour": {
+        "zero": "Stunden",
+        "one": "Stunde",
+        "many": "Stunden",
+        "other": "Stunden"
+    }, 
+
+    "minute": {
+        "zero": "Minuten",
+        "one": "Minute",
+        "many": "Minuten",
+        "other": "Minuten"
+    },
+
+    "second": {
+        "zero": "Sekunden",
+        "one": "Sekunde",
+        "many": "Sekunden",
+        "other": "Sekunden"
+    }
 }

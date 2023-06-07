@@ -4,5 +4,26 @@
     "emulator_not_found_button": "Try again!",
     "no_games_found_title": "Oops, what a shame!",
     "no_games_found_text": "It seems you haven't added any games to your emulator yet.",
-    "no_games_found_button": "Reload"
+    "no_games_found_button": "Reload",
+
+    "hour": {
+        "zero": "hours",
+        "one": "hour",
+        "many": "hours",
+        "other": "hours"
+    }, 
+
+    "minute": {
+        "zero": "minutes",
+        "one": "minute",
+        "many": "minutes",
+        "other": "minutes"
+    },
+
+    "second": {
+        "zero": "seconds",
+        "one": "second",
+        "many": "seconds",
+        "other": "seconds"
+    }
 }

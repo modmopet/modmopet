@@ -3,6 +3,7 @@ import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/game.dart';
+import 'package:modmopet/src/entity/game_meta.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/provider/game_list_provider.dart';
 import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
@@ -64,30 +65,39 @@ class GameListView extends HookConsumerWidget {
             itemCount: games.length,
             itemBuilder: (BuildContext context, int index) {
               final Game game = games[index];
-              return ListTile(
-                title: Text(game.title),
-                shape: const BorderDirectional(
-                  bottom: BorderSide(width: 1.0),
-                ),
-                minVerticalPadding: 15.0,
-                leading: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    FastCachedImage(
-                      url: game.iconUrl,
-                      cacheHeight: 50,
-                      cacheWidth: 50,
+              return Material(
+                type: MaterialType.transparency,
+                child: ListTile(
+                  title: Text(game.title),
+                  minVerticalPadding: 15.0,
+                  leading: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      FastCachedImage(
+                        url: game.iconUrl,
+                        cacheHeight: 50,
+                        cacheWidth: 50,
+                      ),
+                    ],
+                  ),
+                  subtitle: Text('by ${game.publisher}', style: Theme.of(context).textTheme.bodySmall),
+                  trailing: Container(
+                    width: 175.0,
+                    padding: const EdgeInsets.only(left: 10.0),
+                    decoration: BoxDecoration(
+                      border: Border(left: BorderSide(width: 1, color: MMColors.instance.backgroundBorder)),
                     ),
-                  ],
+                    child: buildGameMetadataInfo(game.meta, Theme.of(context).textTheme),
+                  ),
+                  onTap: () {
+                    ref.watch(gameProvider.notifier).state = game;
+                    Navigator.restorablePushNamed(
+                      context,
+                      ModsView.routeName,
+                    );
+                  },
                 ),
-                onTap: () {
-                  ref.watch(gameProvider.notifier).state = game;
-                  Navigator.restorablePushNamed(
-                    context,
-                    ModsView.routeName,
-                  );
-                },
               );
             },
           );
@@ -172,5 +182,63 @@ class GameListView extends HookConsumerWidget {
         ],
       ),
     );
+  }
+
+  Widget buildGameMetadataInfo(GameMeta meta, TextTheme textTheme) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.end,
+      children: [
+        Container(
+          width: 25.0,
+          padding: const EdgeInsets.only(right: 6.0),
+          child: const Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Icon(
+                Icons.timer,
+                size: 16.0,
+              ),
+              Icon(
+                Icons.calendar_month_sharp,
+                size: 16.0,
+              )
+            ],
+          ),
+        ),
+        Expanded(
+          child: Column(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(formatDurationToPlayTime(Duration(minutes: meta.playTime), extended: true),
+                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
+              Text(formatDateTimeToReadable(meta.lastPlayed!),
+                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
+            ],
+          ),
+        ),
+      ],
+    );
+  }
+
+  String formatDurationToPlayTime(Duration duration, {bool extended = false}) {
+    final hh = (duration.inHours).toString();
+    final mm = (duration.inMinutes % 60).toString();
+    String hours = 'h';
+    String minutes = 'm';
+
+    if (extended) {
+      hours = ' ${plural('hour', duration.inHours)}';
+      minutes = ' ${plural('minute', duration.inMinutes % 60)}';
+    }
+
+    return '$hh$hours $mm$minutes';
+  }
+
+  String formatDateTimeToReadable(DateTime dateTime) {
+    return DateFormat.yMMMd().format(dateTime);
   }
 }
