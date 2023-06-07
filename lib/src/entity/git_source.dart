@@ -57,6 +57,8 @@ class SelectedSource extends _$SelectedSource {
   void select(GitSource source) {
     state = source;
   }
+
+  void clear() => state = null;
 }
 
 @riverpod

@@ -35,7 +35,7 @@ class MMElevatedButton extends StatelessWidget {
       onPressed: onPressed,
       style: OutlinedButton.styleFrom(
         minimumSize: Size(minSize, 40),
-        elevation: 4,
+        elevation: 5,
         backgroundColor: backgroundColor,
         foregroundColor: MMColors.instance.bodyText,
         textStyle: Theme.of(context).textTheme.labelMedium,

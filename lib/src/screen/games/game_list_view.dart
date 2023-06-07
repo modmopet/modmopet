@@ -81,7 +81,7 @@ class GameListView extends HookConsumerWidget {
                   ],
                 ),
                 onTap: () {
-                  ref.read(gameProvider.notifier).state = game;
+                  ref.watch(gameProvider.notifier).state = game;
                   Navigator.restorablePushNamed(
                     context,
                     ModsView.routeName,

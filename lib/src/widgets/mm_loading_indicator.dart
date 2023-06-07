@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:lottie/lottie.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 
 class MMLoadingIndicator extends HookWidget {
@@ -23,7 +24,9 @@ class MMLoadingIndicator extends HookWidget {
     return SizedBox(
       width: width,
       height: height,
-      child: Center(child: CircularProgressIndicator(color: color)),
+      child: Center(
+        child: Lottie.asset('assets/images/animated/moped.json'),
+      ),
     );
   }
 }
