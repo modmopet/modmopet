@@ -42,13 +42,13 @@ jobs:
         include:
           - target: windows
             runner: windows-latest
-            artifact: build/windows/runner/Release/*
+            artifact: build/windows/runner/Release
           - target: linux
             runner: ubuntu-latest
             artifact: build/linux/x64/release/bundle
           - target: macos
             runner: macos-latest
-            artifact: build/macos/Build/Products/Release
+            artifact: build/macos/Build/Products/Release/ModMopet.app
     runs-on: ${{ matrix.runner }}
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
@@ -88,14 +88,18 @@ jobs:
       run: |
         make build ${{ matrix.target }}
 
-    - name: Zip artifact
+    - name: Zip artifact (Windows)
       if: ${{ matrix.runner == 'windows-latest' }}
       shell: pwsh
       run: Compress-Archive "${{ matrix.artifact }}" "modmopet-${{ matrix.target }}.zip"
-    - name: Zip artifact
-      if: ${{ matrix.runner != 'windows-latest' }}
+    - name: Zip artifact (Linux)
+      if: ${{ matrix.runner == 'ubuntu-latest' }}
       shell: bash
-      run: tar -C ${{ matrix.artifact }} -czf "modmopet-${{ matrix.target }}.tar.gz" .
+      run: tar -C "$(dirname ${{ matrix.artifact }})" -czf "modmopet-${{ matrix.target }}.tar.gz" "$(basename ${{ matrix.artifact }})" --transform "s/$(basename ${{ matrix.artifact }})/ModMopet/"
+    - name: Zip artifact (MacOS)
+      if: ${{ matrix.runner == 'macos-latest' }}
+      shell: bash
+      run: tar -C "$(dirname ${{ matrix.artifact }})" -czf "modmopet-${{ matrix.target }}.tar.gz" "$(basename ${{ matrix.artifact }})"
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3
@@ -126,3 +130,4 @@ jobs:
           ARGS="$ARGS --prerelease"
         fi
         gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
+ 
