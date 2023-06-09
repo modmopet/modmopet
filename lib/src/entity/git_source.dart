@@ -7,7 +7,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
-import 'package:modmopet/src/service/github.dart';
+import 'package:modmopet/src/service/github/github.dart';
 import 'package:modmopet/src/service/logger.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'git_source.freezed.dart';
@@ -74,7 +74,8 @@ Future<void> updateSources(UpdateSourcesRef ref) async {
 }
 
 Future<void> _doUpdateIteration(String gameTitleId, GitSource source, FutureProviderRef ref) async {
-  final latestRelease = await GithubService.instance.getLatestRelease(source);
+  debugPrint('Check for new update');
+  final latestRelease = await GithubClient().getLatestRelease(source);
   final latestGithubReleaseId = latestRelease.id;
   String? latestReleaseId = await PlatformFilesystem.instance.readFromLocal('latestReleaseId');
 
@@ -115,7 +116,7 @@ Future<void> _doDownloadAndSaveArchive(String gameTitleId, GitSource source) asy
 
   // Download, extract, delete zipfile
   LoggerService.instance.log('Update Manager: Downloading zipball...');
-  final latestRelease = await GithubService.instance.getLatestRelease(source);
+  final latestRelease = await GithubClient().getLatestRelease(source);
 
   // Try to find asset by name, since we want the full release
   final releaseAssets = latestRelease.assets;
