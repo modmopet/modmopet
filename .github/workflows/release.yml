@@ -48,7 +48,7 @@ jobs:
             artifact: build/linux/x64/release/bundle
           - target: macos
             runner: macos-latest
-            artifact: build/macos/Build/Product/Release
+            artifact: build/macos/Build/Products/Release
     runs-on: ${{ matrix.runner }}
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
