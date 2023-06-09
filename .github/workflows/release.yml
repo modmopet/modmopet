@@ -85,6 +85,8 @@ jobs:
         GH_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
         GH_APP_ID: ${{ secrets.GH_APP_ID }}
         GH_INSTALLMENT_ID: ${{ secrets.GH_INSTALLMENT_ID }}
+        SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
+        SENTRY_TRACE_SAMPLE_RATE: ${{ vars.SENTRY_TRACE_SAMPLE_RATE }}
       run: |
         make build ${{ matrix.target }}
 
