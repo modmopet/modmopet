@@ -12,8 +12,6 @@ class GithubAuthService {
   Future<String?> getToken() async {
     final File authToken = await getCachedTokenFile();
 
-    debugPrint('Check token exists');
-
     // Check if token exists and verify duration
     if (authToken.existsSync()) {
       debugPrint('Cached token found.');
@@ -22,7 +20,7 @@ class GithubAuthService {
       if (cachedTokenData.isNotEmpty) {
         if (cachedTokenData.containsKey('token') && cachedTokenData.containsKey('createdAt')) {
           final expireAt = DateTime.parse(cachedTokenData['createdAt']!);
-          if (expireAt.difference(DateTime.now()) < const Duration(hours: 1)) {
+          if (DateTime.now().difference(expireAt) < const Duration(hours: 1)) {
             debugPrint('Use cached token: ${cachedTokenData['token']}');
             return cachedTokenData['token'];
           }
