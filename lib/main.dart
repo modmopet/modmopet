@@ -6,6 +6,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
 import 'src/app.dart';
 import 'src/screen/settings/settings_controller.dart';
@@ -58,11 +59,21 @@ void main() async {
     const Locale('pt', 'BR'),
     const Locale('pt', 'PT')
   ];
-  runApp(
-    EasyLocalization(
-      supportedLocales: supportedLocales,
-      path: 'assets/translations',
-      child: App(settingsController: settingsController),
+
+  // Sentry implementation
+  await SentryFlutter.init(
+    (options) {
+      options.dsn = const String.fromEnvironment('MM_SENTRY_DSN');
+      options.tracesSampleRate = double.parse(
+        const String.fromEnvironment('MM_SENTRY_TRACE_SAMPLE_RATE', defaultValue: '0.5'),
+      );
+    },
+    appRunner: () => runApp(
+      EasyLocalization(
+        supportedLocales: supportedLocales,
+        path: 'assets/translations',
+        child: App(settingsController: settingsController),
+      ),
     ),
   );
 }
