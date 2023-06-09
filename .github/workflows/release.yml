@@ -65,24 +65,26 @@ jobs:
         cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
         architecture: x64 # optional, x64 or arm64
 
-    - name: Install Dependencies (windows)
+    - name: Install Dependencies (${{ matrix.target }})
       if: ${{ matrix.runner == 'windows-latest' }}
       run: |
         flutter config --enable-windows-desktop
-    - name: Install Dependencies (linux)
+    - name: Install Dependencies (${{ matrix.target }})
       if: ${{ matrix.runner == 'ubuntu-latest' }}
       run: |
         sudo apt-get update -y
         sudo apt-get install -y ninja-build libgtk-3-dev
         flutter config --enable-linux-desktop
-    - name: Install Dependencies (macos)
+    - name: Install Dependencies (${{ matrix.target }})
       if: ${{ matrix.runner == 'macos-latest' }}
       run: |
         flutter config --enable-macos-desktop
       
     - name: Build Flutter ${{ matrix.target }}
       env:
-        APP_GITHUB_API_TOKEN: ${{ secrets.APP_GITHUB_API_TOKEN }}
+        GH_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
+        GH_APP_ID: ${{ secrets.GH_APP_ID }}
+        GH_INSTALLMENT_ID: ${{ secrets.GH_INSTALLMENT_ID }}
       run: |
         make build ${{ matrix.target }}
 
