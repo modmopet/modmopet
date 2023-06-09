@@ -1,6 +1,9 @@
 # Created by https://www.toptal.com/developers/gitignore/api/flutter,macos,windows,linux,visualstudiocode,androidstudio
 # Edit at https://www.toptal.com/developers/gitignore?templates=flutter,macos,windows,linux,visualstudiocode,androidstudio
 
+### ModMopet ##
+dart-define.json
+
 ### Flutter ###
 # Flutter/Dart/Pub related
 **/doc/api/
