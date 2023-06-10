@@ -10,20 +10,5 @@ Currently we are in the **pre-release** phase and are in the middle of the initi
 Then just contact us in our [Discord](https://discord.gg/yTQJgJTbYT).
 
 ## Build
-We do not yet offer finished releases. But if you like, you can compile ModMopet yourself and try it out. But note that ModMopet may not start or run properly on your system yet.
-
-#### Requirements
-- Flutter v3.10.1+ (comes with dart-lang v3.0.1)
-	- Guide to install Flutter you can find [here](https://docs.flutter.dev/get-started/install)
-- Git (You can use [Github for Desktop](https://desktop.github.com) to checkout the repository)
-
-#### Compile
-    # Fetch flutter packages before build
-    > flutter pub get
-    > flutter build (windows|macos|linux)
-
-#### Run & Testing
-    # Fetch flutter packages before running
-    > flutter pub get
-    > flutter run lib/main.dart --debug
-    > Choose device to test on with 0-9
+This readme needs some update to describe the build process of ModMopet and will be posted soon. Right now, you can't build ModMopet withouth further instructions on adding build variables to it. Otherwise API calls will fail. 
+So for now, download the latest release version to test ModMopet out.
