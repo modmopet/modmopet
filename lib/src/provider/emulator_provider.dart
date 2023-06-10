@@ -2,15 +2,16 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/service/emulator.dart';
-import 'package:modmopet/src/service/storage.dart';
+import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'emulator_provider.g.dart';
 
 @riverpod
 class SelectedEmulator extends _$SelectedEmulator {
+  final storage = SharedPreferencesStorage.instance;
+
   Future<String?> _getSelectedEmulator() async {
-    final prefs = await StorageService.instance.prefs;
-    return prefs.getString('selectedEmulator');
+    return storage.get<String>('selectedEmulator');
   }
 
   @override
@@ -19,8 +20,7 @@ class SelectedEmulator extends _$SelectedEmulator {
   Future<void> setEmulator(String selectedEmulator) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final prefs = await StorageService.instance.prefs;
-      prefs.setString('selectedEmulator', selectedEmulator);
+      storage.set<String>('selectedEmulator', selectedEmulator);
       return _getSelectedEmulator();
     });
   }
@@ -28,8 +28,7 @@ class SelectedEmulator extends _$SelectedEmulator {
   Future<void> clearEmulator() async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      final prefs = await StorageService.instance.prefs;
-      prefs.remove('selectedEmulator');
+      storage.remove('selectedEmulator');
       return _getSelectedEmulator();
     });
   }

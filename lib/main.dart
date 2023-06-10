@@ -4,7 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:modmopet/src/service/storage.dart';
+import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -20,9 +20,11 @@ void main() async {
   String imageCacheDirectory = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
   await FastCachedImageConfig.init(subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
 
+  // Set local storage
+  await SharedPreferencesStorage.instance.init();
+
   if (kDebugMode) {
-    final prefs = await StorageService.instance.prefs;
-    prefs.clear();
+    await SharedPreferencesStorage.instance.clear();
   }
 
   // Set window settings

@@ -8,21 +8,20 @@ import 'package:modmopet/src/service/filesystem/emulator/ryujinx_filesystem.dart
 import 'package:modmopet/src/service/filesystem/emulator/yuzu_filesystem.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/logger.dart';
-import 'package:modmopet/src/service/storage.dart';
+import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 import 'package:path/path.dart' as path;
 
 class EmulatorService {
   EmulatorService._();
   static final instance = EmulatorService._();
+  final storage = SharedPreferencesStorage.instance;
 
   Future<void> saveSelectedEmulator(String emulatorId) async {
-    final prefs = await StorageService.instance.prefs;
-    prefs.setString('selectedEmulator', emulatorId);
+    storage.set<String>('selectedEmulator', emulatorId);
   }
 
   Future<void> clearSelectedEmulator() async {
-    final prefs = await StorageService.instance.prefs;
-    prefs.remove('selectedEmulator');
+    storage.remove('selectedEmulator');
   }
 
   Future<bool> isValidEmulatorPath(Emulator emulator) async {

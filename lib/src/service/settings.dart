@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 
 import '../provider/setting_provider.dart';
-import 'storage.dart';
 
 /// A service that stores and retrieves user settings.
 ///
@@ -14,18 +14,18 @@ class SettingsService {
 
   /// An enum representing the current theme mode
   final Setting<ThemeMode> themeMode = Setting<ThemeMode>(SettingsKeys.themeMode, ThemeMode.system);
-  final Setting<String> emulatorId = Setting<String>(SettingsKeys.emulatorId, 'yuzu');
-  
+  final Setting<String?> selectedEmulator = Setting<String?>(SettingsKeys.selectedEmulator, null);
+
   /// Load the user's settings from the local storage
-  /// 
+  ///
   /// This method should be called when the app starts
   void load() async {
-    final settingsThemeMode = await StorageService.instance.get(themeMode.key);
+    final settingsThemeMode = await SharedPreferencesStorage.instance.get(themeMode.key);
     if (settingsThemeMode != null) themeMode.value = ThemeMode.values.firstWhere((e) => e.name == settingsThemeMode);
   }
 
   /// Save the user's settings to the local storage
-  /// 
+  ///
   /// This method should be called when the user changes a setting or when he press `save` button
   /// Settings can be applyed without saving them so restarting the app will restore the previous settings
   Future<void> save() async {
@@ -34,16 +34,13 @@ class SettingsService {
     // so we don't need to save it
     if (themeMode.isNotNull) {
       // write the theme mode to the local storage
-      await StorageService.instance.set(themeMode.key, themeMode.value.name);
+      await SharedPreferencesStorage.instance.set(themeMode.key, themeMode.value.name);
     }
-    if (emulatorId.isNotNull) {
-      await StorageService.instance.set(emulatorId.key, emulatorId.value);
+    if (selectedEmulator.isNotNull) {
+      await SharedPreferencesStorage.instance.set(selectedEmulator.key, selectedEmulator.value);
     }
   }
 }
 
 // Enum to store the keys for the user's settings
-enum SettingsKeys {
-  themeMode,
-  emulatorId
-}
+enum SettingsKeys { themeMode, selectedEmulator }
