@@ -26,13 +26,9 @@ class MMEmulatorSelect extends HookConsumerWidget {
         ),
         const SizedBox(height: 35),
         MMElevatedButton.primary(
-          onPressed: () {
+          onPressed: () async {
             bool withCustomSelect = false;
-
-            // On macos this needs to be always true in sandbox mode to get access to directories outside of sandbox container
-            // if (Platform.isMacOS) withCustomSelect = true;
-
-            ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
+            ref.read(selectedEmulatorProvider.notifier).setEmulator(emulatorId);
             ref.read(withCustomSelectProvider.notifier).state = withCustomSelect;
             Navigator.of(context).pushReplacementNamed(GameListView.routeName);
           },
@@ -41,8 +37,8 @@ class MMEmulatorSelect extends HookConsumerWidget {
         const SizedBox(height: 10.0),
         if (Platform.isMacOS == false)
           MMElevatedButton.secondary(
-            onPressed: () {
-              ref.read(selectedEmulatorIdProvider.notifier).state = emulatorId;
+            onPressed: () async {
+              ref.read(selectedEmulatorProvider.notifier).setEmulator(emulatorId);
               ref.read(withCustomSelectProvider.notifier).state = true;
               Navigator.of(context).pushReplacementNamed(GameListView.routeName);
             },

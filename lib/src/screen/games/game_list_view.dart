@@ -10,6 +10,7 @@ import 'package:modmopet/src/provider/game_list_provider.dart';
 import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/screen/games/games_emulator_view.dart';
 import 'package:modmopet/src/screen/mods/mods_view.dart';
+import 'package:modmopet/src/service/emulator.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_breadcrumbs_bar.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
@@ -69,8 +70,7 @@ class GameListView extends HookConsumerWidget {
     );
   }
 
-  Widget buildGameListView(
-      Emulator emulator, BuildContext context, WidgetRef ref) {
+  Widget buildGameListView(Emulator emulator, BuildContext context, WidgetRef ref) {
     final games = ref.watch(gameListProvider);
     return games.when(
       loading: () => MMLoadingIndicator(),
@@ -98,17 +98,13 @@ class GameListView extends HookConsumerWidget {
                       ),
                     ],
                   ),
-                  subtitle: Text('by ${game.publisher}',
-                      style: Theme.of(context).textTheme.bodySmall),
+                  subtitle: Text('by ${game.publisher}', style: Theme.of(context).textTheme.bodySmall),
                   trailing: Container(
                     width: 175.0,
                     padding: const EdgeInsets.only(left: 10.0),
                     decoration: emulator.hasMetadataSupport == true
                         ? BoxDecoration(
-                            border: Border(
-                                left: BorderSide(
-                                    width: 1,
-                                    color: MMColors.instance.backgroundBorder)),
+                            border: Border(left: BorderSide(width: 1, color: MMColors.instance.backgroundBorder)),
                           )
                         : null,
                     child: emulator.hasMetadataSupport && game.meta != null
@@ -164,7 +160,7 @@ class GameListView extends HookConsumerWidget {
           ),
           MMElevatedButton.primary(
             onPressed: () {
-              ref.read(selectedEmulatorIdProvider.notifier).state = null;
+              EmulatorService.instance.clearSelectedEmulator();
               Navigator.pushReplacementNamed(
                 context,
                 EmulatorPickerView.routeName,
@@ -241,14 +237,10 @@ class GameListView extends HookConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(
-                  formatDurationToPlayTime(Duration(minutes: meta.playTime),
-                      extended: true),
-                  style: textTheme.bodySmall
-                      ?.copyWith(color: MMColors.instance.secondary)),
+              Text(formatDurationToPlayTime(Duration(minutes: meta.playTime), extended: true),
+                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
               Text(formatDateTimeToReadable(meta.lastPlayed!),
-                  style: textTheme.bodySmall
-                      ?.copyWith(color: MMColors.instance.secondary)),
+                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
             ],
           ),
         ),

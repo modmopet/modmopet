@@ -15,32 +15,32 @@ class SettingsView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16),
+    return const Padding(
+      padding: EdgeInsets.all(16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          DropdownButton<ThemeMode>(
-            // Read the selected themeMode from the controller
-            value: controller.themeMode,
-            // Call the updateThemeMode method any time the user selects a theme.
-            onChanged: controller.updateThemeMode,
-            items: const [
-              DropdownMenuItem(
-                value: ThemeMode.system,
-                child: Text('System Theme'),
-              ),
-              DropdownMenuItem(
-                value: ThemeMode.light,
-                child: Text('Light Theme'),
-              ),
-              DropdownMenuItem(
-                value: ThemeMode.dark,
-                child: Text('Dark Theme'),
-              )
-            ],
-          ),
+          Text('Not yet implemented. '),
+          // DropdownButton<ThemeMode>(
+          //   // Read the selected themeMode from the controller
+          //   value: controller.themeMode,
+          //   // Call the updateThemeMode method any time the user selects a theme.
+          //   onChanged: controller.updateThemeMode,
+          //   items: const [
+          //     DropdownMenuItem(
+          //       value: ThemeMode.system,
+          //       child: Text('System Theme'),
+          //     ),
+          //     DropdownMenuItem(
+          //       value: ThemeMode.light,
+          //       child: Text('Light Theme'),
+          //     ),
+          //     DropdownMenuItem(
+          //       value: ThemeMode.dark,
+          //       child: Text('Dark Theme'),
+          //     )
+          //   ],
         ],
       ),
     );
