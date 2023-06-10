@@ -8,6 +8,7 @@ import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/repository/mods.dart';
 import 'package:modmopet/src/service/mod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 part 'mod.freezed.dart';
 part 'mod.g.dart';
 
@@ -111,6 +112,12 @@ class Mods extends _$Mods {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       ModService.instance.updateMod(game.id, mod, emulator);
+      try {
+        await ModService.instance.removeMod(game.id, mod, emulator);
+      } catch (error, stackTrace) {
+        Sentry.captureException(error, stackTrace: stackTrace);
+      }
+
       return _fetchModsByCategory();
     });
   }
@@ -118,7 +125,12 @@ class Mods extends _$Mods {
   Future<void> removeMod(Emulator emulator, Game game, Mod mod) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
-      await ModService.instance.removeMod(game.id, mod, emulator);
+      try {
+        await ModService.instance.removeMod(game.id, mod, emulator);
+      } catch (error, stackTrace) {
+        Sentry.captureException(error, stackTrace: stackTrace);
+      }
+
       return _fetchModsByCategory();
     });
   }

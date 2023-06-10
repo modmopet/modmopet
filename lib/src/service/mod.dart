@@ -30,6 +30,8 @@ class ModService {
 
   Future<void> removeMod(String gameTitleId, Mod mod, Emulator emulator) async {
     final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, gameTitleId, mod.title);
-    await emulatorModDirectory.delete(recursive: true);
+    if (await emulatorModDirectory.exists() == true) {
+      await emulatorModDirectory.delete(recursive: true);
+    }
   }
 }
