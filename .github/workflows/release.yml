@@ -132,4 +132,3 @@ jobs:
           ARGS="$ARGS --prerelease"
         fi
         gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
- 
