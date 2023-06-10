@@ -1,6 +1,6 @@
 <h1 align="center">ModMopet</h1>
 
-![Discord Shield](https://discordapp.com/api/guilds/1110245110903484487/widget.png?style=shield)
+[![](https://discordapp.com/api/guilds/1110245110903484487/widget.png?style=shield)](https://discord.gg/yTQJgJTbYT)
 
 <h4 align="center"><b>ModMopet is a mod manager for Nintendo Switch emulators <b>yuzu and <b>Ryujinx</b>. It uses the Dart language and the Flutter framework and will be available as a multi-platform application for Windows, MacOs and Linux systems.</h4>
 
