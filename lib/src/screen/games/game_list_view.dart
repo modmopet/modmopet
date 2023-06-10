@@ -5,7 +5,6 @@ import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/game_meta.dart';
-import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/provider/game_list_provider.dart';
 import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/screen/games/games_emulator_view.dart';

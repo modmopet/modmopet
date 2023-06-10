@@ -4,7 +4,6 @@ import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
-import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
 import 'package:modmopet/src/service/game.dart';
 import 'package:modmopet/src/service/logger.dart';

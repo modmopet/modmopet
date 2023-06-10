@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'emulator_provider.dart';
+part of 'emulator.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$emulatorHash() => r'3797ec287f67d48c14ac4ad1120a5a1b59a685a3';
+String _$emulatorHash() => r'9792355add9cd4033e33e225c4210bbfc0444376';
 
 /// See also [emulator].
 @ProviderFor(emulator)

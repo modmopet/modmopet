@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/provider/emulator_provider.dart';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/screen/emulator_not_found/emulator_not_found_view.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
 import 'package:modmopet/src/screen/mods/mods_view.dart';
