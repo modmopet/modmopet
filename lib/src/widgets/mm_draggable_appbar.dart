@@ -40,9 +40,9 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
                     ],
                   ),
                 ),
-                // Windows only
-                if (Platform.isWindows)
-                  createWindowsActionButtons(context)
+                // Windows and Linux only
+                if (Platform.isMacOS == false)
+                  buildWindowActionButtons(context)
                 else
                   Container(
                     width: 300.0,
@@ -55,7 +55,7 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
     );
   }
 
-  Widget createWindowsActionButtons(BuildContext context) {
+  Widget buildWindowActionButtons(BuildContext context) {
     return Container(
       width: 300.0,
       padding: const EdgeInsets.only(right: 10.0),
