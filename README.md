@@ -5,7 +5,7 @@
 ## Info
 Currently we are in the **pre-release** phase and are in the middle of the initial phase and development of ModMopet. Do you think you can support us with your skills?  
   
-Then just contact us in our [Discord](https://discord.gg/TthKPE3X).
+Then just contact us in our [Discord](https://discord.gg/yTQJgJTbYT).
 
 ## Build
 We do not yet offer finished releases. But if you like, you can compile ModMopet yourself and try it out. But note that ModMopet may not start or run properly on your system yet.
