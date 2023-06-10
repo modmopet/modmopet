@@ -1,15 +1,46 @@
-import 'package:get_storage/get_storage.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/service/emulator.dart';
+import 'package:modmopet/src/service/storage.dart';
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+part 'emulator_provider.g.dart';
 
-final selectedEmulatorIdProvider = StateProvider<String?>((ref) => GetStorage().read('emulatorId'));
+@riverpod
+class SelectedEmulator extends _$SelectedEmulator {
+  Future<String?> _getSelectedEmulator() async {
+    final prefs = await StorageService.instance.prefs;
+    return prefs.getString('selectedEmulator');
+  }
+
+  @override
+  FutureOr<String?> build() async => _getSelectedEmulator();
+
+  Future<void> setEmulator(String selectedEmulator) async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final prefs = await StorageService.instance.prefs;
+      prefs.setString('selectedEmulator', selectedEmulator);
+      return _getSelectedEmulator();
+    });
+  }
+
+  Future<void> clearEmulator() async {
+    state = const AsyncValue.loading();
+    state = await AsyncValue.guard(() async {
+      final prefs = await StorageService.instance.prefs;
+      prefs.remove('selectedEmulator');
+      return _getSelectedEmulator();
+    });
+  }
+}
+
 final withCustomSelectProvider = StateProvider<bool>((ref) => false);
 
-final emulatorProvider = FutureProvider<Emulator?>((ref) async {
-  final String? selectedEmulatorId = ref.watch(selectedEmulatorIdProvider);
+@riverpod
+Future<Emulator?> emulator(EmulatorRef ref) async {
+  final selectedEmulatorId = ref.watch(selectedEmulatorProvider);
   final bool withCustomSelect = ref.watch(withCustomSelectProvider);
-
-  GetStorage().write('emulatorId', selectedEmulatorId);
-  return EmulatorService.instance.evaluateEmulator(selectedEmulatorId, withCustomSelect);
-});
+  debugPrint(selectedEmulatorId.value);
+  return await EmulatorService.instance.evaluateEmulator(ref, selectedEmulatorId.value, withCustomSelect);
+}

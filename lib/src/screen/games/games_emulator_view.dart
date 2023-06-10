@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/provider/emulator_provider.dart';
+import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/widgets/mm_loading_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -35,39 +36,45 @@ class GamesEmulatorView extends ConsumerWidget {
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.symmetric(vertical: 20.0),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.max,
+                            child: Column(
                               children: [
-                                SizedBox(
-                                  width: 75.0,
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text('Emulator:'),
-                                      const Text('Directory:'),
-                                      buildEmulatorActions(emulator),
-                                    ],
-                                  ),
+                                Row(
+                                  mainAxisSize: MainAxisSize.max,
+                                  children: [
+                                    const SizedBox(
+                                      width: 100.0,
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text('Emulator:'),
+                                          Text('Directory:'),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.max,
+                                        mainAxisAlignment: MainAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(emulator.name),
+                                          Text(emulator.path.toString()),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                                Expanded(
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.max,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(emulator.name),
-                                      Text(emulator.path.toString()),
-                                    ],
-                                  ),
-                                ),
+                                Row(
+                                  children: [
+                                    buildEmulatorActions(emulator, context, ref),
+                                  ],
+                                )
                               ],
                             ),
                           ),
-                        ),
+                        )
                       ],
                     ),
                   ),
@@ -80,17 +87,26 @@ class GamesEmulatorView extends ConsumerWidget {
     );
   }
 
-  Widget buildEmulatorActions(Emulator emulator) {
+  Widget buildEmulatorActions(Emulator emulator, BuildContext context, WidgetRef ref) {
     final Uri emulatorUri = Uri.file(emulator.path!);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
         children: [
           IconButton(
+            tooltip: 'Open emulator folder',
             onPressed: () async {
               launchUrl(emulatorUri);
             },
             icon: const Icon(Icons.folder_open),
+          ),
+          IconButton(
+            tooltip: 'Change emulator',
+            onPressed: () async {
+              ref.read(selectedEmulatorProvider.notifier).clearEmulator();
+              Navigator.of(context).pushReplacementNamed(EmulatorPickerView.routeName);
+            },
+            icon: const Icon(Icons.swap_horizontal_circle_outlined),
           ),
         ],
       ),

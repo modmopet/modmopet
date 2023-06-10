@@ -59,12 +59,12 @@ class Mods extends _$Mods {
     final game = ref.watch(gameProvider);
     final gitSources = ref.watch(gitSourcesProvider);
     final selectedGitSource = ref.watch(selectedSourceProvider);
-    final emulator = ref.watch(emulatorProvider).value;
+    final emulator = ref.watch(emulatorProvider);
     final modsFilter = ref.watch(modsVersionFilterProvider);
 
     // 1. Fetch mods
     final modsByCategory = await ModsRepository().getAvailableMods(
-      emulator!,
+      emulator.value!,
       game!,
       selectedGitSource ?? gitSources.first,
     );

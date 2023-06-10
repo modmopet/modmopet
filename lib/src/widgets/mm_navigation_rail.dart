@@ -33,13 +33,11 @@ class MMNavigationRail extends HookConsumerWidget {
             break;
           case 1:
             Navigator.pushReplacementNamed(context, SettingsView.routeName);
+            break;
           default:
-        }
-        if (index == 0) {
-          Navigator.pushNamed(context, GameListView.routeName);
-        }
-        if (index == 1) {
-          Navigator.pushNamed(context, SettingsView.routeName);
+            ref.read(selectedSourceProvider.notifier).clear();
+            Navigator.pushReplacementNamed(context, GameListView.routeName);
+            break;
         }
       },
       destinations: [
