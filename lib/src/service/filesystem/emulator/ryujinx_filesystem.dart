@@ -83,10 +83,10 @@ class RyujinxFilesystem extends EmulatorFilesystem
     final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (emulatorAppDirectory.existsSync()) {
       final Directory gameListDirectory = Directory(
-        emulatorAppDirectory.path +
-            Platform.pathSeparator +
-            gamesDirectoryBasename,
-      );
+          path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
+      if (!await gameListDirectory.exists()) {
+        return const Stream<FileSystemEntity>.empty();
+      }
       return gameListDirectory.list();
     }
 
@@ -101,8 +101,7 @@ class RyujinxFilesystem extends EmulatorFilesystem
         await getGameDirectory(emulator, gameTitleId);
     if (emulatorGameDirectory.existsSync()) {
       final File gameMetaFile = File(
-        '${emulatorGameDirectory.path}${Platform.pathSeparator}gui${Platform.pathSeparator}metadata.json',
-      );
+          path.joinAll([emulatorGameDirectory.path, 'gui', 'metadata.json']));
 
       if (gameMetaFile.existsSync()) {
         final Map<String, dynamic> metaData =
