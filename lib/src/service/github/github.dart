@@ -14,4 +14,8 @@ class GithubClient {
     final repositorySlug = RepositorySlug(source.user, source.repository);
     return (await github).repositories.getLatestRelease(repositorySlug);
   }
+
+  Future<Release> getLatestTitleDBRelease(RepositorySlug slug) async {
+    return (await github).repositories.getLatestRelease(slug);
+  }
 }

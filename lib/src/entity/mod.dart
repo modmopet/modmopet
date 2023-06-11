@@ -5,6 +5,7 @@ import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/repository/mods.dart';
+import 'package:modmopet/src/service/loading.dart';
 import 'package:modmopet/src/service/mod.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -61,7 +62,17 @@ class Mods extends _$Mods {
     final emulator = ref.watch(emulatorProvider);
     final modsFilter = ref.watch(modsVersionFilterProvider);
 
+    // For all games without default sources
+    if (gitSources.isEmpty) {
+      return [];
+    }
+
     // 1. Fetch mods
+    // Todo: throws state exception without using this PostFrameCallback, needs proper installment
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      await LoadingService.instance.show('Mods will be delivered...');
+    });
+
     final modsByCategory = await ModsRepository().getAvailableMods(
       emulator.value!,
       game!,
@@ -92,6 +103,7 @@ class Mods extends _$Mods {
 
     // Add a delay for the feeling
     await Future.delayed(const Duration(milliseconds: 500));
+    await LoadingService.instance.clear();
 
     return filteredMods;
   }
