@@ -15,6 +15,17 @@ class YuzuFilesystem extends EmulatorFilesystem
   static const String identifierDirectory = 'load';
   static const String modsDirectoryBasename = 'load';
   static final String gamesDirectoryBasename = path.join('cache', 'game_list');
+  static final Map<String, List<String>> gamesAlternativePaths = {
+    'windows': [
+      '%AppData%\\Roaming\\yuzu\\cache\\game_list',
+    ],
+    'linux': [
+      '${Platform.environment['HOME']}/.cache/yuzu/game_list',
+    ],
+    'macos': [
+      '${Platform.environment['HOME']}/Library/Caches/yuzu/game_list',
+    ],
+  };
 
   @override
   String getIdentifier() => identifierDirectory;
@@ -107,19 +118,12 @@ class YuzuFilesystem extends EmulatorFilesystem
     Directory? gameListDirectory = await _getDirectory(gameListPath);
 
     if (gameListDirectory == null) {
-      switch (Platform.operatingSystem) {
-        case 'windows':
-          gameListDirectory =
-              await _getDirectory('%AppData%\\Roaming\\yuzu\\cache\\game_list');
+      for (String alternativePath
+          in gamesAlternativePaths[Platform.operatingSystem]!) {
+        gameListDirectory = await _getDirectory(alternativePath);
+        if (gameListDirectory != null) {
           break;
-        case 'linux':
-          gameListDirectory = await _getDirectory(
-              '${Platform.environment['HOME']}/.cache/yuzu/game_list');
-          break;
-        case 'macos':
-          gameListDirectory = await _getDirectory(
-              '${Platform.environment['HOME']}/Library/Caches/yuzu/game_list');
-          break;
+        }
       }
     }
 
