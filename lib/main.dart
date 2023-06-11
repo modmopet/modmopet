@@ -12,6 +12,7 @@ import 'package:window_manager/window_manager.dart';
 import 'src/app.dart';
 import 'src/screen/settings/settings_controller.dart';
 import 'src/screen/settings/settings_service.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
 const String emulatorBoxName = 'emulator';
 
@@ -84,10 +85,7 @@ void main() async {
 }
 
 Future<String> _getVersion() async {
-  final yamlString = await rootBundle.loadString('pubspec.yaml');
-  final versionLine =
-      yamlString.split('\n').firstWhere((line) => line.startsWith('version:'));
-  final version = versionLine.split(':')[1].trim();
+  PackageInfo packageInfo = await PackageInfo.fromPlatform();
 
-  return version;
+  return packageInfo.version;
 }
