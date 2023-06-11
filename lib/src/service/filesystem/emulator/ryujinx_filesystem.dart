@@ -73,9 +73,10 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator) async {
     final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (emulatorAppDirectory.existsSync()) {
-      final Directory gameListDirectory = Directory(
-        emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename,
-      );
+      final Directory gameListDirectory = Directory(path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
+      if (!await gameListDirectory.exists()) {
+        return const Stream<FileSystemEntity>.empty();
+      }
       return gameListDirectory.list();
     }
 
@@ -87,9 +88,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   Future<GameMeta?> getGameMetadata(Emulator emulator, String gameTitleId) async {
     final Directory emulatorGameDirectory = await getGameDirectory(emulator, gameTitleId);
     if (emulatorGameDirectory.existsSync()) {
-      final File gameMetaFile = File(
-        '${emulatorGameDirectory.path}${Platform.pathSeparator}gui${Platform.pathSeparator}metadata.json',
-      );
+      final File gameMetaFile = File(path.joinAll([emulatorGameDirectory.path, 'gui', 'metadata.json']));
 
       if (gameMetaFile.existsSync()) {
         final Map<String, dynamic> metaData = await jsonDecode(gameMetaFile.readAsStringSync());
