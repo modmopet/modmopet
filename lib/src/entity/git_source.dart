@@ -135,7 +135,7 @@ Future<void> _doDownloadAndSaveArchive(String gameTitleId, GitSource source) asy
       );
 
       if (await sourceFolder.exists()) {
-        sourceFolder.delete(recursive: true);
+        await sourceFolder.delete(recursive: true);
       }
 
       await _unzipSource(zipballFile, sourceFolder);
