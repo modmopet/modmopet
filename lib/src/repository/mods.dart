@@ -1,11 +1,11 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/service/filesystem/platform_filesystem.dart';
+import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:yaml/yaml.dart';
 
 class ModsRepository {
@@ -46,10 +46,9 @@ class ModsRepository {
           var modConfig = await loadYaml(content);
           try {
             Mod mod = await parseModFromYaml(modConfig, modDirectory, emulator, game);
-
             modList.add(mod);
-          } catch (e) {
-            debugPrint('Config file format not valid, skip: $e');
+          } catch (e, stackTrace) {
+            Sentry.captureException(e, stackTrace: stackTrace);
           }
         }
       }

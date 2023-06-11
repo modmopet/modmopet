@@ -60,9 +60,9 @@ class ModListView extends ConsumerWidget {
         modsByCategory.when(
           skipLoadingOnRefresh: false,
           skipLoadingOnReload: true,
-          data: (mods) => createListView(context, mods),
+          data: (mods) => mods.isNotEmpty ? createListView(context, mods) : Container(),
           error: (e, _) => Text(e.toString()),
-          loading: () => MMLoadingIndicator(),
+          loading: () => MMLoadingIndicator.withSize(height: 100, width: 100),
         ),
       ],
     );
