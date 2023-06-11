@@ -80,7 +80,7 @@ jobs:
       if: ${{ matrix.runner == 'macos-latest' }}
       run: |
         flutter config --enable-macos-desktop
-      
+
     - name: Build Flutter ${{ matrix.target }}
       env:
         GH_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
@@ -129,11 +129,10 @@ jobs:
       if: needs.sem-version.outputs.WILL_RELEASE == 'true'
       run: |
         changelog_file=$(mktemp)
-        echo "${{ needs.sem-version.outputs.CHANGELOG }}" >> "$changelog_file"
-        
+        echo -e "${{ needs.sem-version.outputs.CHANGELOG }}" >> "$changelog_file"
+
         ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} -F $changelog_file"
         if [[ "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ==  "true" ]]; then
           ARGS="$ARGS --prerelease"
         fi
         gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
- 
