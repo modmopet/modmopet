@@ -24,8 +24,8 @@ class YuzuFilesystem extends EmulatorFilesystem
   Future<Directory> defaultEmulatorAppDirectory() async {
     Directory applicationSupportDirectory =
         await getApplicationSupportDirectory();
-    return Directory(
-        '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
+    return Directory(path.join(applicationSupportDirectory.path,
+        '..${Platform.pathSeparator}$applicationFolderName'));
   }
 
   /// Gets the directory of a potentially installed mod
