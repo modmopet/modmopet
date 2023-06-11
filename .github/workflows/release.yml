@@ -83,6 +83,7 @@ jobs:
 
     - name: Build Flutter ${{ matrix.target }}
       env:
+        VERSION: ${{ needs.sem-version.outputs.VERSION }}
         GH_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
         GH_APP_ID: ${{ secrets.GH_APP_ID }}
         GH_INSTALLMENT_ID: ${{ secrets.GH_INSTALLMENT_ID }}
