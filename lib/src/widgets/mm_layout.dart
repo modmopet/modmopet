@@ -74,7 +74,7 @@ class MMLayout extends HookConsumerWidget {
       getChangelog: (latestVersion, appVersion) async {
         // Call github api to get commits between versions
         final data = await Dio().get(
-            'https://api.github.com/repos/modmopet/modmopet/compare/v$appVersion...$latestVersion');
+            'https://api.github.com/repos/modmopet/modmopet/compare/v$appVersion...v$latestVersion');
         if (data.statusCode != 200) {
           return 'Unable to retrieve changelog';
         }
