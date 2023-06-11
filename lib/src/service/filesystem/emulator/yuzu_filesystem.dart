@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game_meta.dart';
@@ -23,9 +24,9 @@ class YuzuFilesystem extends EmulatorFilesystem
   @override
   Future<Directory> defaultEmulatorAppDirectory() async {
     Directory applicationSupportDirectory =
-        await getApplicationSupportDirectory();
+        (await getApplicationSupportDirectory()).parent;
     return Directory(
-        '${applicationSupportDirectory.path}${Platform.pathSeparator}..${Platform.pathSeparator}$applicationFolderName');
+        path.join(applicationSupportDirectory.path, applicationFolderName));
   }
 
   /// Gets the directory of a potentially installed mod
