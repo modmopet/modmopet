@@ -36,20 +36,22 @@ final gameListProvider = FutureProvider.autoDispose<List<Game>>((ref) async {
           Map<String, List<GitSource>> sources = MMConfig().defaultSupportedSources;
           final mappedSources = sources.map((key, value) => MapEntry(key.toUpperCase(), value));
           await LoggerService.instance.log('Found title: $titleId');
-          final titleEntry = titlesList[titleId];
-          final game = Game(
-            id: titleId,
-            title: titleEntry['name'],
-            version: 'unkown',
-            sources: mappedSources.isNotEmpty && mappedSources.containsKey(titleId)
-                ? mappedSources[titleId.toUpperCase()]!
-                : [],
-            bannerUrl: titleEntry['bannerUrl'],
-            iconUrl: titleEntry['iconUrl'],
-            publisher: titleEntry['publisher'],
-            meta: gameMetadata,
-          );
-          games.add(game);
+          if (_titleIsValid(titlesList[titleId])) {
+            final titleEntry = titlesList[titleId];
+            final game = Game(
+              id: titleId,
+              title: titleEntry['name'],
+              version: 'unkown',
+              sources: mappedSources.isNotEmpty && mappedSources.containsKey(titleId)
+                  ? mappedSources[titleId.toUpperCase()]!
+                  : [],
+              bannerUrl: titleEntry['bannerUrl'],
+              iconUrl: titleEntry['iconUrl'],
+              publisher: titleEntry['publisher'],
+              meta: gameMetadata,
+            );
+            games.add(game);
+          }
         }
       }
     }
@@ -76,6 +78,21 @@ Future<void> _downloadTitleDbFile(ReleaseAsset asset, File titlesJsonFile) async
       await titlesJsonFile.delete();
     }
   }
+}
+
+bool _titleIsValid(Map<String, dynamic> titleData) {
+  List<String> keysToCheck = ['name', 'bannerUrl', 'iconUrl', 'publisher'];
+
+  bool isValid = true;
+  for (var key in keysToCheck) {
+    var value = titleData[key];
+    if (value == null) {
+      isValid = false;
+      break;
+    }
+  }
+
+  return isValid;
 }
 
 Future<void> _checkTitlesDatabase() async {
