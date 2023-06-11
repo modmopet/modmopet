@@ -1,4 +1,3 @@
-import 'dart:developer';
 import 'dart:io';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game_meta.dart';
@@ -15,8 +14,7 @@ class YuzuFilesystem extends EmulatorFilesystem
   static const String applicationFolderName = 'yuzu';
   static const String identifierDirectory = 'load';
   static const String modsDirectoryBasename = 'load';
-  static final String gamesDirectoryBasename =
-      'cache${Platform.pathSeparator}game_list';
+  static final String gamesDirectoryBasename = path.join('cache', 'game_list');
 
   @override
   String getIdentifier() => identifierDirectory;
@@ -33,9 +31,13 @@ class YuzuFilesystem extends EmulatorFilesystem
   @override
   Future<Directory> getModDirectory(
       Emulator emulator, String gameTitleId, String identfier) async {
-    final modDirectory = Directory(
-      '${emulator.path!}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$identfier',
-    );
+    final modDirectory = Directory(path.joinAll([
+      emulator.path!,
+      modsDirectoryBasename,
+      gameTitleId,
+      mmPrefix,
+      identfier
+    ]));
 
     return modDirectory;
   }
@@ -76,13 +78,8 @@ class YuzuFilesystem extends EmulatorFilesystem
   Future<Directory> getGameDirectory(
       Emulator emulator, String gameTitleId) async {
     final Directory emulatorAppDirectory = Directory(emulator.path!);
-    final gameDirectory = Directory(
-      emulatorAppDirectory.path +
-          Platform.pathSeparator +
-          gamesDirectoryBasename +
-          Platform.pathSeparator +
-          gameTitleId,
-    );
+    final gameDirectory = Directory(path.joinAll(
+        [emulatorAppDirectory.path, gamesDirectoryBasename, gameTitleId]));
 
     return gameDirectory;
   }
@@ -92,9 +89,11 @@ class YuzuFilesystem extends EmulatorFilesystem
       Emulator emulator) async {
     final Directory emulatorAppDirectory = Directory(emulator.path!);
     if (await emulatorAppDirectory.exists()) {
-      final Directory gameListDirectory = Directory(emulatorAppDirectory.path +
-          Platform.pathSeparator +
-          gamesDirectoryBasename);
+      final Directory gameListDirectory = Directory(
+          path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
+      if (!await gameListDirectory.exists()) {
+        return const Stream<FileSystemEntity>.empty();
+      }
       return gameListDirectory.list();
     }
 
