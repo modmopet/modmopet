@@ -4,6 +4,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:modmopet/src/service/storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -17,8 +18,10 @@ const String emulatorBoxName = 'emulator';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  String imageCacheDirectory = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
-  await FastCachedImageConfig.init(subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
+  String imageCacheDirectory =
+      '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
+  await FastCachedImageConfig.init(
+      subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
 
   if (kDebugMode) {
     final prefs = await StorageService.instance.prefs;
@@ -59,20 +62,32 @@ void main() async {
     const Locale('pt', 'PT')
   ];
 
+  String version = await _getVersion();
+
   // Sentry implementation
   await SentryFlutter.init(
     (options) {
       options.dsn = const String.fromEnvironment('MM_SENTRY_DSN');
       options.tracesSampleRate = double.parse(
-        const String.fromEnvironment('MM_SENTRY_TRACE_SAMPLE_RATE', defaultValue: '0.5'),
+        const String.fromEnvironment('MM_SENTRY_TRACE_SAMPLE_RATE',
+            defaultValue: '0.5'),
       );
     },
     appRunner: () => runApp(
       EasyLocalization(
         supportedLocales: supportedLocales,
         path: 'assets/translations',
-        child: App(settingsController: settingsController),
+        child: App(version: version, settingsController: settingsController),
       ),
     ),
   );
+}
+
+Future<String> _getVersion() async {
+  final yamlString = await rootBundle.loadString('pubspec.yaml');
+  final versionLine =
+      yamlString.split('\n').firstWhere((line) => line.startsWith('version:'));
+  final version = versionLine.split(':')[1].trim();
+
+  return version;
 }
