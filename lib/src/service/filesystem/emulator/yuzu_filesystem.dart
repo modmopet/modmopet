@@ -84,20 +84,48 @@ class YuzuFilesystem extends EmulatorFilesystem
     return gameDirectory;
   }
 
+  Future<Directory?> _getDirectory(String path) async {
+    final Directory directory = Directory(path);
+    if (await directory.exists()) {
+      return directory;
+    } else {
+      return null;
+    }
+  }
+
   @override
   Future<Stream<FileSystemEntity>> getGamesDirectoryList(
       Emulator emulator) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path!);
-    if (await emulatorAppDirectory.exists()) {
-      final Directory gameListDirectory = Directory(
-          path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
-      if (!await gameListDirectory.exists()) {
-        return const Stream<FileSystemEntity>.empty();
-      }
-      return gameListDirectory.list();
+    final Directory? emulatorAppDirectory = await _getDirectory(emulator.path!);
+
+    if (emulatorAppDirectory == null) {
+      return const Stream<FileSystemEntity>.empty();
     }
 
-    return const Stream<FileSystemEntity>.empty();
+    String gameListPath =
+        path.join(emulatorAppDirectory.path, gamesDirectoryBasename);
+    Directory? gameListDirectory = await _getDirectory(gameListPath);
+
+    if (gameListDirectory == null) {
+      switch (Platform.operatingSystem) {
+        case 'windows':
+          gameListDirectory =
+              await _getDirectory('%AppData%\\Roaming\\yuzu\\cache\\game_list');
+          break;
+        case 'linux':
+          gameListDirectory = await _getDirectory(
+              '${Platform.environment['HOME']}/.cache/yuzu/game_list');
+          break;
+        case 'macos':
+          gameListDirectory = await _getDirectory(
+              '${Platform.environment['HOME']}/Library/Caches/yuzu/game_list');
+          break;
+      }
+    }
+
+    return gameListDirectory != null
+        ? gameListDirectory.list()
+        : const Stream<FileSystemEntity>.empty();
   }
 
   @override
