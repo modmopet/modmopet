@@ -10,10 +10,18 @@ import 'package:yaml/yaml.dart';
 
 class ModsRepository {
   /// Checks a mods directory is installed to the emulators mod folder
-  Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier) async {
+  Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier, String modId) async {
     final modDirectory =
         await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier.toLowerCase());
-    return await modDirectory.exists();
+    final configFile = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
+
+    // Need to check id to
+    if (await configFile.exists()) {
+      final mmConfig = loadYaml(await configFile.readAsString());
+      return mmConfig['id'] == modId;
+    }
+
+    return false;
   }
 
   Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String identfier, String modOrigin) async {
@@ -56,7 +64,7 @@ class ModsRepository {
     Emulator emulator,
     Game game,
   ) async {
-    final bool isInstalled = await isModInstalled(emulator, game.id, yamlConfig['title']);
+    final bool isInstalled = await isModInstalled(emulator, game.id, yamlConfig['title'], yamlConfig['id']);
     final bool hasUpdate =
         isInstalled == true ? await hasModUpdate(emulator, game.id, yamlConfig['title'], modDirectory.path) : false;
     return Mod.fromYaml(yamlConfig, modDirectory.path, isInstalled: isInstalled, hasUpdate: hasUpdate);
@@ -64,6 +72,13 @@ class ModsRepository {
 
   /// Gets a version of a mod by its path
   Future<String> getModVersion(String path, {String configFileBasename = 'config.yaml'}) async {
+    final directory = Directory(path);
+    final File configYaml = File('${directory.path}${Platform.pathSeparator}$configFileBasename');
+    final sourceModConfig = await loadYaml(await configYaml.readAsString());
+    return sourceModConfig['version'];
+  }
+
+  Future<String> getModId(String path, {String configFileBasename = 'config.yaml'}) async {
     final directory = Directory(path);
     final File configYaml = File('${directory.path}${Platform.pathSeparator}$configFileBasename');
     final sourceModConfig = await loadYaml(await configYaml.readAsString());
