@@ -15,6 +15,17 @@ class YuzuFilesystem extends EmulatorFilesystem
   static const String identifierDirectory = 'load';
   static const String modsDirectoryBasename = 'load';
   static final String gamesDirectoryBasename = path.join('cache', 'game_list');
+  static final Map<String, List<String>> gamesAlternativePaths = {
+    'windows': [
+      '%AppData%\\Roaming\\yuzu\\cache\\game_list',
+    ],
+    'linux': [
+      '${Platform.environment['HOME']}/.cache/yuzu/game_list',
+    ],
+    'macos': [
+      '${Platform.environment['HOME']}/Library/Caches/yuzu/game_list',
+    ],
+  };
 
   @override
   String getIdentifier() => identifierDirectory;
@@ -84,20 +95,41 @@ class YuzuFilesystem extends EmulatorFilesystem
     return gameDirectory;
   }
 
+  Future<Directory?> _getDirectory(String path) async {
+    final Directory directory = Directory(path);
+    if (await directory.exists()) {
+      return directory;
+    } else {
+      return null;
+    }
+  }
+
   @override
   Future<Stream<FileSystemEntity>> getGamesDirectoryList(
       Emulator emulator) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path!);
-    if (await emulatorAppDirectory.exists()) {
-      final Directory gameListDirectory = Directory(
-          path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
-      if (!await gameListDirectory.exists()) {
-        return const Stream<FileSystemEntity>.empty();
-      }
-      return gameListDirectory.list();
+    final Directory? emulatorAppDirectory = await _getDirectory(emulator.path!);
+
+    if (emulatorAppDirectory == null) {
+      return const Stream<FileSystemEntity>.empty();
     }
 
-    return const Stream<FileSystemEntity>.empty();
+    String gameListPath =
+        path.join(emulatorAppDirectory.path, gamesDirectoryBasename);
+    Directory? gameListDirectory = await _getDirectory(gameListPath);
+
+    if (gameListDirectory == null) {
+      for (String alternativePath
+          in gamesAlternativePaths[Platform.operatingSystem]!) {
+        gameListDirectory = await _getDirectory(alternativePath);
+        if (gameListDirectory != null) {
+          break;
+        }
+      }
+    }
+
+    return gameListDirectory != null
+        ? gameListDirectory.list()
+        : const Stream<FileSystemEntity>.empty();
   }
 
   @override
