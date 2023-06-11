@@ -129,7 +129,7 @@ jobs:
       if: needs.sem-version.outputs.WILL_RELEASE == 'true'
       run: |
         changelog_file=$(mktemp)
-        echo -e "${{ needs.sem-version.outputs.CHANGELOG }}" >> "$changelog_file"
+        echo "${{ needs.sem-version.outputs.CHANGELOG }}" >> "$changelog_file"
 
         ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} -F $changelog_file"
         if [[ "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ==  "true" ]]; then
