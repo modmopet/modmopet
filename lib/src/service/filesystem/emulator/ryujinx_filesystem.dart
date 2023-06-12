@@ -70,7 +70,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   /// Gets the games metadata directory of the emulator to identify the installed games by titleId
   @override
   Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path!);
+    final Directory emulatorAppDirectory = Directory(emulator.path);
     if (emulatorAppDirectory.existsSync()) {
       final Directory gameListDirectory = Directory(path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
       if (!await gameListDirectory.exists()) {
