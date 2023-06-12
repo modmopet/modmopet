@@ -13,7 +13,8 @@ String _$emulatorHash() => r'932ca6f76aba32bec532af98265c5bea186fbe49';
 final emulatorProvider = AutoDisposeFutureProvider<Emulator?>.internal(
   emulator,
   name: r'emulatorProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$emulatorHash,
+  debugGetCreateSourceHash:
+      const bool.fromEnvironment('dart.vm.product') ? null : _$emulatorHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );
@@ -23,10 +24,13 @@ String _$selectedEmulatorHash() => r'1f5922e7cf17601cdefe98e9e53f081a3192dc27';
 
 /// See also [SelectedEmulator].
 @ProviderFor(SelectedEmulator)
-final selectedEmulatorProvider = AutoDisposeAsyncNotifierProvider<SelectedEmulator, String?>.internal(
+final selectedEmulatorProvider =
+    AutoDisposeAsyncNotifierProvider<SelectedEmulator, String?>.internal(
   SelectedEmulator.new,
   name: r'selectedEmulatorProvider',
-  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product') ? null : _$selectedEmulatorHash,
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$selectedEmulatorHash,
   dependencies: null,
   allTransitiveDependencies: null,
 );

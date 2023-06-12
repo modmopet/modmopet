@@ -1,7 +1,6 @@
 import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
-import 'package:flutter/foundation.dart';
 import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/service/filesystem/emulator/ryujinx_filesystem.dart';
