@@ -33,7 +33,7 @@ final gameListProvider = FutureProvider.autoDispose<List<Game>>((ref) async {
         final titleId = path.basenameWithoutExtension(element.path).split('.').first.toUpperCase();
         if (titlesList.containsKey(titleId)) {
           final dynamic gameMetadata = await emulatorFilesystem?.getGameMetadata(emulator!, titleId);
-          Map<String, List<GitSource>> sources = MMConfig().defaultSupportedSources;
+          Map<String, List<GitSource>> sources = MMConfig.defaultSupportedSources;
           final mappedSources = sources.map((key, value) => MapEntry(key.toUpperCase(), value));
           await LoggerService.instance.log('Found title: $titleId');
           if (_titleIsValid(titlesList[titleId])) {
@@ -100,26 +100,27 @@ Future<void> _checkTitlesDatabase() async {
   File titlesJsonFile = await PlatformFilesystem.instance.getFile('titlesdb.json');
   final slug = RepositorySlug('arch-box', 'titledb');
   final latestRelease = await GithubClient().getLatestTitleDBRelease(slug);
+  final assets = latestRelease.assets;
 
-  if (latestRelease.assets != null) {
-    final ReleaseAsset? asset = latestRelease.assets?.singleWhere((element) => element.name == 'titles.US.en.json');
-    if (asset != null) {
-      // If file exists, check if its up to date, if not update and replace
-      if (await titlesJsonFile.exists()) {
-        if ((await titlesJsonFile.stat()).changed.compareTo(asset.createdAt!) < 0) {
-          LoadingService.instance.show("Downloading new TitleDB. Please wait...");
-          await _downloadTitleDbFile(asset, titlesJsonFile);
+  if (assets != null) {
+    if (assets.isNotEmpty) {
+      final ReleaseAsset? asset = latestRelease.assets?.singleWhere((element) => element.name == 'titles.US.en.json');
+      if (asset != null) {
+        // If file exists, check if its up to date, if not update and replace
+        if (await titlesJsonFile.exists()) {
+          if ((await titlesJsonFile.stat()).changed.compareTo(asset.createdAt!) < 0) {
+            await _downloadTitleDbFile(asset, titlesJsonFile);
+            return;
+          }
+
           return;
         }
 
-        LoggerService.instance.log("GameService: TitleDB is up-to-date.");
-        return;
+        // File does not exists, download.
+        await _downloadTitleDbFile(asset, titlesJsonFile);
       }
 
-      // File does not exists, download.
-      await _downloadTitleDbFile(asset, titlesJsonFile);
+      Sentry.captureMessage('TitlesDB file does not exists or is not available!', level: SentryLevel.fatal);
     }
-
-    Sentry.captureMessage('TitlesDB file does not exists or is not available!', level: SentryLevel.fatal);
   }
 }

@@ -4,8 +4,8 @@ import 'package:modmopet/src/service/storage/storage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SharedPreferencesStorage implements Storage {
-  static SharedPreferencesStorage? _instance;
-  static SharedPreferencesStorage get instance => _instance!;
+  static final _instance = SharedPreferencesStorage._();
+  static SharedPreferencesStorage get instance => _instance;
 
   late SharedPreferences _storage;
 
@@ -34,7 +34,7 @@ class SharedPreferencesStorage implements Storage {
       case bool:
         return _storage.getBool(key) as T?;
       default:
-        return jsonDecode(_storage.getString(key)!) as T?;
+        return _storage.get(key) as T?;
     }
   }
 

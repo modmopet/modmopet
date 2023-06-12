@@ -39,7 +39,7 @@ class EmulatorNotFoundView extends HookConsumerWidget {
           ),
           MMElevatedButton.primary(
             onPressed: () {
-              ref.read(selectedEmulatorProvider.notifier).clearEmulator();
+              ref.read(selectedEmulatorProvider.notifier).clear();
               Navigator.pushReplacementNamed(
                 context,
                 EmulatorPickerView.routeName,

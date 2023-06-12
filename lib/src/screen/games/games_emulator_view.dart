@@ -87,7 +87,7 @@ class GamesEmulatorView extends ConsumerWidget {
   }
 
   Widget buildEmulatorActions(Emulator emulator, BuildContext context, WidgetRef ref) {
-    final Uri emulatorUri = Uri.file(emulator.path!);
+    final Uri emulatorUri = Uri.file(emulator.path);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
@@ -102,7 +102,7 @@ class GamesEmulatorView extends ConsumerWidget {
           IconButton(
             tooltip: 'Change emulator',
             onPressed: () async {
-              ref.read(selectedEmulatorProvider.notifier).clearEmulator();
+              ref.read(selectedEmulatorProvider.notifier).clear();
               Navigator.of(context).pushReplacementNamed(EmulatorPickerView.routeName);
             },
             icon: const Icon(Icons.swap_horizontal_circle_outlined),

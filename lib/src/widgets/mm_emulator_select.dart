@@ -27,23 +27,21 @@ class MMEmulatorSelect extends HookConsumerWidget {
         const SizedBox(height: 35),
         MMElevatedButton.primary(
           onPressed: () async {
-            bool withCustomSelect = false;
-            ref.read(selectedEmulatorProvider.notifier).setEmulator(emulatorId);
-            ref.read(withCustomSelectProvider.notifier).state = withCustomSelect;
+            ref.read(selectedEmulatorProvider.notifier).set(emulatorId);
+            ref.read(withCustomSelectProvider.notifier).state = false;
             Navigator.of(context).pushReplacementNamed(GameListView.routeName);
           },
           child: Text(supportedEmulatorMetadata['name']),
         ),
         const SizedBox(height: 10.0),
-        if (Platform.isMacOS == false)
-          MMElevatedButton.secondary(
-            onPressed: () async {
-              ref.read(selectedEmulatorProvider.notifier).setEmulator(emulatorId);
-              ref.read(withCustomSelectProvider.notifier).state = true;
-              Navigator.of(context).pushReplacementNamed(GameListView.routeName);
-            },
-            child: const Text('Select manually'),
-          ),
+        MMElevatedButton.secondary(
+          onPressed: () async {
+            ref.read(selectedEmulatorProvider.notifier).set(emulatorId);
+            ref.read(withCustomSelectProvider.notifier).state = true;
+            Navigator.of(context).pushReplacementNamed(GameListView.routeName);
+          },
+          child: const Text('Select manually'),
+        ),
       ],
     );
   }

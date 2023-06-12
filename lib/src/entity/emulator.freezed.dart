@@ -21,7 +21,7 @@ mixin _$Emulator {
   EmulatorFilesystemInterface get filesystem =>
       throw _privateConstructorUsedError;
   bool get hasMetadataSupport => throw _privateConstructorUsedError;
-  String? get path => throw _privateConstructorUsedError;
+  String get path => throw _privateConstructorUsedError;
 
   @JsonKey(ignore: true)
   $EmulatorCopyWith<Emulator> get copyWith =>
@@ -38,7 +38,7 @@ abstract class $EmulatorCopyWith<$Res> {
       String name,
       EmulatorFilesystemInterface filesystem,
       bool hasMetadataSupport,
-      String? path});
+      String path});
 }
 
 /// @nodoc
@@ -58,7 +58,7 @@ class _$EmulatorCopyWithImpl<$Res, $Val extends Emulator>
     Object? name = null,
     Object? filesystem = null,
     Object? hasMetadataSupport = null,
-    Object? path = freezed,
+    Object? path = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -77,10 +77,10 @@ class _$EmulatorCopyWithImpl<$Res, $Val extends Emulator>
           ? _value.hasMetadataSupport
           : hasMetadataSupport // ignore: cast_nullable_to_non_nullable
               as bool,
-      path: freezed == path
+      path: null == path
           ? _value.path
           : path // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ) as $Val);
   }
 }
@@ -97,7 +97,7 @@ abstract class _$$_EmulatorCopyWith<$Res> implements $EmulatorCopyWith<$Res> {
       String name,
       EmulatorFilesystemInterface filesystem,
       bool hasMetadataSupport,
-      String? path});
+      String path});
 }
 
 /// @nodoc
@@ -115,7 +115,7 @@ class __$$_EmulatorCopyWithImpl<$Res>
     Object? name = null,
     Object? filesystem = null,
     Object? hasMetadataSupport = null,
-    Object? path = freezed,
+    Object? path = null,
   }) {
     return _then(_$_Emulator(
       id: null == id
@@ -134,23 +134,23 @@ class __$$_EmulatorCopyWithImpl<$Res>
           ? _value.hasMetadataSupport
           : hasMetadataSupport // ignore: cast_nullable_to_non_nullable
               as bool,
-      path: freezed == path
+      path: null == path
           ? _value.path
           : path // ignore: cast_nullable_to_non_nullable
-              as String?,
+              as String,
     ));
   }
 }
 
 /// @nodoc
 
-class _$_Emulator extends _Emulator {
+class _$_Emulator extends _Emulator with DiagnosticableTreeMixin {
   _$_Emulator(
       {required this.id,
       required this.name,
       required this.filesystem,
       required this.hasMetadataSupport,
-      this.path})
+      required this.path})
       : super._();
 
   @override
@@ -162,11 +162,23 @@ class _$_Emulator extends _Emulator {
   @override
   final bool hasMetadataSupport;
   @override
-  final String? path;
+  final String path;
 
   @override
-  String toString() {
+  String toString({DiagnosticLevel minLevel = DiagnosticLevel.info}) {
     return 'Emulator(id: $id, name: $name, filesystem: $filesystem, hasMetadataSupport: $hasMetadataSupport, path: $path)';
+  }
+
+  @override
+  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+    super.debugFillProperties(properties);
+    properties
+      ..add(DiagnosticsProperty('type', 'Emulator'))
+      ..add(DiagnosticsProperty('id', id))
+      ..add(DiagnosticsProperty('name', name))
+      ..add(DiagnosticsProperty('filesystem', filesystem))
+      ..add(DiagnosticsProperty('hasMetadataSupport', hasMetadataSupport))
+      ..add(DiagnosticsProperty('path', path));
   }
 
   @override
@@ -200,7 +212,7 @@ abstract class _Emulator extends Emulator {
       required final String name,
       required final EmulatorFilesystemInterface filesystem,
       required final bool hasMetadataSupport,
-      final String? path}) = _$_Emulator;
+      required final String path}) = _$_Emulator;
   _Emulator._() : super._();
 
   @override
@@ -212,7 +224,7 @@ abstract class _Emulator extends Emulator {
   @override
   bool get hasMetadataSupport;
   @override
-  String? get path;
+  String get path;
   @override
   @JsonKey(ignore: true)
   _$$_EmulatorCopyWith<_$_Emulator> get copyWith =>
