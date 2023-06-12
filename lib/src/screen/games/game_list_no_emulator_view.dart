@@ -1,8 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
+import 'package:modmopet/src/service/emulator.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
 
@@ -38,7 +38,7 @@ class GameListNoEmulatorView extends ConsumerWidget {
           ),
           MMElevatedButton.primary(
             onPressed: () {
-              ref.read(selectedEmulatorProvider.notifier).clear();
+              EmulatorService.instance.clearSelectedEmulator();
               Navigator.pushReplacementNamed(
                 context,
                 EmulatorPickerView.routeName,

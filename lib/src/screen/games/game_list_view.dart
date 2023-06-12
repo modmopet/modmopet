@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
+import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/provider/game_list_provider.dart';
 import 'package:modmopet/src/screen/games/game_list_actionbar_widget.dart';
 import 'package:modmopet/src/screen/games/game_list_empty_view.dart';

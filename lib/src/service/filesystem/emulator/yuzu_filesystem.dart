@@ -40,7 +40,7 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String identifier) async {
     final modFolderBasename = mmPrefix + identifier;
     final modDirectory = Directory(path.joinAll([
-      emulator.path,
+      emulator.path!,
       modsDirectoryBasename,
       gameTitleId,
       modFolderBasename,
@@ -78,7 +78,7 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
 
   @override
   Future<Directory> getGameDirectory(Emulator emulator, String gameTitleId) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path);
+    final Directory emulatorAppDirectory = Directory(emulator.path!);
     final gameDirectory = Directory(path.joinAll([emulatorAppDirectory.path, gamesDirectoryBasename, gameTitleId]));
 
     return gameDirectory;
@@ -95,7 +95,7 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
 
   @override
   Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator) async {
-    final Directory? emulatorAppDirectory = await _getDirectory(emulator.path);
+    final Directory? emulatorAppDirectory = await _getDirectory(emulator.path!);
 
     if (emulatorAppDirectory == null) {
       return const Stream<FileSystemEntity>.empty();
