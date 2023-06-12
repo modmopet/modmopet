@@ -6,7 +6,7 @@ class MMConfig {
   static const String title = 'ModMopet';
   static const String version = 'dev-0.0.1';
 
-  final Map<int, String> supportedCategories = {
+  static final Map<int, String> supportedCategories = {
     1: 'FPS/Performance',
     2: 'Graphics',
     3: 'UI/UX',
@@ -15,7 +15,7 @@ class MMConfig {
     6: 'Combos',
   };
 
-  Map<String, dynamic> supportedEmulators = {
+  static final Map<String, dynamic> supportedEmulators = {
     'yuzu': {
       'name': 'Yuzu',
       'url': 'https://yuzu-emu.org',
@@ -30,13 +30,9 @@ class MMConfig {
     },
   };
 
-  final Map<String, List<GitSource>> defaultSupportedSources = {
+  static final Map<String, List<GitSource>> defaultSupportedSources = {
     "0100F2C0115B6000": [
-      const GitSource(
-          user: 'HolographicWings',
-          repository: 'TOTK-Mods-collection',
-          root: 'Mods',
-          branch: 'main'),
+      const GitSource(user: 'HolographicWings', repository: 'TOTK-Mods-collection', root: 'Mods', branch: 'main'),
     ]
   };
 }

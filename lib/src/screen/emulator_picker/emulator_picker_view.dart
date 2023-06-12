@@ -10,7 +10,7 @@ class EmulatorPickerView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final supportedEmulators = MMConfig().supportedEmulators;
+    final supportedEmulators = MMConfig.supportedEmulators;
 
     // Create a list of available emulators to choose from
     List<Widget> availableEmulatorList = [];

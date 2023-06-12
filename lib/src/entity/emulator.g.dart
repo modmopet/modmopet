@@ -1,12 +1,12 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'emulator_provider.dart';
+part of 'emulator.dart';
 
 // **************************************************************************
 // RiverpodGenerator
 // **************************************************************************
 
-String _$emulatorHash() => r'3797ec287f67d48c14ac4ad1120a5a1b59a685a3';
+String _$emulatorHash() => r'932ca6f76aba32bec532af98265c5bea186fbe49';
 
 /// See also [emulator].
 @ProviderFor(emulator)
@@ -20,7 +20,7 @@ final emulatorProvider = AutoDisposeFutureProvider<Emulator?>.internal(
 );
 
 typedef EmulatorRef = AutoDisposeFutureProviderRef<Emulator?>;
-String _$selectedEmulatorHash() => r'59bdf60aeb055f7928e5ddc6830f0a966ac7ffbd';
+String _$selectedEmulatorHash() => r'1f5922e7cf17601cdefe98e9e53f081a3192dc27';
 
 /// See also [SelectedEmulator].
 @ProviderFor(SelectedEmulator)
