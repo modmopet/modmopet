@@ -94,7 +94,7 @@ jobs:
         SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         SENTRY_TRACE_SAMPLE_RATE: ${{ vars.SENTRY_TRACE_SAMPLE_RATE }}
       run: |
-        yq eval -i '.version = ${{  needs.sem-version.outputs.VERSION}}' pubspec.yaml
+        yq -i '.version = ${{  needs.sem-version.outputs.VERSION}}' pubspec.yaml
         # Get everything between the last {} in the artifact string
         artifacts="${{ matrix.artifact }}"
         extensions=${artifacts##*\{}
