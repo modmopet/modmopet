@@ -24,7 +24,6 @@ final gameListProvider = FutureProvider.autoDispose<List<Game>>((ref) async {
   final EmulatorFilesystemInterface? emulatorFilesystem = emulator?.filesystem;
   final gameFileList = await emulatorFilesystem?.getGamesDirectoryList(emulator!);
 
-  await LoadingService.instance.show('Check title db for updates...');
   await _checkTitlesDatabase();
 
   if (gameFileList != null) {
@@ -58,8 +57,6 @@ final gameListProvider = FutureProvider.autoDispose<List<Game>>((ref) async {
     }
   }
 
-  await LoadingService.instance.clear();
-
   return games;
 });
 
@@ -70,6 +67,7 @@ Future<void> _downloadTitleDbFile(ReleaseAsset asset, File titlesJsonFile) async
         'Dowload new title db: ${(count / 1000000).toStringAsFixed(2)}MB/${(total / 1000000).toStringAsFixed(2)}MB',
       );
     });
+    LoadingService.instance.clear();
   } catch (e, st) {
     debugPrint(e.toString());
     Sentry.captureException(e, stackTrace: st);
@@ -98,6 +96,7 @@ bool _titleIsValid(Map<String, dynamic> titleData) {
 
 Future<void> _checkTitlesDatabase() async {
   if (await _hasBeenDownloadedWithin()) {
+    debugPrint('Has been checked within 24 hours. Skip.');
     return;
   }
 
@@ -107,8 +106,8 @@ Future<void> _checkTitlesDatabase() async {
   final assets = latestRelease.assets;
 
   if (assets != null && assets.isNotEmpty) {
-    if (assets.any((element) => element.name == 'titles.en.US.json')) {
-      final ReleaseAsset asset = assets.firstWhere((element) => element.name == 'titles.en.US.json');
+    if (assets.any((element) => element.name == 'titles.US.en.json')) {
+      final ReleaseAsset asset = assets.firstWhere((element) => element.name == 'titles.US.en.json');
       // If file exists, check if its up to date, if not update and replace
       if (await titlesJsonFile.exists()) {
         if ((await titlesJsonFile.stat()).changed.compareTo(asset.createdAt!) < 0) {
