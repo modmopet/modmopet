@@ -87,6 +87,22 @@ jobs:
       run: |
         flutter config --enable-macos-desktop
 
+    - name: Targets from artifacts
+      uses: actions/github-script@v6
+      id: targets-from-artifacts
+      with:
+        script: |
+          // Get everything between the last {} in the artifact string
+          const artifacts = "${{ matrix.artifact }}";
+          const pattern = /\{([^}]+)\}/g;
+          let match;
+          let extensions;
+          while (match = pattern.exec(artifacts)) {
+            extensions = match[1];
+          }
+          return extensions;
+        result-encoding: string
+
     - name: Build Flutter ${{ matrix.target }}
       env:
         VERSION: ${{ needs.sem-version.outputs.VERSION }}
@@ -97,14 +113,9 @@ jobs:
         SENTRY_TRACE_SAMPLE_RATE: ${{ vars.SENTRY_TRACE_SAMPLE_RATE }}
       run: |
         yq eval -i '.version = "${{  needs.sem-version.outputs.VERSION}}"' pubspec.yaml
-        # Get everything between the last {} in the artifact string
-        artifacts="${{ matrix.artifact }}"
-        extensions=${artifacts##*\{}
-        extensions=${extensions%*\}}
-        
         dart pub global activate flutter_distributor
-        make build ${{ matrix.target }} ${extensions}
-
+        make build ${{ matrix.target }} ${{ steps.targets-from-artifacts.outputs.result }}
+        
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
