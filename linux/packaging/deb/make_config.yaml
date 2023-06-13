@@ -7,7 +7,7 @@ priority: optional
 section: x11
 installed_size: 6604
 essential: false
-icon: assets/logo.png
+icon: assets/images/logo.png
 
 postinstall_scripts:
   - echo "ModMopet has been successfully installed!"
