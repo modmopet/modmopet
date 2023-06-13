@@ -59,6 +59,7 @@ jobs:
       uses: actions/checkout@v3
 
     - name: Install yq
+      id: setup-yq
       uses: shiipou/setup-yq-action@v2.2.0
       with:
         version: v4.34.1
@@ -112,7 +113,7 @@ jobs:
         SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
         SENTRY_TRACE_SAMPLE_RATE: ${{ vars.SENTRY_TRACE_SAMPLE_RATE }}
       run: |
-        yq eval -i '.version = "${{  needs.sem-version.outputs.VERSION}}"' pubspec.yaml
+        ${{ steps.setup-yq.outputs.yq-binary }} eval -i '.version = "${{  needs.sem-version.outputs.VERSION}}"' pubspec.yaml
         dart pub global activate flutter_distributor
         make build ${{ matrix.target }} ${{ steps.targets-from-artifacts.outputs.result }}
         
