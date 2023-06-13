@@ -100,7 +100,7 @@ jobs:
           while (match = pattern.exec(artifacts)) {
             extensions = match[1];
           }
-          return extensions;
+          return extensions.toLowerCase();
         result-encoding: string
 
     - name: Build Flutter ${{ matrix.target }}
