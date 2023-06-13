@@ -12,6 +12,7 @@ import 'package:modmopet/src/service/game.dart';
 import 'package:modmopet/src/service/github/github.dart';
 import 'package:modmopet/src/service/loading.dart';
 import 'package:modmopet/src/service/logger.dart';
+import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 import 'package:path/path.dart' as path;
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
@@ -23,7 +24,6 @@ final gameListProvider = FutureProvider.autoDispose<List<Game>>((ref) async {
   final EmulatorFilesystemInterface? emulatorFilesystem = emulator?.filesystem;
   final gameFileList = await emulatorFilesystem?.getGamesDirectoryList(emulator!);
 
-  await LoadingService.instance.show('Check title db for updates...');
   await _checkTitlesDatabase();
 
   if (gameFileList != null) {
@@ -57,8 +57,6 @@ final gameListProvider = FutureProvider.autoDispose<List<Game>>((ref) async {
     }
   }
 
-  await LoadingService.instance.clear();
-
   return games;
 });
 
@@ -69,6 +67,7 @@ Future<void> _downloadTitleDbFile(ReleaseAsset asset, File titlesJsonFile) async
         'Dowload new title db: ${(count / 1000000).toStringAsFixed(2)}MB/${(total / 1000000).toStringAsFixed(2)}MB',
       );
     });
+    LoadingService.instance.clear();
   } catch (e, st) {
     debugPrint(e.toString());
     Sentry.captureException(e, stackTrace: st);
@@ -96,31 +95,52 @@ bool _titleIsValid(Map<String, dynamic> titleData) {
 }
 
 Future<void> _checkTitlesDatabase() async {
-  await Future.delayed(const Duration(seconds: 1));
+  if (await _hasBeenDownloadedWithin()) {
+    debugPrint('Has been checked within 24 hours. Skip.');
+    return;
+  }
+
   File titlesJsonFile = await PlatformFilesystem.instance.getFile('titlesdb.json');
   final slug = RepositorySlug('arch-box', 'titledb');
   final latestRelease = await GithubClient().getLatestTitleDBRelease(slug);
   final assets = latestRelease.assets;
 
-  if (assets != null) {
-    if (assets.isNotEmpty) {
-      final ReleaseAsset? asset = latestRelease.assets?.singleWhere((element) => element.name == 'titles.US.en.json');
-      if (asset != null) {
-        // If file exists, check if its up to date, if not update and replace
-        if (await titlesJsonFile.exists()) {
-          if ((await titlesJsonFile.stat()).changed.compareTo(asset.createdAt!) < 0) {
-            await _downloadTitleDbFile(asset, titlesJsonFile);
-            return;
-          }
+  if (assets != null && assets.isNotEmpty) {
+    if (assets.any((element) => element.name == 'titles.US.en.json')) {
+      final ReleaseAsset asset = assets.firstWhere((element) => element.name == 'titles.US.en.json');
+      // If file exists, check if its up to date, if not update and replace
+      if (await titlesJsonFile.exists()) {
+        if ((await titlesJsonFile.stat()).changed.compareTo(asset.createdAt!) < 0) {
+          await _downloadTitleDbFile(asset, titlesJsonFile);
+          SharedPreferencesStorage.instance.set('titlesDbDownloadedAt', DateTime.now().toIso8601String());
 
           return;
         }
 
-        // File does not exists, download.
-        await _downloadTitleDbFile(asset, titlesJsonFile);
+        return;
       }
 
-      Sentry.captureMessage('TitlesDB file does not exists or is not available!', level: SentryLevel.fatal);
+      // File does not exists, download.
+      await _downloadTitleDbFile(asset, titlesJsonFile);
+      SharedPreferencesStorage.instance.set('titlesDbDownloadedAt', DateTime.now().toIso8601String());
+
+      return;
+    }
+
+    Sentry.captureMessage('TitlesDB file does not exists or is not available!', level: SentryLevel.fatal);
+  }
+}
+
+Future<bool> _hasBeenDownloadedWithin({
+  Duration duration = const Duration(hours: 24),
+}) async {
+  final String? storedDownloadedAt = await SharedPreferencesStorage.instance.get<String>('titlesDbDownloadedAt');
+  if (storedDownloadedAt != null) {
+    final DateTime? downloadedAt = DateTime.tryParse(storedDownloadedAt);
+    if (downloadedAt != null) {
+      return downloadedAt.isAfter(DateTime.now().subtract(duration));
     }
   }
+
+  return false;
 }
