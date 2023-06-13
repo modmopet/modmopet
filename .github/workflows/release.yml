@@ -104,8 +104,8 @@ jobs:
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        name: modmopet-${{ matrix.target }}
-        path: modmopet-${{ matrix.target }}.*
+        path: ${{ matrix.artifact }}
+
   release:
     name: Release
     needs: [ build, sem-version ]
