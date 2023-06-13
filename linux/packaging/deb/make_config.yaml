@@ -10,9 +10,9 @@ essential: false
 icon: assets/logo.png
 
 postinstall_scripts:
-  - echo "Installed"
+  - echo "ModMopet has been successfully installed!"
 postuninstall_scripts:
-  - echo "Uninstalled"
+  - echo "ModMopet has been successfully uninstalled. Bye!"
 
 keywords:
   - mods

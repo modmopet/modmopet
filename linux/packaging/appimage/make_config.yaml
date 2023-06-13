@@ -1,6 +1,6 @@
 display_name: ModMopet
 
-icon: assets/logo.png
+icon: assets/images/logo.png
 
 keywords:
   - mods
@@ -9,18 +9,6 @@ keywords:
   - emulator
 
 generic_name: ModMopet
-
-actions:
-  - name: Say Hi
-    label: say-hi
-    arguments:
-      - --say
-      - hi
-  - name: Say Bye
-    label: say-bye
-    arguments:
-      - --say
-      - bye
 
 categories:
   - Tools

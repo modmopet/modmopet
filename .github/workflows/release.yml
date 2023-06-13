@@ -33,7 +33,6 @@ jobs:
       IS_PRE_RELEASE: ${{ steps.sem-version.outputs.IS_PRE_RELEASE }}
       VERSION: ${{ steps.sem-version.outputs.VERSION }}
       CHANGELOG: ${{ steps.sem-version.outputs.CHANGELOG }}
-      CHANGELOG: ${{ steps.sem-version.outputs.CHANGELOG }}
 
   build:
     name: Build
@@ -138,5 +137,4 @@ jobs:
           ARGS="$ARGS --prerelease"
         fi
  
-        gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
         gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
