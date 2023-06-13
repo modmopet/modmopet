@@ -1,10 +1,11 @@
+import 'dart:core';
+
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
-import 'package:modmopet/src/provider/emulator_provider.dart';
 import 'package:modmopet/src/repository/mods.dart';
 import 'package:modmopet/src/service/loading.dart';
 import 'package:modmopet/src/service/mod.dart';
@@ -42,9 +43,9 @@ class Mod with _$Mod {
       subtitle: yaml['subtitle'],
       description: yaml['description'],
       category: Category.values.singleWhere(
-        (category) => category.id == yaml['category'],
+        (category) => category.id == yaml['category'] as int,
       ),
-      version: yaml['version'],
+      version: yaml['version'] as String?,
       game: yaml['game'],
       origin: origin,
       author: yaml['author'],

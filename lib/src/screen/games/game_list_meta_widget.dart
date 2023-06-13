@@ -41,10 +41,14 @@ class GameListMetaWidget extends ConsumerWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(formatDurationToPlayTime(Duration(minutes: meta.playTime), extended: true),
-                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
-              Text(formatDateTimeToReadable(meta.lastPlayed!),
-                  style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary)),
+              Text(
+                formatDurationToPlayTime(Duration(minutes: meta.playTime), extended: true),
+                style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary),
+              ),
+              Text(
+                meta.lastPlayed != null ? formatDateTimeToReadable(meta.lastPlayed!) : 'Never',
+                style: textTheme.bodySmall?.copyWith(color: MMColors.instance.secondary),
+              ),
             ],
           ),
         ),

@@ -2,10 +2,8 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:modmopet/src/service/storage.dart';
+import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 import 'package:window_manager/window_manager.dart';
@@ -19,15 +17,11 @@ const String emulatorBoxName = 'emulator';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await EasyLocalization.ensureInitialized();
-  String imageCacheDirectory =
-      '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
-  await FastCachedImageConfig.init(
-      subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
+  String imageCacheDirectory = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
+  await FastCachedImageConfig.init(subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
 
-  if (kDebugMode) {
-    final prefs = await StorageService.instance.prefs;
-    prefs.clear();
-  }
+  // Set local storage
+  await SharedPreferencesStorage.instance.init();
 
   // Set window settings
   await windowManager.ensureInitialized();
@@ -70,8 +64,7 @@ void main() async {
     (options) {
       options.dsn = const String.fromEnvironment('MM_SENTRY_DSN');
       options.tracesSampleRate = double.parse(
-        const String.fromEnvironment('MM_SENTRY_TRACE_SAMPLE_RATE',
-            defaultValue: '0.5'),
+        const String.fromEnvironment('MM_SENTRY_TRACE_SAMPLE_RATE', defaultValue: '0.5'),
       );
     },
     appRunner: () => runApp(

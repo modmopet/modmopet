@@ -29,7 +29,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   @override
   Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String identifier) async {
     final modDirectory = Directory(
-      '${emulator.path!}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$identifier',
+      '${emulator.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$identifier',
     );
 
     return modDirectory;
@@ -42,7 +42,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
     String gameTitleId, {
     bool recursive = false,
   }) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path!);
+    final Directory emulatorAppDirectory = Directory(emulator.path);
     if (emulatorAppDirectory.existsSync()) {
       final Directory modDirectory = Directory(
         '${emulatorAppDirectory.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}${gameTitleId.toUpperCase()}',
@@ -59,7 +59,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
 
   @override
   Future<Directory> getGameDirectory(Emulator emulator, String gameId) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path!);
+    final Directory emulatorAppDirectory = Directory(emulator.path);
     final gameDirectory = Directory(
       emulatorAppDirectory.path + Platform.pathSeparator + gamesDirectoryBasename + Platform.pathSeparator + gameId,
     );
@@ -70,7 +70,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   /// Gets the games metadata directory of the emulator to identify the installed games by titleId
   @override
   Future<Stream<FileSystemEntity>> getGamesDirectoryList(Emulator emulator) async {
-    final Directory emulatorAppDirectory = Directory(emulator.path!);
+    final Directory emulatorAppDirectory = Directory(emulator.path);
     if (emulatorAppDirectory.existsSync()) {
       final Directory gameListDirectory = Directory(path.join(emulatorAppDirectory.path, gamesDirectoryBasename));
       if (!await gameListDirectory.exists()) {
