@@ -3,6 +3,7 @@
 
 ### ModMopet ##
 dart-define.json
+dist/
 
 ### Flutter ###
 # Flutter/Dart/Pub related
@@ -15,6 +16,7 @@ dart-define.json
 .pub-cache/
 .pub/
 build/
+dist/
 coverage/
 lib/generated_plugin_registrant.dart
 # For library packages, don’t commit the pubspec.lock file.

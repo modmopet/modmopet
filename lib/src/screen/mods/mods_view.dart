@@ -25,8 +25,7 @@ class ModsView extends HookConsumerWidget {
 
     return Column(
       children: [
-        MMBreadcrumbsBar('Games - ${game?.title} - Modifications',
-            routeName: GameListView.routeName),
+        MMBreadcrumbsBar('Games - ${game?.title} - Modifications', routeName: GameListView.routeName),
         SizedBox(
           height: 140.0,
           width: double.infinity,
@@ -93,9 +92,7 @@ class ModsView extends HookConsumerWidget {
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 10.0),
           decoration: BoxDecoration(
-            border: Border.symmetric(
-                horizontal: BorderSide(
-                    width: 1, color: MMColors.instance.backgroundBorder)),
+            border: Border.symmetric(horizontal: BorderSide(width: 1, color: MMColors.instance.backgroundBorder)),
           ),
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -149,9 +146,7 @@ Widget createSourceMenu(BuildContext context, WidgetRef ref) {
       createSourceDropdown(context, ref),
       IconButton(
         tooltip: 'Open Github',
-        onPressed: selectedSource != null
-            ? () => _launchWebsite(selectedSource.uri)
-            : null,
+        onPressed: selectedSource != null ? () => _launchWebsite(selectedSource.uri) : null,
         icon: const Icon(
           Icons.open_in_browser_outlined,
           size: 24.0,
@@ -183,9 +178,7 @@ Widget createSourceDropdown(BuildContext context, WidgetRef ref) {
   final items = availableSources.map((source) {
     return DropdownMenuItem<GitSource>(
       value: source,
-      child: Text(source.repository,
-          style: Theme.of(context).textTheme.bodyMedium,
-          overflow: TextOverflow.ellipsis),
+      child: Text(source.repository, style: Theme.of(context).textTheme.bodyMedium, overflow: TextOverflow.ellipsis),
     );
   }).toList();
 

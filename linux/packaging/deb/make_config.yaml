@@ -1,0 +1,28 @@
+display_name: ModMopet
+package_name: modmopet
+maintainer:
+  name: 89pleasure
+  email: 133201120+89pleasure@users.noreply.github.com
+priority: optional
+section: x11
+installed_size: 6604
+essential: false
+icon: assets/logo.png
+
+postinstall_scripts:
+  - echo "ModMopet has been successfully installed!"
+postuninstall_scripts:
+  - echo "ModMopet has been successfully uninstalled. Bye!"
+
+keywords:
+  - mods
+  - manager
+  - switch
+  - emulator
+
+generic_name: ModMopet
+
+categories:
+  - Tools
+
+startup_notify: true

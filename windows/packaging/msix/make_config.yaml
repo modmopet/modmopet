@@ -1,0 +1,4 @@
+display_name: ModMopet
+capabilities: internetClient
+install_certificate: false
+sign_msix: false

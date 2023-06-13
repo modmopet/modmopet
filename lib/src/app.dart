@@ -1,7 +1,12 @@
+import 'dart:io';
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
+import 'package:github/github.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/service/github/github.dart';
 import 'package:modmopet/src/widgets/mm_layout.dart';
+import 'package:updat/updat_window_manager.dart';
 import 'screen/settings/settings_controller.dart';
 import 'themes/color_schemes.g.dart';
 
@@ -16,9 +21,11 @@ class SimplePageRoute<T> extends MaterialPageRoute<T> {
 class App extends HookConsumerWidget {
   const App({
     super.key,
+    required this.version,
     required this.settingsController,
   });
 
+  final String version;
   final SettingsController settingsController;
 
   @override
@@ -29,39 +36,50 @@ class App extends HookConsumerWidget {
         return ProviderScope(
           child: MaterialApp(
             debugShowCheckedModeBanner: false,
-            // Providing a restorationScopeId allows the Navigator built by the
-            // MaterialApp to restore the navigation stack when a user leaves and
-            // returns to the app after it has been killed while running in the
-            // background.
             restorationScopeId: 'modmopet',
-
-            // Provide the generated AppLocalizations to the MaterialApp. This
-            // allows descendant Widgets to display the correct translations
-            // depending on the user's locale.
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             title: 'ModMopet',
-            // Define a light and dark color theme. Then, read the user's
-            // preferred ThemeMode (light, dark, or system default) from the
-            // SettingsController to display the correct theme.
             theme:
                 ThemeData(useMaterial3: true, colorScheme: darkColorScheme, dividerColor: MMColors.instance.background),
             darkTheme:
                 ThemeData(useMaterial3: true, colorScheme: darkColorScheme, dividerColor: MMColors.instance.background),
             themeMode: settingsController.themeMode,
-
-            // Define a function to handle named routes in order to support
-            // Flutter web url navigation and deep linking.
             onGenerateRoute: (RouteSettings routeSettings) {
               context.setLocale(const Locale('en', 'US'));
+              final modmopetSlug = RepositorySlug('modmopet', 'modmopet');
               return SimplePageRoute<void>(
                 settings: routeSettings,
                 builder: (BuildContext context) {
-                  return Material(
-                    child: MMLayout(
-                      settingsController: settingsController,
-                      routeSettings: routeSettings,
+                  return UpdatWindowManager(
+                    appName: 'ModMopet',
+                    getLatestVersion: () async {
+                      final latestRelease = await GithubClient().getLatestReleaseBySlug(modmopetSlug);
+                      return latestRelease.tagName?.substring(1); // remove v from tag
+                    },
+                    getBinaryUrl: (version) async {
+                      final latestRelease = await GithubClient().getLatestReleaseBySlug(modmopetSlug);
+                      List<ReleaseAsset>? assets = latestRelease.assets;
+                      ReleaseAsset asset =
+                          assets!.firstWhere((asset) => asset.name!.contains(Platform.operatingSystem));
+                      return asset.browserDownloadUrl!;
+                    },
+                    getChangelog: (latestVersion, appVersion) async {
+                      final ReleaseNotes releaseNotes =
+                          await GithubClient().generateReleaseNotes('v$latestVersion', 'v$appVersion');
+
+                      return '${releaseNotes.name}\n\n${releaseNotes.body}';
+                    },
+                    currentVersion: version,
+                    openOnDownload: false,
+                    closeOnInstall: true,
+                    child: Material(
+                      child: MMLayout(
+                        version: version,
+                        settingsController: settingsController,
+                        routeSettings: routeSettings,
+                      ),
                     ),
                   );
                 },

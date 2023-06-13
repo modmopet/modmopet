@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
@@ -13,11 +15,13 @@ import 'package:modmopet/src/widgets/mm_draggable_appbar.dart';
 import 'package:modmopet/src/widgets/mm_navigation_rail.dart';
 
 class MMLayout extends HookConsumerWidget {
+  final String version;
   final SettingsController settingsController;
   final RouteSettings routeSettings;
   const MMLayout({
     required this.settingsController,
     required this.routeSettings,
+    required this.version,
     super.key,
   });
 
@@ -108,5 +112,18 @@ class MMLayout extends HookConsumerWidget {
         ),
       ],
     );
+  }
+}
+
+String get platformExt {
+  switch (Platform.operatingSystem) {
+    case 'windows':
+      return 'zip';
+    case 'macos':
+      return 'tar.gz';
+    case 'linux':
+      return 'tar.gz';
+    default:
+      return 'zip';
   }
 }

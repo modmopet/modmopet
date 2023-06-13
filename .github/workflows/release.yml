@@ -131,9 +131,10 @@ jobs:
       run: |
         changelog_file=$(mktemp)
         echo "${{ needs.sem-version.outputs.CHANGELOG }}" >> "$changelog_file"
-
+        
         ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} -F $changelog_file"
         if [[ "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ==  "true" ]]; then
           ARGS="$ARGS --prerelease"
         fi
+ 
         gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*

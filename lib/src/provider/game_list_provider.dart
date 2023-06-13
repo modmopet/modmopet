@@ -102,7 +102,7 @@ Future<void> _checkTitlesDatabase() async {
 
   File titlesJsonFile = await PlatformFilesystem.instance.getFile('titlesdb.json');
   final slug = RepositorySlug('arch-box', 'titledb');
-  final latestRelease = await GithubClient().getLatestTitleDBRelease(slug);
+  final latestRelease = await GithubClient().getLatestReleaseBySlug(slug);
   final assets = latestRelease.assets;
 
   if (assets != null && assets.isNotEmpty) {
