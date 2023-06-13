@@ -39,7 +39,7 @@ jobs:
     needs: [ sem-version ]
     strategy:
       matrix:
-        target: [ windows, linux, macos]
+        target: [ windows, linux]
         include:
           - target: windows
             runner: windows-latest
@@ -47,9 +47,9 @@ jobs:
           - target: linux
             runner: ubuntu-latest
             artifact: dist/*/modmopet*.{zip,deb,AppImage}
-          - target: macos
-            runner: macos-latest
-            artifact: dist/*/modmopet*.{zip,dmg}
+#          - target: macos
+#            runner: macos-latest
+#            artifact: dist/*/modmopet*.{zip,dmg}
     runs-on: ${{ matrix.runner }}
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
