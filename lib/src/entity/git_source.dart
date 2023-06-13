@@ -75,7 +75,7 @@ Future<void> updateSources(UpdateSourcesRef ref) async {
 
 Future<void> _doUpdateIteration(String gameTitleId, GitSource source, FutureProviderRef ref) async {
   debugPrint('Check for new update');
-  final latestRelease = await GithubClient().getLatestRelease(source);
+  final latestRelease = await GithubClient().getLatestReleaseByGitSource(source);
   final latestGithubReleaseId = latestRelease.id;
   String? latestReleaseId = await PlatformFilesystem.instance.readFromLocal('latestReleaseId');
 
@@ -116,7 +116,7 @@ Future<void> _doDownloadAndSaveArchive(String gameTitleId, GitSource source) asy
 
   // Download, extract, delete zipfile
   LoggerService.instance.log('Update Manager: Downloading zipball...');
-  final latestRelease = await GithubClient().getLatestRelease(source);
+  final latestRelease = await GithubClient().getLatestReleaseByGitSource(source);
 
   // Try to find asset by name, since we want the full release
   final releaseAssets = latestRelease.assets;
