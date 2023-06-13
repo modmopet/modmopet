@@ -101,6 +101,8 @@ jobs:
         artifacts="${{ matrix.artifact }}"
         extensions=${artifacts##*\{}
         extensions=${extensions%*\}}
+        
+        dart pub global activate flutter_distributor
         make build ${{ matrix.target }} ${extensions}
 
     - name: Upload artifact
