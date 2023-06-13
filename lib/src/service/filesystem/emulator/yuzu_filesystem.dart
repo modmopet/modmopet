@@ -20,6 +20,7 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
     ],
     'linux': [
       '${Platform.environment['HOME']}/.cache/yuzu/game_list',
+      '${Platform.environment['HOME']}/.var/app/org.yuzu_emu.yuzu/cache/yuzu/game_list' // KDE Discovery
     ],
     'macos': [
       '${Platform.environment['HOME']}/Library/Caches/yuzu/game_list',
@@ -58,7 +59,11 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
     final Directory emulatorAppDirectory = Directory(emulator.path);
     if (await emulatorAppDirectory.exists()) {
       final Directory modDirectory = Directory(
-        emulatorAppDirectory.path + Platform.pathSeparator + identifierDirectory + Platform.pathSeparator + gameTitleId,
+        path.joinAll([
+          emulatorAppDirectory.path,
+          identifierDirectory,
+          gameTitleId,
+        ]),
       );
 
       if (await modDirectory.exists()) {
