@@ -127,7 +127,6 @@ jobs:
       with:
         script: |
           const fs = require('fs');
-          const glob = require('glob');
           const artifacts = "${{ matrix.artifact }}";
           // Get all artifact that match the pattern "artifacts" in the filessytem
           const files = glob.sync(artifacts);
