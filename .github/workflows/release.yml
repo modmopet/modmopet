@@ -60,6 +60,8 @@ jobs:
 
     - name: Install yq
       uses: shiipou/setup-yq-action@v2.2.0
+      with:
+        version: v4.34.1
 
     - name: Install Flutter
       uses: subosito/flutter-action@v2.10.0
