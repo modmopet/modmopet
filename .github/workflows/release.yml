@@ -119,7 +119,7 @@ jobs:
       run: |
         ${{ steps.setup-yq.outputs.yq-binary }} eval -i '.version = "${{  needs.sem-version.outputs.VERSION}}"' pubspec.yaml
         dart pub global activate flutter_distributor
-        make build ${{ matrix.target }} ${{ steps.targets-from-artifacts.outputs.result }}
+        flutter_distributor package --platform ${{ matrix.target }} --targets ${{ steps.targets-from-artifacts.outputs.result }} --build-dart-define=MM_GITHUB_INSTALLMENT_ID=${GH_INSTALLMENT_ID} --build-dart-define=MM_GITHUB_APP_ID=${GH_APP_ID} --build-dart-define=MM_GITHUB_PRIVATE_KEY=${GH_PRIVATE_KEY} --build-dart-define=MM_SENTRY_DSN=${SENTRY_DSN} --build-dart-define=MM_SENTRY_TRACE_SAMPLE_RATE=${SENTRY_TRACE_SAMPLE_RATE}
         
     - name: Upload artifact
       uses: actions/upload-artifact@v3
