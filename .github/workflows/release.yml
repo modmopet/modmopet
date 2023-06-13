@@ -129,11 +129,9 @@ jobs:
           const fs = require('fs')
           const path = require('path')
           const artifacts = "${{ matrix.artifact }}"
-          // dirname of the artifact
-          const dirname = path.dirname(artifacts)
           // Get all artifact that match the pattern "artifacts" in the filessytem
-          const globber = await glob.create(dirname/*)
-          return globber.glob()
+          const globber = await glob.create(artifacts)
+          return await globber.glob()
         result-encoding: string
     - name: Upload artifact
       uses: actions/upload-artifact@v3
