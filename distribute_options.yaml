@@ -1,0 +1,26 @@
+output: dist/
+releases:
+  - name: production
+    jobs:
+      # Build and publish your apk pkg to pgyer
+      - name: release-linux
+        package:
+          platform: linux
+          target: linux
+          build_args:
+            flavor: dev
+            target-platform: android-arm,android-arm64
+            dart-define:
+              APP_ENV: dev
+        publish_to: pgyer
+      # Build and publish your ipa pkg to pgyer
+      - name: release-macos
+        package:
+          platform: macos
+          target: ipa
+          build_args:
+            flavor: dev
+            export-options-plist: ios/dev_ExportOptions.plist
+            dart-define:
+              APP_ENV: dev
+        publish_to: pgyer
