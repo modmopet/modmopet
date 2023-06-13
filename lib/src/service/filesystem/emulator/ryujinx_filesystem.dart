@@ -95,11 +95,7 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
           title: metaData.containsKey('title') ? metaData['title']! : '',
           favorite: metaData.containsKey('favorite') ? metaData['favorite']! as bool : false,
           playTime: metaData.containsKey('time_played') ? metaData['time_played']! as int : 0,
-          lastPlayed: metaData.containsKey('last_played_utc')
-              ? DateTime.tryParse(
-                  metaData['last_played_utc'] ?? '',
-                )
-              : null,
+          lastPlayed: metaData.containsKey('last_played_utc') ? DateTime.tryParse(metaData['last_played_utc']) : null,
         );
       }
     }
