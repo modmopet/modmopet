@@ -10,7 +10,6 @@ import 'package:window_manager/window_manager.dart';
 import 'src/app.dart';
 import 'src/screen/settings/settings_controller.dart';
 import 'src/screen/settings/settings_service.dart';
-import 'package:package_info_plus/package_info_plus.dart';
 
 const String emulatorBoxName = 'emulator';
 
@@ -57,7 +56,7 @@ void main() async {
     const Locale('pt', 'PT')
   ];
 
-  String version = await _getVersion();
+  String version = const String.fromEnvironment('FLUTTER_BUILD_NAME', defaultValue: 'v1.0.0');
 
   // Sentry implementation
   await SentryFlutter.init(
@@ -75,10 +74,4 @@ void main() async {
       ),
     ),
   );
-}
-
-Future<String> _getVersion() async {
-  PackageInfo packageInfo = await PackageInfo.fromPlatform();
-
-  return packageInfo.version;
 }

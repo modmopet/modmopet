@@ -6,7 +6,6 @@ import 'package:github/github.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/service/github/github.dart';
 import 'package:modmopet/src/widgets/mm_layout.dart';
-import 'package:updat/theme/chips/default_with_check_for.dart';
 import 'package:updat/updat_window_manager.dart';
 import 'screen/settings/settings_controller.dart';
 import 'themes/color_schemes.g.dart';
@@ -72,7 +71,6 @@ class App extends HookConsumerWidget {
 
                       return '${releaseNotes.name}\n\n${releaseNotes.body}';
                     },
-                    updateChipBuilder: defaultChipWithCheckFor,
                     currentVersion: version,
                     openOnDownload: false,
                     closeOnInstall: true,
