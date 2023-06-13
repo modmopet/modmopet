@@ -43,9 +43,9 @@ class Mod with _$Mod {
       subtitle: yaml['subtitle'],
       description: yaml['description'],
       category: Category.values.singleWhere(
-        (category) => category.id == yaml['category'],
+        (category) => category.id == yaml['category'] as int,
       ),
-      version: yaml['version'],
+      version: yaml['version'] as String?,
       game: yaml['game'],
       origin: origin,
       author: yaml['author'],
