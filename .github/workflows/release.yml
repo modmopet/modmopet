@@ -130,7 +130,7 @@ jobs:
           const artifacts = "${{ matrix.artifact }}"
           // Get all artifact that match the pattern "artifacts" in the filessytem
           const globber = await glob.create(artifacts)
-          return globber.glob().join('\n')
+          return globber.glob()
         result-encoding: string
     - name: Upload artifact
       uses: actions/upload-artifact@v3
