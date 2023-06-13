@@ -24,7 +24,6 @@ dependencies:
     sdk: flutter
   flutter_riverpod: ^2.3.6
   freezed_annotation: ^2.2.0
-  get_storage: ^2.1.1
   github: ^9.14.0
   hooks_riverpod: ^2.3.6
   http: ^0.13.0
