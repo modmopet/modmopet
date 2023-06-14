@@ -3,6 +3,7 @@
 
 ### ModMopet ##
 dart-define.json
+dist/
 
 ### Flutter ###
 # Flutter/Dart/Pub related
@@ -15,8 +16,10 @@ dart-define.json
 .pub-cache/
 .pub/
 build/
+dist/
 coverage/
 lib/generated_plugin_registrant.dart
+act.sh
 # For library packages, don’t commit the pubspec.lock file.
 # Regenerating the pubspec.lock file lets you test your package against the latest compatible versions of its dependencies.
 # See https://dart.dev/guides/libraries/private-files#pubspeclock

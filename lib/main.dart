@@ -15,6 +15,8 @@ const String emulatorBoxName = 'emulator';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  // Init image cache
   await EasyLocalization.ensureInitialized();
   String imageCacheDirectory = '${(await getApplicationSupportDirectory()).path}${Platform.pathSeparator}image_cache';
   await FastCachedImageConfig.init(subDir: imageCacheDirectory, clearCacheAfter: const Duration(days: 30));
@@ -56,6 +58,8 @@ void main() async {
     const Locale('pt', 'PT')
   ];
 
+  String version = const String.fromEnvironment('FLUTTER_BUILD_NAME', defaultValue: 'v1.0.0');
+
   // Sentry implementation
   await SentryFlutter.init(
     (options) {
@@ -68,7 +72,7 @@ void main() async {
       EasyLocalization(
         supportedLocales: supportedLocales,
         path: 'assets/translations',
-        child: App(settingsController: settingsController),
+        child: App(version: version, settingsController: settingsController),
       ),
     ),
   );
