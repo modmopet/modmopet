@@ -121,22 +121,10 @@ jobs:
         dart pub global activate flutter_distributor
         flutter_distributor package --platform ${{ matrix.target }} --targets ${{ steps.targets-from-artifacts.outputs.result }} --build-dart-define=MM_GITHUB_INSTALLMENT_ID=${GH_INSTALLMENT_ID} --build-dart-define=MM_GITHUB_APP_ID=${GH_APP_ID} --build-dart-define=MM_GITHUB_PRIVATE_KEY=${GH_PRIVATE_KEY} --build-dart-define=MM_SENTRY_DSN=${SENTRY_DSN} --build-dart-define=MM_SENTRY_TRACE_SAMPLE_RATE=${SENTRY_TRACE_SAMPLE_RATE}
 
-    - name: List all artifacts
-      id: list-artifacts
-      uses: actions/github-script@v6
-      with:
-        script: |
-          const fs = require('fs')
-          const path = require('path')
-          const artifacts = "${{ matrix.artifact }}"
-          // Get all artifact that match the pattern "artifacts" in the filessytem
-          const globber = await glob.create(artifacts)
-          return await globber.glob()
-        result-encoding: string
     - name: Upload artifact
       uses: actions/upload-artifact@v3
       with:
-        path: ${{ steps.list-artifacts.outputs.result }}
+        path: dist/
 
   release:
     name: Release
