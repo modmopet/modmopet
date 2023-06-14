@@ -52,35 +52,40 @@ class App extends HookConsumerWidget {
               return SimplePageRoute<void>(
                 settings: routeSettings,
                 builder: (BuildContext context) {
-                  return UpdatWindowManager(
-                    appName: 'ModMopet',
-                    getLatestVersion: () async {
-                      final latestRelease = await GithubClient().getLatestReleaseBySlug(modmopetSlug);
-                      return latestRelease.tagName?.substring(1); // remove v from tag
-                    },
-                    getBinaryUrl: (version) async {
-                      final latestRelease = await GithubClient().getLatestReleaseBySlug(modmopetSlug);
-                      List<ReleaseAsset>? assets = latestRelease.assets;
-                      ReleaseAsset asset =
-                          assets!.firstWhere((asset) => asset.name!.contains(Platform.operatingSystem));
-                      return asset.browserDownloadUrl!;
-                    },
-                    getChangelog: (latestVersion, appVersion) async {
-                      final ReleaseNotes releaseNotes =
-                          await GithubClient().generateReleaseNotes('v$latestVersion', 'v$appVersion');
+                  // return UpdatWindowManager(
+                  //   appName: 'ModMopet',
+                  //   getLatestVersion: () async {
+                  //     final latestRelease = await GithubClient().getLatestReleaseBySlug(modmopetSlug);
+                  //     return latestRelease.tagName?.substring(1); // remove v from tag
+                  //   },
+                  //   getBinaryUrl: (version) async {
+                  //     final latestRelease = await GithubClient().getLatestReleaseBySlug(modmopetSlug);
+                  //     List<ReleaseAsset>? assets = latestRelease.assets;
+                  //     ReleaseAsset asset =
+                  //         assets!.firstWhere((asset) => asset.name!.contains(Platform.operatingSystem));
+                  //     return asset.browserDownloadUrl!;
+                  //   },
+                  //   getChangelog: (latestVersion, appVersion) async {
+                  //     final ReleaseNotes releaseNotes =
+                  //         await GithubClient().generateReleaseNotes('v$latestVersion', 'v$appVersion');
 
-                      return '${releaseNotes.name}\n\n${releaseNotes.body}';
-                    },
-                    currentVersion: version,
-                    openOnDownload: false,
-                    closeOnInstall: true,
-                    child: Material(
-                      child: MMLayout(
-                        version: version,
-                        settingsController: settingsController,
-                        routeSettings: routeSettings,
-                      ),
-                    ),
+                  //     return '${releaseNotes.name}\n\n${releaseNotes.body}';
+                  //   },
+                  //   currentVersion: version,
+                  //   openOnDownload: false,
+                  //   closeOnInstall: true,
+                  //   child: Material(
+                  //     child: MMLayout(
+                  //       version: version,
+                  //       settingsController: settingsController,
+                  //       routeSettings: routeSettings,
+                  //     ),
+                  //   ),
+                  // );
+                  return MMLayout(
+                    version: version,
+                    settingsController: settingsController,
+                    routeSettings: routeSettings,
                   );
                 },
               );
