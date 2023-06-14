@@ -82,10 +82,12 @@ class App extends HookConsumerWidget {
                   //     ),
                   //   ),
                   // );
-                  return MMLayout(
-                    version: version,
-                    settingsController: settingsController,
-                    routeSettings: routeSettings,
+                  return Material(
+                    child: MMLayout(
+                      version: version,
+                      settingsController: settingsController,
+                      routeSettings: routeSettings,
+                    ),
                   );
                 },
               );
