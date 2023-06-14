@@ -53,7 +53,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
     environment: ${{ github.ref_name }}
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
     - name: Checkout
       uses: actions/checkout@v3
