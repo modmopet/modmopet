@@ -1,5 +1,4 @@
-import 'dart:io';
-
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
@@ -52,7 +51,7 @@ class MMLayout extends HookConsumerWidget {
         Expanded(
           child: Row(
             children: [
-              // NAVIGATOIN RAIL
+              // NAVIGATION AREA
               Container(
                 width: 100.0,
                 decoration: BoxDecoration(
@@ -61,7 +60,32 @@ class MMLayout extends HookConsumerWidget {
                     right: BorderSide(color: MMColors.instance.backgroundBorder),
                   ),
                 ),
-                child: const MMNavigationRail(),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    const Expanded(
+                      child: MMNavigationRail(),
+                    ),
+                    Expanded(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          SizedBox(
+                            height: 50.0,
+                            child: Text(
+                              textAlign: TextAlign.center,
+                              'ModMopet\nv${const String.fromEnvironment('FLUTTER_BUILD_NAME')}-${const String.fromEnvironment('FLUTTER_BUILD_NUMBER')}',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .bodySmall
+                                  ?.copyWith(color: Colors.white38, fontSize: 11.0),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
               ),
               Expanded(
                 child: Column(
@@ -112,18 +136,5 @@ class MMLayout extends HookConsumerWidget {
         ),
       ],
     );
-  }
-}
-
-String get platformExt {
-  switch (Platform.operatingSystem) {
-    case 'windows':
-      return 'zip';
-    case 'macos':
-      return 'tar.gz';
-    case 'linux':
-      return 'tar.gz';
-    default:
-      return 'zip';
   }
 }

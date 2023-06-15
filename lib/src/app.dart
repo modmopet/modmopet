@@ -1,12 +1,7 @@
-import 'dart:io';
-
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
-import 'package:github/github.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
-import 'package:modmopet/src/service/github/github.dart';
 import 'package:modmopet/src/widgets/mm_layout.dart';
-import 'package:updat/updat_window_manager.dart';
 import 'screen/settings/settings_controller.dart';
 import 'themes/color_schemes.g.dart';
 
@@ -48,7 +43,7 @@ class App extends HookConsumerWidget {
             themeMode: settingsController.themeMode,
             onGenerateRoute: (RouteSettings routeSettings) {
               context.setLocale(const Locale('en', 'US'));
-              final modmopetSlug = RepositorySlug('modmopet', 'modmopet');
+              // final modmopetSlug = RepositorySlug('modmopet', 'modmopet');
               return SimplePageRoute<void>(
                 settings: routeSettings,
                 builder: (BuildContext context) {
