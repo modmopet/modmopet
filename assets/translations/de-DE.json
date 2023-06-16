@@ -4,6 +4,7 @@
     "emulator_not_found_button": "Versuchen Sie es erneut!",
     "no_games_found_title": "Ups, was für ein Pech!",
     "no_games_found_text": "Es scheint als hättest du deinem Emulator noch keine Spiele hinzugefügt.",
+    "no_games_found_hint_text": "Wähle den internen Applikationsordner des Emulators aus. \nUm den Ordner zu finden klicke auf \"Öffne {emulatorName} Ordner\" im Menü des Emulators.",
     "no_games_found_button": "Neu laden",
 
     "hour": {

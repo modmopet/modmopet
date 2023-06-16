@@ -1,11 +1,9 @@
-import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/screen/emulator_not_found/emulator_not_found_view.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
 import 'package:modmopet/src/screen/mods/mods_view.dart';
-import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/screen/settings/settings_controller.dart';
 import 'package:modmopet/src/screen/settings/settings_view.dart';
 import 'package:modmopet/src/service/logger.dart';
@@ -25,18 +23,17 @@ class MMLayout extends HookConsumerWidget {
   });
 
   Widget getScreenByRoute(RouteSettings routeSettings, WidgetRef ref) {
-    final selectedEmulator = ref.watch(selectedEmulatorProvider);
     switch (routeSettings.name) {
       case SettingsView.routeName:
         return SettingsView(controller: settingsController);
-      case GameListView.routeName:
-        return const GameListView();
       case ModsView.routeName:
         return const ModsView();
       case EmulatorNotFoundView.routeName:
-        return const EmulatorNotFoundView();
+        final emulator = ref.read(emulatorProvider).value;
+        return EmulatorNotFoundView(emulator!.name);
+      case GameListView.routeName:
       default:
-        return selectedEmulator.value == null ? const EmulatorPickerView() : const GameListView();
+        return const GameListView();
     }
   }
 

@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/entity/emulator.dart';
-import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
+import 'package:modmopet/src/widgets/mm_emulator_picker_dialog.dart';
 import 'package:modmopet/src/widgets/mm_loading_indicator.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class GamesEmulatorView extends ConsumerWidget {
   const GamesEmulatorView({super.key});
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final emulator = ref.watch(emulatorProvider);
+
+    void openEmulatorPickerDialog() {
+      showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return const MMEmulatorPickerDialog();
+        },
+      );
+    }
 
     return emulator.when(
       data: (emulator) {
@@ -67,7 +77,7 @@ class GamesEmulatorView extends ConsumerWidget {
                                 ),
                                 Row(
                                   children: [
-                                    buildEmulatorActions(emulator, context, ref),
+                                    buildEmulatorActions(emulator, openEmulatorPickerDialog),
                                   ],
                                 )
                               ],
@@ -86,7 +96,7 @@ class GamesEmulatorView extends ConsumerWidget {
     );
   }
 
-  Widget buildEmulatorActions(Emulator emulator, BuildContext context, WidgetRef ref) {
+  Widget buildEmulatorActions(Emulator emulator, VoidCallback onPressed) {
     final Uri emulatorUri = Uri.file(emulator.path);
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -101,10 +111,7 @@ class GamesEmulatorView extends ConsumerWidget {
           ),
           IconButton(
             tooltip: 'Change emulator',
-            onPressed: () async {
-              ref.read(selectedEmulatorProvider.notifier).clear();
-              Navigator.of(context).pushReplacementNamed(EmulatorPickerView.routeName);
-            },
+            onPressed: () => onPressed(),
             icon: const Icon(Icons.swap_horizontal_circle_outlined),
           ),
         ],

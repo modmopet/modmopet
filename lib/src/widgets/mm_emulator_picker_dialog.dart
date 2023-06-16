@@ -1,21 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/widgets/mm_emulator_select.dart';
 
-class EmulatorPickerView extends HookConsumerWidget {
-  const EmulatorPickerView({super.key});
-
-  static const routeName = '/pick-emulator';
-
+class MMEmulatorPickerDialog extends StatelessWidget {
+  const MMEmulatorPickerDialog({super.key});
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final supportedEmulators = MMConfig.supportedEmulators;
+  Widget build(BuildContext context) {
+    final Map<String, dynamic> supportedEmulators = MMConfig.supportedEmulators;
 
     // Create a list of available emulators to choose from
     List<Widget> availableEmulatorList = [];
     for (var element in supportedEmulators.entries) {
-      availableEmulatorList.add(MMEmulatorSelect(emulatorId: element.key, supportedEmulatorMetadata: element.value));
+      availableEmulatorList.add(
+        MMEmulatorSelect(emulatorId: element.key, supportedEmulatorMetadata: element.value),
+      );
     }
 
     return AlertDialog(
@@ -23,14 +21,15 @@ class EmulatorPickerView extends HookConsumerWidget {
       alignment: Alignment.center,
       actionsPadding: const EdgeInsets.only(bottom: 40, top: 10),
       actionsAlignment: MainAxisAlignment.spaceEvenly,
-      elevation: 15,
+      title: const Text(
+        'Which emulator to use?',
+        textAlign: TextAlign.center,
+        style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, height: 2),
+      ),
+      elevation: 20.0,
       actions: availableEmulatorList,
       content: const Column(
         children: [
-          Text(
-            'Choose an emulator',
-            style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.w600, height: 2),
-          ),
           SizedBox(
             width: 325.0,
             child: Text(

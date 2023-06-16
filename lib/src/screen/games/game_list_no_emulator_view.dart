@@ -1,9 +1,8 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:modmopet/src/entity/emulator.dart';
-import 'package:modmopet/src/screen/emulator_picker/emulator_picker_view.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
+import 'package:modmopet/src/widgets/mm_emulator_picker_dialog.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
 
 class GameListNoEmulatorView extends ConsumerWidget {
@@ -11,6 +10,17 @@ class GameListNoEmulatorView extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Open emulator picker dialog by tap
+    void openEmulatorPicker() {
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (BuildContext context) {
+          return const MMEmulatorPickerDialog();
+        },
+      );
+    }
+
     final textTheme = Theme.of(context).textTheme;
     return SizedBox(
       width: 600.0,
@@ -37,13 +47,7 @@ class GameListNoEmulatorView extends ConsumerWidget {
             height: 20.0,
           ),
           MMElevatedButton.primary(
-            onPressed: () {
-              ref.read(selectedEmulatorProvider.notifier).clear();
-              Navigator.pushReplacementNamed(
-                context,
-                EmulatorPickerView.routeName,
-              );
-            },
+            onPressed: () => openEmulatorPicker(),
             child: Text('emulator_not_found_button'.tr()),
           ),
         ],

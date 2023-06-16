@@ -4,6 +4,7 @@
     "emulator_not_found_button": "Try again!",
     "no_games_found_title": "Oops, what a shame!",
     "no_games_found_text": "It seems you haven't added any games to your emulator yet.",
+    "no_games_found_hint_text": "Select the internal application folder of the emulator.\nTo find the folder click on \"Open {emulatorName} folder\" in the emulator menu.",
     "no_games_found_button": "Reload",
 
     "hour": {

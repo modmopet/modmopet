@@ -14,7 +14,7 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
         DragToMoveArea(
           child: Container(
             width: double.infinity,
-            height: 48.0,
+            height: 40.0,
             decoration: BoxDecoration(
               color: MMColors.instance.background,
               border: Border(
@@ -30,15 +30,6 @@ class DraggableAppBar extends HookWidget implements PreferredSizeWidget {
                 SizedBox(
                   width: 300.0,
                   child: Container(),
-                ),
-                // center
-                const Expanded(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text('ModMopet'),
-                    ],
-                  ),
                 ),
                 // Windows and Linux only
                 if (Platform.isMacOS == false)
