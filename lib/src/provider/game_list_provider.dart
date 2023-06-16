@@ -95,12 +95,13 @@ bool _titleIsValid(Map<String, dynamic> titleData) {
 }
 
 Future<void> _checkTitlesDatabase() async {
-  if (await _hasBeenDownloadedWithin()) {
-    debugPrint('Has been checked within 24 hours. Skip.');
+  File titlesJsonFile = await PlatformFilesystem.instance.getFile('titlesdb.json');
+
+  // Skip if exists and downloaded within 24 hours already
+  if (await _hasBeenDownloadedWithin() && await titlesJsonFile.exists()) {
     return;
   }
 
-  File titlesJsonFile = await PlatformFilesystem.instance.getFile('titlesdb.json');
   final slug = RepositorySlug('arch-box', 'titledb');
   final latestRelease = await GithubClient().getLatestReleaseBySlug(slug);
   final assets = latestRelease.assets;
