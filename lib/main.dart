@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:easy_localization/easy_localization.dart';
 import 'package:fast_cached_network_image/fast_cached_network_image.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:modmopet/src/service/storage/shared_preferences_storage.dart';
 import 'package:path_provider/path_provider.dart';
@@ -23,6 +24,10 @@ void main() async {
 
   // Set local storage
   await SharedPreferencesStorage.instance.init();
+
+  if (kDebugMode && const bool.fromEnvironment('DEBUG_CLEAR_STORAGE_ON_STARTUP', defaultValue: false)) {
+    SharedPreferencesStorage.instance.clear();
+  }
 
   // Set window settings
   await windowManager.ensureInitialized();

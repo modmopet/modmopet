@@ -4,5 +4,6 @@
     "emulator_not_found_button" : "Réessayez !",
     "no_games_found_title" : "Oups, quelle malchance",
     "no_games_found_text" : "Il semble que tu n'aies pas encore ajouté de jeux à ton émulateur",
+    "no_games_found_hint_text": "Sélectionne le dossier d'application interne de l'émulateur.\nPour trouver le dossier, clique sur \"Ouvrir {emulatorName} dossier\" dans le menu de l'émulateur.",
     "no_games_found_button" : "Recharger"
 }

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:easy_localization/easy_localization.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:modmopet/src/config.dart';
 import 'package:modmopet/src/entity/emulator.dart';
@@ -83,7 +84,11 @@ class EmulatorService {
 
   Future<void> updateEmulatorPathByUserSelection(Emulator emulator, EmulatorRef ref) async {
     // Try again by user selected path
-    String? selectedPath = await FilePicker.platform.getDirectoryPath();
+    String? selectedPath = await FilePicker.platform.getDirectoryPath(
+      dialogTitle: 'no_games_found_hint_text'.tr(namedArgs: {'emulatorName': emulator.name}),
+      initialDirectory: (await emulator.filesystem.defaultEmulatorAppDirectory()).parent.path,
+      lockParentWindow: true,
+    );
     if (selectedPath != null) {
       if (await EmulatorService.instance.isValidEmulatorPath(emulator.id, selectedPath)) {
         // Save path to storage

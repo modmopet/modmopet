@@ -4,5 +4,6 @@
     "emulator_not_found_button": "Riprova!",
     "no_games_found_title": "Oops, che sfiga!",
     "no_games_found_text": "Sembra che tu non abbia ancora aggiunto alcun gioco al tuo emulatore",
+    "no_games_found_hint_text": "Selezionate la cartella interna dell'applicazione dell'emulatore.\nPer trovare la cartella, fate clic su \"Apri {emulatorName} cartella\" nel menu dell'emulatore.",
     "no_games_found_button": "Ricarica"
 }

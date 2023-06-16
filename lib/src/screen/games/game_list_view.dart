@@ -12,6 +12,7 @@ import 'package:modmopet/src/screen/games/games_emulator_view.dart';
 import 'package:modmopet/src/screen/mods/mods_view.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_breadcrumbs_bar.dart';
+import 'package:modmopet/src/widgets/mm_emulator_picker_dialog.dart';
 import 'package:modmopet/src/widgets/mm_loading_indicator.dart';
 import 'package:sentry_flutter/sentry_flutter.dart';
 
@@ -22,8 +23,23 @@ class GameListView extends HookConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final selectedEmulator = ref.watch(selectedEmulatorProvider).value;
     final emulator = ref.watch(emulatorProvider);
     final games = ref.watch(gameListProvider);
+
+    // Game list is default view if no emulator was yet picked
+    // This shows the dialog to let the user pick an emulator for the first time
+    // todo: replace this with a real first setup journey
+    if (selectedEmulator == null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return const MMEmulatorPickerDialog();
+          },
+        );
+      });
+    }
 
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,

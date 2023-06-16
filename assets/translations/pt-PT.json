@@ -4,5 +4,6 @@
     "emulator_not_found_button": "Tente novamente!",
     "no_games_found_title": "Oops, que chatice!",
     "no_games_found_text": "Parece que ainda não adicionou nenhum jogo ao seu emulador",
+    "no_games_found_hint_text": "Seleccione a pasta da aplicação interna do emulador.\nPara localizar a pasta, clique em \"Abrir {emulatorName} pasta\" no menu do emulador.",
     "no_games_found_button": "Recarregar"
 }
