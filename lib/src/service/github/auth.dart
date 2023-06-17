@@ -1,6 +1,5 @@
 import 'dart:convert';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:dart_jsonwebtoken/dart_jsonwebtoken.dart';
@@ -14,14 +13,11 @@ class GithubAuthService {
 
     // Check if token exists and verify duration
     if (authToken.existsSync()) {
-      debugPrint('Cached token found.');
       final Map<String, dynamic> cachedTokenData = jsonDecode(authToken.readAsStringSync());
-      debugPrint(cachedTokenData.toString());
       if (cachedTokenData.isNotEmpty) {
         if (cachedTokenData.containsKey('token') && cachedTokenData.containsKey('createdAt')) {
           final expireAt = DateTime.parse(cachedTokenData['createdAt']!);
           if (DateTime.now().difference(expireAt) < const Duration(hours: 1)) {
-            debugPrint('Use cached token: ${cachedTokenData['token']}');
             return cachedTokenData['token'];
           }
         }
@@ -31,16 +27,11 @@ class GithubAuthService {
     final String appJWT = _buildNewJWT(duration: const Duration(minutes: 10));
     final createdAt = DateTime.now();
     final response = await requestNewAuthToken(appJWT);
-    debugPrint(response.statusCode.toString());
 
     final jsonResponse = jsonDecode(response.body);
-    debugPrint('Use new generated token: ${jsonResponse['token']}');
     final token = jsonResponse['token'];
 
     if (response.statusCode == 201) {
-      // Creates a file to save the token to use the 1 hour expiration
-      debugPrint('Caching token.');
-
       if (!await authToken.exists()) {
         authToken.create();
       }

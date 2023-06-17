@@ -1,5 +1,4 @@
 import 'dart:io';
-
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/extensions.dart';
@@ -18,6 +17,9 @@ class ModService {
     final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, titleId, mod.title);
 
     if (await emulatorModDirectory.exists() == false) {
+      await emulatorModDirectory.create();
+    } else {
+      await emulatorModDirectory.delete(recursive: true);
       await emulatorModDirectory.create();
     }
 

@@ -55,69 +55,86 @@ class Mod with _$Mod {
   }
 }
 
+enum ModStateFilter {
+  all,
+  installed,
+  notInstalled,
+  hasUpdate,
+}
+
+final modStateFilterProvider = StateProvider<ModStateFilter>((ref) => ModStateFilter.all);
+final gameVersionsProvider = StateProvider<Set<String>>((ref) => <String>{});
+final gameVersionFilterProvider = StateProvider<String?>((ref) => null);
+
+@riverpod
+Future<List<Mod>> availableMods(AvailableModsRef ref) async {
+  final emulator = ref.watch(emulatorProvider);
+  final game = ref.watch(gameProvider);
+  final gitSources = ref.watch(gitSourcesProvider);
+  final selectedGitSource = ref.watch(selectedSourceProvider);
+
+  if (gitSources.isEmpty) {
+    return [];
+  }
+
+  WidgetsBinding.instance.addPostFrameCallback((_) async {
+    await LoadingService.instance.show('Mods will be delivered...');
+  });
+
+  return await ModsRepository().getAvailableMods(
+    emulator.value!,
+    game!,
+    selectedGitSource ?? gitSources.first,
+    ref,
+  );
+}
+
 @riverpod
 class Mods extends _$Mods {
-  Future<List<Mod>> _fetchModsByCategory() async {
-    final game = ref.watch(gameProvider);
-    final gitSources = ref.watch(gitSourcesProvider);
-    final selectedGitSource = ref.watch(selectedSourceProvider);
-    final emulator = ref.watch(emulatorProvider);
-    final modsFilter = ref.watch(modsVersionFilterProvider);
+  Future<List<Mod>> _fetchMods() async {
+    final mods = await ref.watch(availableModsProvider.future);
+    final modStateFilter = ref.watch(modStateFilterProvider);
+    final versionFilter = ref.watch(gameVersionFilterProvider);
 
-    // For all games without default sources
-    if (gitSources.isEmpty) {
-      return [];
-    }
-
-    // 1. Fetch mods
-    // Todo: throws state exception without using this PostFrameCallback, needs proper installment
-    WidgetsBinding.instance.addPostFrameCallback((_) async {
-      await LoadingService.instance.show('Mods will be delivered...');
-    });
-
-    final modsByCategory = await ModsRepository().getAvailableMods(
-      emulator.value!,
-      game!,
-      selectedGitSource ?? gitSources.first,
-    );
-
-    // 2. Filter mods by category
-    final filteredMods = modsByCategory.where((element) {
-      if (modsFilter != null) {
-        return element.category.id == category.id && element.game['version'].contains(modsFilter);
+    // 1. Filter mods by category and filter
+    final List<Mod> filteredMods = mods.where((mod) {
+      switch (modStateFilter) {
+        case ModStateFilter.all:
+          return mod.category.id == category.id;
+        case ModStateFilter.installed:
+          return mod.category.id == category.id && mod.isInstalled;
+        case ModStateFilter.notInstalled:
+          return mod.category.id == category.id && !mod.isInstalled;
+        case ModStateFilter.hasUpdate:
+          return mod.category.id == category.id && mod.hasUpdate;
       }
-
-      return element.category.id == category.id;
     }).toList();
+
+    // 2. Filter mods by game version
+    if (versionFilter != null) {
+      filteredMods.removeWhere((mod) {
+        final gameVersion = ref.watch(gameVersionFilterProvider.notifier).state;
+        return !mod.game['version'].contains(gameVersion);
+      });
+    }
 
     // 3. Sort by title
     filteredMods.sort((a, b) => a.title.compareTo(b.title));
 
-    // Set<String> uniqueGameVersions = {};
-    // for (var element in filteredMods) {
-    //   final YamlList gameVersions = element.game['version'];
-    //   for (var element in gameVersions) {
-    //     uniqueGameVersions.add(element);
-    //   }
-    // }
-
-    // debugPrint(uniqueGameVersions.toString());
-
-    // Add a delay for the feeling
-    await Future.delayed(const Duration(milliseconds: 500));
     await LoadingService.instance.clear();
 
     return filteredMods;
   }
 
   @override
-  FutureOr<List<Mod>> build(Category category) async => _fetchModsByCategory();
+  FutureOr<List<Mod>> build(Category category) async => _fetchMods();
 
   Future<void> installMod(Emulator emulator, Game game, Mod mod) async {
     state = const AsyncValue.loading();
     state = await AsyncValue.guard(() async {
       await ModService.instance.installMod(game.id, mod, emulator);
-      return _fetchModsByCategory();
+      ref.invalidate(availableModsProvider);
+      return _fetchMods();
     });
   }
 
@@ -127,11 +144,12 @@ class Mods extends _$Mods {
       ModService.instance.updateMod(game.id, mod, emulator);
       try {
         await ModService.instance.removeMod(game.id, mod, emulator);
+        ref.invalidate(availableModsProvider);
       } catch (error, stackTrace) {
         Sentry.captureException(error, stackTrace: stackTrace);
       }
 
-      return _fetchModsByCategory();
+      return _fetchMods();
     });
   }
 
@@ -140,17 +158,15 @@ class Mods extends _$Mods {
     state = await AsyncValue.guard(() async {
       try {
         await ModService.instance.removeMod(game.id, mod, emulator);
+        ref.invalidate(availableModsProvider);
       } catch (error, stackTrace) {
         Sentry.captureException(error, stackTrace: stackTrace);
       }
 
-      return _fetchModsByCategory();
+      return _fetchMods();
     });
   }
 }
-
-final modsVersionFilterProvider = StateProvider<String?>((ref) => null);
-final uniqueGameVersionProvider = StateProvider<Set<String>>((ref) => <String>{});
 
 enum Category {
   performance(
