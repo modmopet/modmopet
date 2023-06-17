@@ -45,7 +45,7 @@ class Mod with _$Mod {
       category: Category.values.singleWhere(
         (category) => category.id == yaml['category'] as int,
       ),
-      version: yaml['version'] as String?,
+      version: yaml['version'] is int ? yaml['version'].toString() : yaml['version'] as String?,
       game: yaml['game'],
       origin: origin,
       author: yaml['author'],
