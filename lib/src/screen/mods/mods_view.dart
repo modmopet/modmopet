@@ -7,6 +7,7 @@ import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
 import 'package:modmopet/src/entity/mod.dart';
 import 'package:modmopet/src/screen/games/game_list_view.dart';
+import 'package:modmopet/src/screen/mods/mod_filter_row.dart';
 import 'package:modmopet/src/screen/mods/mods_list_view.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_breadcrumbs_bar.dart';
@@ -101,6 +102,26 @@ class ModsView extends HookConsumerWidget {
               createActionMenu(context, ref),
               createSourceMenu(context, ref),
             ],
+          ),
+        ),
+        Container(
+          height: 45.0,
+          width: double.infinity,
+          padding: const EdgeInsets.symmetric(horizontal: 10.0),
+          decoration: BoxDecoration(
+            border: Border.symmetric(horizontal: BorderSide(width: 1, color: MMColors.instance.backgroundBorder)),
+          ),
+          child: const SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text('Filter: '),
+                ModFilterRowWidget(),
+              ],
+            ),
           ),
         ),
         const Expanded(

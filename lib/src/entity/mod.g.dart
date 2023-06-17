@@ -6,7 +6,22 @@ part of 'mod.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$modsHash() => r'a47e333c815aefd9e212a67a3783082a1d9e7cb3';
+String _$availableModsHash() => r'a43b4e9ceba4eef2596c7e4b2d40c4b4e106892a';
+
+/// See also [availableMods].
+@ProviderFor(availableMods)
+final availableModsProvider = AutoDisposeFutureProvider<List<Mod>>.internal(
+  availableMods,
+  name: r'availableModsProvider',
+  debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
+      ? null
+      : _$availableModsHash,
+  dependencies: null,
+  allTransitiveDependencies: null,
+);
+
+typedef AvailableModsRef = AutoDisposeFutureProviderRef<List<Mod>>;
+String _$modsHash() => r'37baffbd4295b438797ed1f42d68c412129419b8';
 
 /// Copied from Dart SDK
 class _SystemHash {

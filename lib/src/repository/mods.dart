@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/material.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game.dart';
 import 'package:modmopet/src/entity/git_source.dart';
@@ -33,8 +34,9 @@ class ModsRepository {
     return sourceModVersion != installedModVersion;
   }
 
-  Future<List<Mod>> getAvailableMods(Emulator emulator, Game game, GitSource source) async {
+  Future<List<Mod>> getAvailableMods(Emulator emulator, Game game, GitSource source, AvailableModsRef ref) async {
     final List<Mod> modList = List.empty(growable: true);
+    Set<String> uniqueGameVersions = {};
 
     Directory modsSourceDirectory = await PlatformFilesystem.instance.modsSourceDirectory(game, source);
     if (await modsSourceDirectory.exists()) {
@@ -47,12 +49,16 @@ class ModsRepository {
           try {
             Mod mod = await parseModFromYaml(modConfig, modDirectory, emulator, game);
             modList.add(mod);
+            uniqueGameVersions = createUniqueGameVersionSet(modConfig['game']['version']);
           } catch (e, stackTrace) {
+            debugPrint('Error parsing mod config: $e');
             Sentry.captureException(e, stackTrace: stackTrace);
           }
         }
       }
     }
+
+    ref.read(gameVersionsProvider.notifier).state = uniqueGameVersions;
 
     return modList;
   }
@@ -88,5 +94,18 @@ class ModsRepository {
     List versionCells = version.split('.');
     versionCells = versionCells.map((i) => int.parse(i)).toList();
     return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];
+  }
+
+  Set<String> createUniqueGameVersionSet(List<dynamic> versions) {
+    final Set<String> gameVersionSet = {};
+    for (var version in versions) {
+      try {
+        gameVersionSet.add(version as String);
+      } catch (e) {
+        debugPrint('Error parsing game version: $e');
+        continue;
+      }
+    }
+    return gameVersionSet;
   }
 }
