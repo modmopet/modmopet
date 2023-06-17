@@ -5,5 +5,6 @@
     "no_games_found_title": "Oops, que chatice!",
     "no_games_found_text": "Parece que você ainda não adicionou nenhum jogo ao seu emulador",
     "no_games_found_hint_text": "Selecione a pasta do aplicativo interno do emulador.\nPara encontrar a pasta, clique em \"Abrir {emulatorName} pasta\" no menu do emulador.",
-    "no_games_found_button": "Recarregar"
+    "no_games_found_button": "Recarregar",
+    "no_games_found_button_update": "Ajustar as configurações"
 }

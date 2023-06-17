@@ -35,9 +35,24 @@ class GameListEmptyView extends ConsumerWidget {
           const SizedBox(
             height: 20.0,
           ),
-          MMElevatedButton.primary(
-            onPressed: () => ref.invalidate(gameListProvider),
-            child: Text('no_games_found_button'.tr()),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: MMElevatedButton.primary(
+                  onPressed: () => ref.invalidate(gameListProvider),
+                  child: Text('no_games_found_button'.tr()),
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                child: MMElevatedButton.secondary(
+                  onPressed: () => ref.invalidate(gameListProvider),
+                  child: Text('no_games_found_button_update'.tr()),
+                ),
+              ),
+            ],
           ),
         ],
       ),
