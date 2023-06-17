@@ -100,7 +100,7 @@ class ModsRepository {
     final Set<String> gameVersionSet = {};
     for (var version in versions) {
       try {
-        gameVersionSet.add(version as String);
+        gameVersionSet.add(version.toString());
       } catch (e) {
         debugPrint('Error parsing game version: $e');
         continue;
