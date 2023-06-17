@@ -57,6 +57,8 @@ class GameListView extends HookConsumerWidget {
         const GameListActionBarWidget(),
         Expanded(
           child: games.when(
+            skipLoadingOnRefresh: false,
+            skipLoadingOnReload: false,
             loading: () => MMLoadingIndicator(),
             error: ((error, stackTrace) {
               Sentry.captureException(error, stackTrace: stackTrace);
@@ -122,6 +124,7 @@ class GameListView extends HookConsumerWidget {
         },
       );
     }
+
     return const GameListEmptyView();
   }
 }

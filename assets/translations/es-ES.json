@@ -5,5 +5,6 @@
     "no_games_found_title": "¡Uy, qué putada!",
     "no_games_found_text": "Parece que aún no has añadido ningún juego a tu emulador",
     "no_games_found_hint_text": "Seleccione la carpeta interna de aplicaciones del emulador.\nPara encontrar la carpeta, haz clic en \"Abrir {emulatorName} carpeta\" en el menú del emulador.",
-    "no_games_found_button": "Recargar"
+    "no_games_found_button": "Recargar",
+    "no_games_found_button_update": "Ajustar la configuración"
 }

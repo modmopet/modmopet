@@ -96,8 +96,5 @@ class EmulatorService {
         return;
       }
     }
-
-    // Clear selected emulator after no valid path to emulator found
-    ref.read(selectedEmulatorProvider.notifier).clear();
   }
 }
