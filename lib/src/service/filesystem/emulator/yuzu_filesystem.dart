@@ -55,20 +55,23 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   /// Gets the directory of a potentially installed mod
   @override
   Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String identifier) async {
+    final modFolderBasename = mmPrefix + identifier;
     if(options != null){
-      var val = options!.get("Data%20Storage", "load_directory");
-      if(val != null){
-        return Directory(val);
+      var loadPath = options!.get("Data%20Storage", "load_directory");
+      if(loadPath != null){
+        return Directory(path.joinAll([
+          loadPath,
+          gameTitleId,
+          modFolderBasename,
+        ]));
       }
     }
-    final modFolderBasename = mmPrefix + identifier;
     final modDirectory = Directory(path.joinAll([
       emulator.path,
       modsDirectoryBasename,
       gameTitleId,
       modFolderBasename,
     ]));
-
     return modDirectory;
   }
 
