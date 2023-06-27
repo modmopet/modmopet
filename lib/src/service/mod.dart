@@ -14,7 +14,7 @@ class ModService {
   ) async {
     final modSourceDirectory = Directory(mod.origin);
     final titleId = gameTitleId.toUpperCase();
-    final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, titleId, mod.title);
+    final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, titleId, mod.title.toLowerCase());
 
     if (await emulatorModDirectory.exists() == false) {
       await emulatorModDirectory.create();
@@ -31,7 +31,7 @@ class ModService {
   }
 
   Future<void> removeMod(String gameTitleId, Mod mod, Emulator emulator) async {
-    final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, gameTitleId, mod.title);
+    final emulatorModDirectory = await emulator.filesystem.getModDirectory(emulator, gameTitleId, mod.title.toLowerCase());
     if (await emulatorModDirectory.exists() == true) {
       await emulatorModDirectory.delete(recursive: true);
     }
