@@ -14,7 +14,6 @@ class ModsRepository {
   Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier, String modId) async {
     final modDirectory =
         await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier);
-    print(modDirectory.path);
     final configFile = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
 
     // Need to check id to
