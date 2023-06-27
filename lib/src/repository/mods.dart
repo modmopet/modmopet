@@ -13,7 +13,8 @@ class ModsRepository {
   /// Checks a mods directory is installed to the emulators mod folder
   Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier, String modId) async {
     final modDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier.toLowerCase());
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier);
+    print(modDirectory.path);
     final configFile = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
 
     // Need to check id to
@@ -27,7 +28,7 @@ class ModsRepository {
 
   Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String identfier, String modOrigin) async {
     final installedModDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier.toLowerCase());
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier);
     final int installedModVersion = getExtendedVersionNumber(await getModVersion(installedModDirectory.path));
     final int sourceModVersion = getExtendedVersionNumber(await getModVersion(modOrigin));
 
