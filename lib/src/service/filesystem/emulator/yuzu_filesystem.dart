@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'package:ini/ini.dart';
 import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/entity/game_meta.dart';
 import 'package:modmopet/src/service/filesystem/emulator_filesystem.dart';
@@ -7,7 +8,17 @@ import 'package:path/path.dart' as path;
 import 'package:path_provider/path_provider.dart';
 
 class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInterface {
-  YuzuFilesystem._();
+
+  Config? options;
+
+  YuzuFilesystem._(){
+    if (Platform.isLinux){
+      var iniPath = path.join(Platform.environment['HOME']!, ".config/yuzu/qt-config.ini");
+      options = Config.fromString(File(iniPath).readAsStringSync());
+    }else{
+      //TODo: Other platforms
+    }
+  }
   static final instance = YuzuFilesystem._();
   static const String emulatorId = 'yuzu';
   static const String applicationFolderName = 'yuzu';
@@ -39,6 +50,12 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   /// Gets the directory of a potentially installed mod
   @override
   Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String identifier) async {
+    if(options != null){
+      var val = options!.get("Data%20Storage", "load_directory");
+      if(val != null){
+        return Directory(val);
+      }
+    }
     final modFolderBasename = mmPrefix + identifier;
     final modDirectory = Directory(path.joinAll([
       emulator.path,
