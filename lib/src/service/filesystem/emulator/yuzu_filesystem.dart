@@ -12,11 +12,16 @@ class YuzuFilesystem extends EmulatorFilesystem implements EmulatorFilesystemInt
   Config? options;
 
   YuzuFilesystem._(){
-    if (Platform.isLinux){
-      var iniPath = path.join(Platform.environment['HOME']!, ".config/yuzu/qt-config.ini");
-      options = Config.fromString(File(iniPath).readAsStringSync());
+    String? iniPath;
+    if(Platform.isWindows){
+      iniPath = "%AppData%\\yuzu\\config\\qt-config.ini";
+    }else if (Platform.isLinux){
+      iniPath = path.join(Platform.environment['HOME']!, ".config/yuzu/qt-config.ini");
     }else{
-      //TODo: Other platforms
+      //TODO: Other platforms
+    }
+    if(iniPath != null){
+      options = Config.fromString(File(iniPath).readAsStringSync());
     }
   }
   static final instance = YuzuFilesystem._();
