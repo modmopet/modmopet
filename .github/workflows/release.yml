@@ -27,6 +27,7 @@ jobs:
     secrets: 
       token: ${{ secrets.GH_TOKEN_WRITE_VARIABLES }}
   build:
+    name: build-${{ matrix.platform }}
     needs: [get-version, get-build]
     uses: shiipou/github-actions/.github/workflows/build-flutter.yml@1-fix-flutter-release-didnt-work
     strategy:
@@ -49,6 +50,10 @@ jobs:
       package-name: ModMopet
       version: ${{ needs.get-version.outputs.version }}
       build: ${{ needs.get-build.outputs.value }}
+      platform: ${{ matrix.platform }}
+      targets: ${{ matrix.targets }}
+      runner: ${{ matrix.runner }}
+      artifacts: ${{ matrix.artifacts }}
 
   release:
     needs: build
