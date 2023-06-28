@@ -48,7 +48,7 @@ jobs:
       version: ${{ needs.get-version.outputs.version }}
       build: ${{ needs.get-build.outputs.value }}
     secrets: 
-      GITHUB_TOKEN: GH_TOKEN_WRITE_VARIABLES
+      token: GH_TOKEN_WRITE_VARIABLES
 
   release:
     needs: build
