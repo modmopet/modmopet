@@ -35,6 +35,8 @@ jobs:
     needs: build
     uses: shiipou/github-actions/.github/workflows/release.yml@1-fix-flutter-release-didnt-work
     with:
-      prerelease-branches: rc,beta,nightly,hotfix
+      version:  ${{ needs.get-version.outputs.version }}
+      changelogs: ${{ needs.get-version.outputs.changelogs }}
+      is-prerelease: ${{ needs.get-version.outputs.is-prerelease }}
       download-artifacts: true
       assets: artifacts/*/*
