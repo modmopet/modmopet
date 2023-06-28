@@ -25,7 +25,7 @@ jobs:
     with:
       variable-name: build-number
     secrets: 
-      token: GH_TOKEN_WRITE_VARIABLES
+      token: ${{ secrets.GH_TOKEN_WRITE_VARIABLES }}
   build:
     needs: [get-version, get-build]
     uses: shiipou/github-actions/.github/workflows/build-flutter.yml@1-fix-flutter-release-didnt-work
