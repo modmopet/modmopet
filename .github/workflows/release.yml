@@ -14,8 +14,6 @@ env:
 
 permissions:
   contents: write
-  actions: write
-  repository-projects: write
 
 jobs:
   get-version:
@@ -49,6 +47,9 @@ jobs:
       package-name: ModMopet
       version: ${{ needs.get-version.outputs.version }}
       build: ${{ needs.get-build.outputs.value }}
+    secrets: 
+      GITHUB_TOKEN: GH_TOKEN_WRITE_VARIABLES
+
   release:
     needs: build
     uses: shiipou/github-actions/.github/workflows/release.yml@1-fix-flutter-release-didnt-work
