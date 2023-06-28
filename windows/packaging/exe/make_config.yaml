@@ -1,0 +1,10 @@
+# The value of AppId uniquely identifies this application.
+# Do not use the same AppId value in installers for other applications.
+app_id: 4FB521BA-98C0-43D0-8B74-891EA6D7B2E5
+publisher: ModMopet
+publisher_url: https://github.com/ModMopet/ModMopet
+display_name: ModMopet
+create_desktop_icon: true
+install_dir_name: ModMopet
+locales:
+  - en

@@ -1,0 +1,23 @@
+display_name: ModMopet
+package_name: modmopet
+maintainer:
+  name: LiJianying
+  email: lijy91@foxmail.com
+priority: optional
+section: x11
+installed_size: 6604
+essential: false
+icon: assets/images/flutter_logo.png
+
+keywords:
+  - emulation
+  - mods
+  - game
+  - switch
+
+generic_name: ModMopet
+
+categories:
+  - Games
+
+startup_notify: true
