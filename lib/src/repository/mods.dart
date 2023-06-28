@@ -12,8 +12,7 @@ import 'package:yaml/yaml.dart';
 class ModsRepository {
   /// Checks a mods directory is installed to the emulators mod folder
   Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier, String modId) async {
-    final modDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier.toLowerCase());
+    final modDirectory = await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier);
     final configFile = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
 
     // Need to check id to
@@ -44,14 +43,14 @@ class ModsRepository {
       await for (var modDirectory in modDirectories.asBroadcastStream()) {
         final File modConfigYaml = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
         if (await modConfigYaml.exists()) {
-          final content = await modConfigYaml.readAsString();
-          var modConfig = await loadYaml(content);
           try {
+            final content = await modConfigYaml.readAsString();
+            var modConfig = await loadYaml(content);
             Mod mod = await parseModFromYaml(modConfig, modDirectory, emulator, game);
             modList.add(mod);
             uniqueGameVersions = createUniqueGameVersionSet(modConfig['game']['version']);
           } catch (e, stackTrace) {
-            debugPrint('Error parsing mod config: $e');
+            debugPrint('Error parsing mod config: $e from ${modConfigYaml.path}');
             Sentry.captureException(e, stackTrace: stackTrace);
           }
         }
