@@ -28,6 +28,22 @@ jobs:
   build:
     needs: [get-version, get-build]
     uses: shiipou/github-actions/.github/workflows/build-flutter.yml@1-fix-flutter-release-didnt-work
+    strategy:
+      matrix:
+        platform: [ windows, linux, macos ]
+        include:
+          - platform: linux
+            targets: zip,deb,rpm,appimage
+            runner: ubuntu-latest
+            artifacts: dist/linux/*.{zip,deb,rpm,AppImage}
+          - platform: windows
+            targets: zip,exe,msix
+            runner: windows-latest
+            artifacts: dist/windows/*.{zip,exe,msix}
+          - platform: macos
+            targets: zip,dmg
+            runner: macos-latest
+            artifacts: dist/macos/*.{zip,dmg}
     with:
       package-name: ModMopet
       version: ${{ needs.get-version.outputs.version }}
