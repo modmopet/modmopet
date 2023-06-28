@@ -48,15 +48,7 @@ class Mod with _$Mod {
       version: yaml['version'] is int ? yaml['version'].toString() : yaml['version'] as String?,
       game: yaml['game'],
       origin: origin,
-      author: (){
-        var author = yaml['author'];
-        if(author is Map){
-          return [author];
-        }else if(author is List){
-          return author;
-        }
-        return [];
-      }(),
+      author: yaml['author'],
       isInstalled: isInstalled,
       hasUpdate: hasUpdate,
     );
