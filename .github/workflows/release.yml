@@ -26,7 +26,7 @@ jobs:
     with:
       variable-name: build-number
   build:
-    needs: get-version
+    needs: [get-version, get-build]
     uses: shiipou/github-actions/.github/workflows/build-flutter.yml@1-fix-flutter-release-didnt-work
     with:
       package-name: ModMopet
