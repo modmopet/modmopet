@@ -28,11 +28,15 @@ class RyujinxFilesystem extends EmulatorFilesystem implements EmulatorFilesystem
   /// Gets the directory of a potentially installed mod
   @override
   Future<Directory> getModDirectory(Emulator emulator, String gameTitleId, String identifier) async {
-    final modDirectory = Directory(
-      '${emulator.path}${Platform.pathSeparator}$modsDirectoryBasename${Platform.pathSeparator}contents${Platform.pathSeparator}$gameTitleId${Platform.pathSeparator}$mmPrefix$identifier',
-    );
+    final modDirectoryPath = path.joinAll([
+      emulator.path,
+      modsDirectoryBasename,
+      'contents',
+      gameTitleId.toUpperCase(),
+      '$mmPrefix$identifier',
+    ]);
 
-    return modDirectory;
+    return Directory(modDirectoryPath);
   }
 
   // Gets a list of all directories inside the mod folder of the emulator
