@@ -39,7 +39,7 @@ jobs:
             runner: ubuntu-latest
             artifacts: dist/*/*
           - platform: windows
-            targets: zip,exe
+            targets: zip,exe,msix
             runner: windows-latest
             artifacts: dist/*/*
           - platform: macos
