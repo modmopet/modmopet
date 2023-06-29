@@ -25,7 +25,9 @@ void main() async {
   // Set local storage
   await SharedPreferencesStorage.instance.init();
 
-  if (kDebugMode && const bool.fromEnvironment('DEBUG_CLEAR_STORAGE_ON_STARTUP', defaultValue: false)) {
+  const bool clearStorageOnStartup = bool.fromEnvironment('DEBUG_CLEAR_STORAGE_ON_STARTUP', defaultValue: false);
+  if (kDebugMode && clearStorageOnStartup) {
+    debugPrint('Clearing storage on startup');
     SharedPreferencesStorage.instance.clear();
   }
 
