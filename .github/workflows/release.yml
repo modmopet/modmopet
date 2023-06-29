@@ -19,7 +19,7 @@ jobs:
   get-version:
     uses: shiipou/github-actions/.github/workflows/get-version.yml@1-fix-flutter-release-didnt-work
     with:
-      prerelease-branches: rc,beta,nightly,hotfix
+      prerelease-branches: '^(rc|beta|nightly|hotfix)$'
   get-build:
     uses: shiipou/github-actions/.github/workflows/increment-variable.yml@1-fix-flutter-release-didnt-work
     with:
@@ -61,6 +61,6 @@ jobs:
     with:
       version:  ${{ needs.get-version.outputs.version }}
       changelogs: ${{ needs.get-version.outputs.changelogs }}
-      is-prerelease: ${{ needs.get-version.outputs.is-prerelease }}
+      is-prerelease: ${{ needs.get-version.outputs.is-prerelease == 'true' }}
       download-artifacts: true
       assets: artifacts/*/*
