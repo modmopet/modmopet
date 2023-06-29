@@ -24,7 +24,7 @@ jobs:
     uses: shiipou/github-actions/.github/workflows/increment-variable.yml@1-fix-flutter-release-didnt-work
     with:
       variable-name: build_number
-    secrets: 
+    secrets:
       token: ${{ secrets.GH_TOKEN_WRITE_VARIABLES }}
   build:
     name: build-${{ matrix.platform }}
