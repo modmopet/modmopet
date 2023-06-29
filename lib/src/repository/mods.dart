@@ -26,7 +26,7 @@ class ModsRepository {
 
   Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String identfier, String modOrigin) async {
     final installedModDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier.toLowerCase());
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier);
     final int installedModVersion = getExtendedVersionNumber(await getModVersion(installedModDirectory.path));
     final int sourceModVersion = getExtendedVersionNumber(await getModVersion(modOrigin));
 
@@ -75,7 +75,7 @@ class ModsRepository {
   }
 
   /// Gets a version of a mod by its path
-  Future<String> getModVersion(String path, {String configFileBasename = 'config.yaml'}) async {
+  Future<dynamic> getModVersion(String path, {String configFileBasename = 'config.yaml'}) async {
     final directory = Directory(path);
     final File configYaml = File('${directory.path}${Platform.pathSeparator}$configFileBasename');
     final sourceModConfig = await loadYaml(await configYaml.readAsString());
@@ -89,7 +89,19 @@ class ModsRepository {
     return sourceModConfig['version'];
   }
 
-  int getExtendedVersionNumber(String version) {
+  int getExtendedVersionNumber(dynamic version) {
+    if (version == null) {
+      return 0;
+    }
+
+    if (version is int) {
+      version = '$version.0.0';
+    }
+
+    if (version is double) {
+      version = '$version.0';
+    }
+
     List versionCells = version.split('.');
     versionCells = versionCells.map((i) => int.parse(i)).toList();
     return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];

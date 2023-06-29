@@ -21,7 +21,7 @@ class Mod with _$Mod {
     required final String id,
     required final String title,
     required final Category category,
-    required final String? version,
+    required final String version,
     required final Map<dynamic, dynamic> game,
     required final String origin,
     final String? subtitle,
@@ -45,7 +45,7 @@ class Mod with _$Mod {
       category: Category.values.singleWhere(
         (category) => category.id == yaml['category'] as int,
       ),
-      version: yaml['version'] is int ? yaml['version'].toString() : yaml['version'] as String?,
+      version: yaml['version'] is int ? yaml['version'].toString() : yaml['version'] as String? ?? '0.0.0',
       game: yaml['game'],
       origin: origin,
       author: yaml['author'],
