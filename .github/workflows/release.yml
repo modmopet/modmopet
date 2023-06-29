@@ -37,15 +37,15 @@ jobs:
           - platform: linux
             targets: zip,deb,rpm,appimage
             runner: ubuntu-latest
-            artifacts: dist/*/*.{zip,deb,rpm,AppImage}
+            artifacts: dist/*/*
           - platform: windows
             targets: zip,exe,msix
             runner: windows-latest
-            artifacts: dist/*/*.{zip,exe,msix}
+            artifacts: dist/*/*
           - platform: macos
             targets: zip,dmg
             runner: macos-latest
-            artifacts: dist/*/*.{zip,dmg}
+            artifacts: dist/*/*
     with:
       package-name: ModMopet
       version: ${{ needs.get-version.outputs.version }}
