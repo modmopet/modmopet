@@ -29,6 +29,7 @@ jobs:
   build:
     name: build-${{ matrix.platform }}
     needs: [get-version, get-build]
+    if: ${{ needs.get-version.outputs.will-release }}
     uses: shiipou/github-actions/.github/workflows/build-flutter.yml@1-fix-flutter-release-didnt-work
     strategy:
       matrix:
@@ -56,8 +57,9 @@ jobs:
       artifacts: ${{ matrix.artifacts }}
 
   release:
-    needs: build
+    needs: [get-version, build]
     uses: shiipou/github-actions/.github/workflows/release.yml@1-fix-flutter-release-didnt-work
+    if: ${{ needs.get-version.outputs.will-release }}
     with:
       version:  ${{ needs.get-version.outputs.version }}
       changelogs: ${{ needs.get-version.outputs.changelogs }}
