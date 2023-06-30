@@ -1,7 +1,9 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
+import 'package:modmopet/src/entity/emulator.dart';
 import 'package:modmopet/src/provider/game_list_provider.dart';
+import 'package:modmopet/src/service/emulator.dart';
 import 'package:modmopet/src/themes/color_schemes.g.dart';
 import 'package:modmopet/src/widgets/mm_evelated_button.dart';
 
@@ -48,7 +50,10 @@ class GameListEmptyView extends ConsumerWidget {
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 10.0),
                 child: MMElevatedButton.secondary(
-                  onPressed: () => ref.invalidate(gameListProvider),
+                  onPressed: () {
+                    ref.read(selectedEmulatorProvider.notifier).clear();
+                    ref.invalidate(gameListProvider);
+                  },
                   child: Text('no_games_found_button_update'.tr()),
                 ),
               ),

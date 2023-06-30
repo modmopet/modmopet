@@ -12,8 +12,7 @@ import 'package:yaml/yaml.dart';
 class ModsRepository {
   /// Checks a mods directory is installed to the emulators mod folder
   Future<bool> isModInstalled(Emulator emulator, String gameTitleId, String identifier, String modId) async {
-    final modDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier.toLowerCase());
+    final modDirectory = await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identifier);
     final configFile = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
 
     // Need to check id to
@@ -27,7 +26,7 @@ class ModsRepository {
 
   Future<bool> hasModUpdate(Emulator emulator, String gameTitleId, String identfier, String modOrigin) async {
     final installedModDirectory =
-        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier.toLowerCase());
+        await emulator.filesystem.getModDirectory(emulator, gameTitleId.toUpperCase(), identfier);
     final int installedModVersion = getExtendedVersionNumber(await getModVersion(installedModDirectory.path));
     final int sourceModVersion = getExtendedVersionNumber(await getModVersion(modOrigin));
 
@@ -44,14 +43,14 @@ class ModsRepository {
       await for (var modDirectory in modDirectories.asBroadcastStream()) {
         final File modConfigYaml = File('${modDirectory.path}${Platform.pathSeparator}config.yaml');
         if (await modConfigYaml.exists()) {
-          final content = await modConfigYaml.readAsString();
-          var modConfig = await loadYaml(content);
           try {
+            final content = await modConfigYaml.readAsString();
+            var modConfig = await loadYaml(content);
             Mod mod = await parseModFromYaml(modConfig, modDirectory, emulator, game);
             modList.add(mod);
             uniqueGameVersions = createUniqueGameVersionSet(modConfig['game']['version']);
           } catch (e, stackTrace) {
-            debugPrint('Error parsing mod config: $e');
+            debugPrint('Error parsing mod config: $e from ${modConfigYaml.path}');
             Sentry.captureException(e, stackTrace: stackTrace);
           }
         }
@@ -76,7 +75,7 @@ class ModsRepository {
   }
 
   /// Gets a version of a mod by its path
-  Future<String> getModVersion(String path, {String configFileBasename = 'config.yaml'}) async {
+  Future<dynamic> getModVersion(String path, {String configFileBasename = 'config.yaml'}) async {
     final directory = Directory(path);
     final File configYaml = File('${directory.path}${Platform.pathSeparator}$configFileBasename');
     final sourceModConfig = await loadYaml(await configYaml.readAsString());
@@ -90,7 +89,19 @@ class ModsRepository {
     return sourceModConfig['version'];
   }
 
-  int getExtendedVersionNumber(String version) {
+  int getExtendedVersionNumber(dynamic version) {
+    if (version == null) {
+      return 0;
+    }
+
+    if (version is int) {
+      version = '$version.0.0';
+    }
+
+    if (version is double) {
+      version = '$version.0';
+    }
+
     List versionCells = version.split('.');
     versionCells = versionCells.map((i) => int.parse(i)).toList();
     return versionCells[0] * 100000 + versionCells[1] * 1000 + versionCells[2];

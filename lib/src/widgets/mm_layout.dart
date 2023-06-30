@@ -71,7 +71,7 @@ class MMLayout extends HookConsumerWidget {
                             height: 50.0,
                             child: Text(
                               textAlign: TextAlign.center,
-                              'ModMopet\nv${const String.fromEnvironment('FLUTTER_BUILD_NAME')}-${const String.fromEnvironment('FLUTTER_BUILD_NUMBER')}',
+                              'ModMopet\nv${const String.fromEnvironment('FLUTTER_BUILD_NAME')}',
                               style: Theme.of(context)
                                   .textTheme
                                   .bodySmall

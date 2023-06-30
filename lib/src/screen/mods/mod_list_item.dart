@@ -1,3 +1,4 @@
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:hooks_riverpod/hooks_riverpod.dart';
@@ -26,30 +27,39 @@ class ModListItem extends HookConsumerWidget {
     }
   }
 
-  List<Widget> createAuthorsTextLinks(List<dynamic>? authors) {
-    List<Widget> authorsLinks = [];
-    if (authors != null && authors.isNotEmpty) {
-      for (Map author in authors) {
-        authorsLinks.add(
-          TextButton(
-            onPressed: author['link'] != null ? () => _launchAuthorLink(author['link']) : null,
-            child: author['name'] != null
-                ? Text(
-                    author['name'],
-                    softWrap: true,
-                    style: TextStyle(
-                      fontSize: 11.0,
-                      color: author['link'] != null ? MMColors.instance.secondary : MMColors.instance.lightWhite,
-                    ),
-                    overflow: TextOverflow.ellipsis,
-                  )
-                : const Text('unknown'),
+  Widget createAuthorsTextLinks(List<dynamic> authors, TextStyle textStyle) {
+    List<TextSpan> authorsLinks = [];
+    for (Map author in authors) {
+      String? authorName = author['name'];
+      String? authorLink = author['link'];
+
+      authorsLinks.add(
+        TextSpan(
+          recognizer: TapGestureRecognizer()..onTap = authorLink != null ? () => _launchAuthorLink(authorLink) : null,
+          mouseCursor: authorLink != null ? SystemMouseCursors.click : SystemMouseCursors.basic,
+          text: (authorName != null && authorName.isNotEmpty)
+              ? author == authors.last
+                  ? authorName
+                  : '$authorName, '
+              : 'unknown',
+          style: textStyle.copyWith(
+            fontWeight: (authorLink != null && authorLink.isNotEmpty) ? FontWeight.bold : FontWeight.normal,
+            color: (authorLink != null && authorLink.isNotEmpty)
+                ? MMColors.instance.secondary
+                : MMColors.instance.lightWhite,
           ),
-        );
-      }
+        ),
+      );
     }
 
-    return authorsLinks;
+    return RichText(
+      overflow: TextOverflow.ellipsis,
+      maxLines: 2,
+      textAlign: TextAlign.right,
+      text: TextSpan(
+        children: authorsLinks,
+      ),
+    );
   }
 
   @override
@@ -97,28 +107,22 @@ class ModListItem extends HookConsumerWidget {
               buildGameVersionCompatibility(mod, textTheme),
             ],
           ),
-          minVerticalPadding: 20.0,
+          minVerticalPadding: 18.0,
           trailing: Row(
             mainAxisSize: MainAxisSize.min,
             children: [
               SizedBox(
                 width: 300.0,
                 child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  mainAxisAlignment: MainAxisAlignment.end,
+                  mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.end,
                   children: [
-                    ...createAuthorsTextLinks(mod.author),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 12.0,
-                      ),
-                      child: mod.version == null
-                          ? const Text('No version')
-                          : Text(
-                              'v${mod.version!}',
-                            ),
-                    ),
+                    mod.author != null
+                        ? createAuthorsTextLinks(mod.author!, textTheme.bodySmall!)
+                        : const Text('unknown'),
+                    mod.version == null
+                        ? Text('No version', style: textTheme.bodySmall!)
+                        : Text('v${mod.version!}', style: textTheme.bodySmall!),
                   ],
                 ),
               ),
