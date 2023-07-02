@@ -56,8 +56,24 @@ jobs:
       runner: ${{ matrix.runner }}
       artifacts: ${{ matrix.artifacts }}
 
+  artifact-paths:
+    needs: build
+    runs-on: ubuntu-latest
+    if: ${{ needs.get-version.outputs.will-release }}
+    steps:
+      - name: Download artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: artifacts/
+      - name: list artifacts
+        run: |
+          ls -lia artifacts/
+          ls -lia artifacts/*/
+          ls -lia artifacts/*/*/
+          ls -lia artifacts/*/*/*/
+      
   release:
-    needs: [get-version, build]
+    needs: [get-version, build, artifact-paths]
     uses: shiipou/github-actions/.github/workflows/release.yml@main
     if: ${{ needs.get-version.outputs.will-release }}
     with:
