@@ -12,128 +12,57 @@ on:
 env:
   FLUTTER_VERSION: '3.10.x'
 
+permissions:
+  contents: write
+
 jobs:
-  sem-version:
-    name: SemVersion
-    runs-on: ubuntu-latest
-    timeout-minutes: 2
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-
-    - name: Sem-Version
-      id: sem-version
-      uses: shiipou/sem-version@beta
-      with:
-        ALLOW_FAILURE: false
-        PRERELEASE_BRANCHES_REGEX: '^(rc|beta|nightly|hotfix)$'
-
-    outputs:
-      WILL_RELEASE: ${{ steps.sem-version.outputs.WILL_RELEASE }}
-      IS_PRE_RELEASE: ${{ steps.sem-version.outputs.IS_PRE_RELEASE }}
-      VERSION: ${{ steps.sem-version.outputs.VERSION }}
-      CHANGELOG: ${{ steps.sem-version.outputs.CHANGELOG }}
-
+  get-version:
+    uses: shiipou/github-actions/.github/workflows/get-version.yml@main
+    with:
+      prerelease-branches: '^(rc|beta|nightly|hotfix)$'
+  get-build:
+    uses: shiipou/github-actions/.github/workflows/increment-variable.yml@main
+    with:
+      variable-name: build_number
+    secrets:
+      token: ${{ secrets.GH_TOKEN_WRITE_VARIABLES }}
   build:
-    name: Build
-    needs: [ sem-version ]
+    name: build-${{ matrix.platform }}
+    needs: [get-version, get-build]
+    if: ${{ needs.get-version.outputs.will-release }}
+    uses: shiipou/github-actions/.github/workflows/build-flutter.yml@main
     strategy:
       matrix:
-        target: [ windows, linux, macos]
+        platform: [ windows, linux, macos ]
         include:
-          - target: windows
-            runner: windows-latest
-            artifact: build/windows/runner/Release
-          - target: linux
+          - platform: linux
+            targets: zip,deb,rpm,appimage
             runner: ubuntu-latest
-            artifact: build/linux/x64/release/bundle
-          - target: macos
+            artifacts: dist/*/*
+          - platform: windows
+            targets: zip,exe,msix
+            runner: windows-latest
+            artifacts: dist/*/*
+          - platform: macos
+            targets: zip,dmg
             runner: macos-latest
-            artifact: build/macos/Build/Products/Release/ModMopet.app
-    runs-on: ${{ matrix.runner }}
-    if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
-    environment: ${{ github.ref_name }}
-    timeout-minutes: 20
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
-    - name: Install Flutter
-      uses: subosito/flutter-action@v2.10.0
-      with:
-        flutter-version: ${{ env.flutter_version }}
-        cache: true
-        cache-key: 'flutter-:os:-:channel:-:version:-:arch:-:hash:' # optional, change this to force refresh cache
-        cache-path: "${{ runner.tool_cache }}/flutter/:channel:-:version:-:arch:" # optional, change this to specify the cache path
-        architecture: x64 # optional, x64 or arm64
-
-    - name: Install Dependencies (windows)
-      if: ${{ matrix.runner == 'windows-latest' }}
-      run: |
-        flutter config --enable-windows-desktop
-    - name: Install Dependencies (linux)
-      if: ${{ matrix.runner == 'ubuntu-latest' }}
-      run: |
-        sudo apt-get update -y
-        sudo apt-get install -y ninja-build libgtk-3-dev
-        flutter config --enable-linux-desktop
-    - name: Install Dependencies (macos)
-      if: ${{ matrix.runner == 'macos-latest' }}
-      run: |
-        flutter config --enable-macos-desktop
-
-    - name: Build Flutter ${{ matrix.target }}
-      env:
-        VERSION: ${{ needs.sem-version.outputs.VERSION }}
-        GH_PRIVATE_KEY: ${{ secrets.GH_PRIVATE_KEY }}
-        GH_APP_ID: ${{ secrets.GH_APP_ID }}
-        GH_INSTALLMENT_ID: ${{ secrets.GH_INSTALLMENT_ID }}
-        SENTRY_DSN: ${{ secrets.SENTRY_DSN }}
-        SENTRY_TRACE_SAMPLE_RATE: ${{ vars.SENTRY_TRACE_SAMPLE_RATE }}
-      run: |
-        make build ${{ matrix.target }}
-
-    - name: Zip artifact (Windows)
-      if: ${{ matrix.runner == 'windows-latest' }}
-      shell: pwsh
-      run: Compress-Archive "${{ matrix.artifact }}" "modmopet-${{ matrix.target }}.zip"
-    - name: Zip artifact (Linux)
-      if: ${{ matrix.runner == 'ubuntu-latest' }}
-      shell: bash
-      run: tar -C "$(dirname ${{ matrix.artifact }})" -czf "modmopet-${{ matrix.target }}.tar.gz" "$(basename ${{ matrix.artifact }})" --transform "s/$(basename ${{ matrix.artifact }})/ModMopet/"
-    - name: Zip artifact (MacOS)
-      if: ${{ matrix.runner == 'macos-latest' }}
-      shell: bash
-      run: tar -C "$(dirname ${{ matrix.artifact }})" -czf "modmopet-${{ matrix.target }}.tar.gz" "$(basename ${{ matrix.artifact }})"
-
-    - name: Upload artifact
-      uses: actions/upload-artifact@v3
-      with:
-        name: modmopet-${{ matrix.target }}
-        path: modmopet-${{ matrix.target }}.*
+            artifacts: dist/*/*
+    with:
+      package-name: ModMopet
+      version: ${{ needs.get-version.outputs.version }}
+      build: ${{ needs.get-build.outputs.value }}
+      platform: ${{ matrix.platform }}
+      targets: ${{ matrix.targets }}
+      runner: ${{ matrix.runner }}
+      artifacts: ${{ matrix.artifacts }}
+      flutter-extra-args: --build-dart-define=MM_GITHUB_INSTALLMENT_ID=${GH_INSTALLMENT_ID} --build-dart-define=MM_GITHUB_APP_ID=${GH_APP_ID} --build-dart-define=MM_GITHUB_PRIVATE_KEY=${GH_PRIVATE_KEY} --build-dart-define=MM_SENTRY_DSN=${SENTRY_DSN} --build-dart-define=MM_SENTRY_TRACE_SAMPLE_RATE=${SENTRY_TRACE_SAMPLE_RATE}
+      
   release:
-    name: Release
-    needs: [ build, sem-version ]
-    runs-on: ubuntu-latest
-    if: ${{ needs.sem-version.outputs.WILL_RELEASE == 'true' }}
-    environment: ${{ github.ref_name }}
-    permissions:
-      contents: write
-    timeout-minutes: 2
-    steps:
-    - name: download-artifacts
-      uses: actions/download-artifact@v3
-      with:
-        path: artifacts/
-    - name: Release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      if: needs.sem-version.outputs.WILL_RELEASE == 'true'
-      run: |
-        changelog_file=$(mktemp)
-        echo "${{ needs.sem-version.outputs.CHANGELOG }}" >> "$changelog_file"
-
-        ARGS="--repo ${{ github.repository }} --target ${{ github.sha }} -F $changelog_file"
-        if [[ "${{ needs.sem-version.outputs.IS_PRE_RELEASE }}" ==  "true" ]]; then
-          ARGS="$ARGS --prerelease"
-        fi
-        gh release create $ARGS v${{ needs.sem-version.outputs.VERSION }} ./artifacts/*/*
+    needs: [get-version, build]
+    uses: shiipou/github-actions/.github/workflows/release.yml@main
+    if: ${{ needs.get-version.outputs.will-release }}
+    with:
+      version:  ${{ needs.get-version.outputs.version }}
+      changelogs: ${{ needs.get-version.outputs.changelogs }}
+      is-prerelease: ${{ needs.get-version.outputs.is-prerelease == 'true' }}
+      download-artifacts: true
