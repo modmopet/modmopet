@@ -67,10 +67,7 @@ jobs:
           path: artifacts/
       - name: list artifacts
         run: |
-          ls -lia artifacts/
-          ls -lia artifacts/*/
           ls -lia artifacts/*/*/
-          ls -lia artifacts/*/*/*/
       
   release:
     needs: [get-version, build, artifact-paths]
@@ -81,4 +78,4 @@ jobs:
       changelogs: ${{ needs.get-version.outputs.changelogs }}
       is-prerelease: ${{ needs.get-version.outputs.is-prerelease == 'true' }}
       download-artifacts: true
-      assets: artifacts/*/*/*
+      assets: ${{ github.workspace }}/artifacts/*/*/*
