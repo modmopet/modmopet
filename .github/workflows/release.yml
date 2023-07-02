@@ -78,4 +78,3 @@ jobs:
       changelogs: ${{ needs.get-version.outputs.changelogs }}
       is-prerelease: ${{ needs.get-version.outputs.is-prerelease == 'true' }}
       download-artifacts: true
-      assets: $GITHUB_WORKSPACE/artifacts/*/*/*
